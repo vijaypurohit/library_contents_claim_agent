@@ -1,0 +1,70 @@
+# Where the claim is priced.
+#   country:  ISO 3166-1 alpha-2 code, e.g. IN, US, GB, DE, AU
+#   currency: ISO 4217 code,          e.g. INR, USD, GBP, EUR, AUD
+# Each country needs a shop list in config/locales/<country>.yaml (IN and US are provided).
+# Full code lists: https://www.iso.org/iso-3166-country-codes.html and https://www.iso.org/iso-4217-currency-codes.html
+locale:
+  country: IN
+  currency: INR
+
+runs_dir: runs
+
+ingest:
+  fps: 4              # frames sampled per second of video
+  max_side: 3840      # longest side of saved frames, in pixels
+  jpeg_quality: 92
+
+keyframes:
+  new_view_overlap: 0.6   # a frame covering less than 60% of the current view starts a new view
+  blurry_ratio: 0.5       # sharpness below 50% of the sweep median counts as blurry
+
+camera:
+  hfov_deg: 70        # used when a frame has no focal length in its metadata
+
+marker:               # printable scale card (`claim marker`)
+  dictionary: DICT_4X4_50
+  marker_id: 0
+  size_cm: 15.0
+
+gateway:
+  cache_only: true    # development default: replay cached answers only. Pass --allow-calls to call models.
+  retries: 2          # per provider, on rate limits and server errors
+  backoff_s: 2.0      # doubles on each retry
+  timeout_s: 60       # a stuck request fails over to the next provider sooner
+
+appraisal_threshold: 5000   # in the locale currency; above this, a human appraises
+
+models:
+  profile: gemini
+  # Per-stage overrides, for example:  read: [ollama/qwen2.5vl:7b]
+  overrides: {}
+  profiles:
+    gemini:
+      live: [gemini/gemini-3.8-live]
+      detect: [gemini/gemini-3.5-flash, gemini/gemini-3.8-flash, gemini/gemini-3.5-flash-lite]
+      read: [gemini/gemini-3.5-flash, gemini/gemini-3.8-flash, gemini/gemini-3.5-flash-lite]
+      classify: [gemini/gemini-3.5-flash, gemini/gemini-3.8-flash, gemini/gemini-3.5-flash-lite]
+    openai:
+      live: [openai/gpt-realtime]
+      detect: [openai/gpt-5-mini]
+      read: [openai/gpt-5-mini]
+      classify: [openai/gpt-5-mini]
+    anthropic:
+      live: [anthropic/claude-sonnet-5-5]
+      detect: [anthropic/claude-sonnet-5-5]
+      read: [anthropic/claude-sonnet-5-5]
+      classify: [anthropic/claude-sonnet-5-5]
+    groq:
+      live: [groq/meta-llama/llama-4-scout-17b-16e-instruct]
+      detect: [groq/meta-llama/llama-4-scout-17b-16e-instruct]
+      read: [groq/meta-llama/llama-4-scout-17b-16e-instruct]
+      classify: [groq/meta-llama/llama-4-scout-17b-16e-instruct]
+    dev:                # occasional real answers through the local `claude` CLI login (no API key needed)
+      detect: [claude-cli/haiku]
+      read: [claude-cli/haiku]
+      classify: [claude-cli/haiku]
+    local:
+      live: [ollama/qwen2.5vl:7b]
+      detect: [ollama/qwen2.5vl:7b]
+      read: [ollama/qwen2.5vl:7b]
+      classify: [ollama/qwen2.5vl:7b]

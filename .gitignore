@@ -1,0 +1,29 @@
+# secrets
+.env
+
+# outputs and caches
+runs/
+.pytest_cache/
+__pycache__/
+*.pyc
+.venv/
+models/
+
+# reference app (separate repository)
+awesome-llm-apps/
+
+# editor / OS
+.DS_Store
+.todo
+web/node_modules/
+web/dist/
+
+# machine-specific diagram render config (local Chrome path)
+docs/diagrams/pptr.json
+
+# local test captures (not published)
+tests-local-data/
+
+# working notes between sessions
+HANDOFF.md
+replays/

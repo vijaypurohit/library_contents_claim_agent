@@ -1,0 +1,57 @@
+# Ground truth for the almirah test space (tests-local-data/).
+# Collected by hand, BEFORE tuning. The evaluation tool (`claim eval`) compares packets against this file.
+#
+# DRAFT: books below were read from still_photo_both.heic and must be checked by a person.
+# Fix anything wrong, then change `verified` to true.
+verified: false
+
+site: almirah
+sweeps: [photos, slow, rush, far]   # sweeps captured in this space
+
+# Total physical books. An 11th book may be hidden behind book A2-2 (only a sliver of a
+# "SANJIV" spine is visible); set this to 11 if it is really there.
+book_count: 10
+
+# Positions: unit A = the almirah; shelf 1 = top; position = order from the left.
+# The two flat books on the top shelf are a stack to the right of the upright books;
+# they are numbered top of the stack first.
+books:
+  - {unit: A, shelf: 1, position: 1, orientation: upright, legible: true,
+     title: "Mathematics Class X", author: "Manjeet Singh"}
+  - {unit: A, shelf: 1, position: 2, orientation: upright, legible: true,
+     title: "Mathematics XI", author: "R.D. Sharma"}
+  - {unit: A, shelf: 1, position: 3, orientation: upright, legible: true,
+     title: "Social Science Class X", author: null}          # publisher looks like Golden
+  - {unit: A, shelf: 1, position: 4, orientation: upright, legible: true,
+     title: "Word Power Made Easy", author: "Norman Lewis"}
+  - {unit: A, shelf: 1, position: 5, orientation: flat, legible: true,
+     title: "English Language and Literature Class X", author: null}   # top of the stack
+  - {unit: A, shelf: 1, position: 6, orientation: flat, legible: true,
+     title: "Pradeep's Fundamental Physics Class XII", author: "K.L. Gomber, K.L. Gogia"}
+  - {unit: A, shelf: 2, position: 1, orientation: upright, legible: false,
+     title: "Secondary School Mathematics for Class 10", author: "R.S. Aggarwal, V. Aggarwal"}  # small print, hard to read
+  - {unit: A, shelf: 2, position: 2, orientation: upright, legible: true,
+     title: "Sanjiv English Course Class 10", author: null}
+  - {unit: A, shelf: 2, position: 3, orientation: upright, legible: true,
+     title: "सामान्य हिन्दी", author: null}                     # "Samanya Hindi"
+  - {unit: A, shelf: 2, position: 4, orientation: upright, legible: true,
+     title: "Inorganic Chemistry B.Sc. Part-I", author: null}   # authors on the spine look like Lavania, Ojha, Bansal
+
+# Optional: hand-measured spines (needs a ruler). Leave empty if not measured.
+spines_cm: []
+#  - {unit: A, shelf: 1, position: 4, height: 21.5, thickness: 2.4}
+
+# Optional: hand-checked prices from the same shops the system uses.
+prices: []
+#  - {unit: A, shelf: 1, position: 4, new: 199, used: null, currency: INR,
+#     url: "https://...", retrieved_at: 2026-10-16}
+
+# Non-book items visible in the captures.
+items:
+  - {category: shelving, description: "green-painted wooden almirah with two doors and two shelves"}
+
+# Optional: tape-measured room. Not available for these captures.
+room: {}
+#  length_m: 3.2
+#  width_m: 2.8
+#  height_m: 2.9

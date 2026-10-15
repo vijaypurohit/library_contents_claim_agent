@@ -1,0 +1,5 @@
+country: US
+currency: USD
+appraisal_threshold: 75     # any single item above this (USD) goes to a human appraiser, unpriced
+# Shop definitions are added with the price stage.
+shops: []

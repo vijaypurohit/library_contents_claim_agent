@@ -1,0 +1,11 @@
+flowchart TB
+  A["<b>1 · Keyframes</b><br/>1_keyframes.json"] --> B["<b>2 · Scale</b><br/>2_scale.json"]
+  B --> C["<b>3 · Detect</b><br/>3_detect.json"]
+  C --> D["<b>4 · Inventory</b><br/>de-duplicate, locate<br/>4_inventory.json + shelf images"]
+  D --> E["<b>5 · Identify</b><br/>5_identify.json"]
+  E --> M["<b>6 · Measure</b><br/>6_measure.json"]
+  E --> F["<b>7 · Price</b><br/>7_price.json + page snapshots"]
+  C --> G["<b>8 · Room</b><br/>8_room.json"]
+  M --> H["<b>9 · Packet</b><br/>review, totals, report<br/>claim_packet.json + report.html"]
+  F --> H
+  G --> H

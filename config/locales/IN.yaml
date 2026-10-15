@@ -1,0 +1,5 @@
+country: IN
+currency: INR
+appraisal_threshold: 5000   # any single item above this (INR) goes to a human appraiser, unpriced
+# Shop definitions are added with the price stage.
+shops: []

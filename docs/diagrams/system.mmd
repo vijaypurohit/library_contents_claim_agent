@@ -1,0 +1,13 @@
+flowchart TB
+  CAM["Mac browser<br/>camera + mic"]
+  CAM --> REC["Recorder<br/>+ quality checks"]
+  REC -- "warnings" --> LIVE["Live agent"]
+  REC -- "sweep ends" --> PIPE["Processing pipeline"]
+  LIVE --> GW["Model gateway"]
+  PIPE --> GW
+  PIPE --> WEB["Web<br/>catalogues · shops"]
+  PIPE --> OUT[("Claim packet<br/>+ report")]
+  GW --> HOST["Hosted APIs<br/>Gemini · OpenAI · Anthropic"]
+  GW --> LOC["Local models<br/>Ollama + open models"]
+  LIVE <--> UI["Mac browser<br/>live inventory + settings"]
+  OUT --> UI
