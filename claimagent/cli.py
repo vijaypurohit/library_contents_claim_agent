@@ -77,6 +77,33 @@ def run(
     _report(Runner(RunContext.open(_settings(), sweep)).run(from_stage))
 
 
+@app.command("eval")
+def evaluate(
+    sweeps: Annotated[list[str], typer.Option("--sweep", help="Sweep id; repeat for several.")],
+    truth: Annotated[Path, typer.Option("--truth", help="Ground truth file.")] = Path("ground_truth/almirah/truth.yaml"),
+) -> None:
+    """Compare sweeps' claim packets with ground truth; writes eval/results_<sweep>.md."""
+    from claimagent.core.settings import PROJECT_ROOT
+    from claimagent.core.sweep import SweepDir
+    from claimagent.domain.packet import ClaimPacket
+    from claimagent.eval.compare import Truth, evaluate as run_eval, git_commit, load_targets, to_markdown
+
+    settings = _settings()
+    truth_data, targets, commit = Truth.load(truth), load_targets(), git_commit()
+    out_dir = PROJECT_ROOT / "eval"
+    out_dir.mkdir(exist_ok=True)
+    for sweep_id in sweeps:
+        sweep = SweepDir.open(settings.runs_dir, sweep_id)
+        if not sweep.packet_path.exists():
+            raise typer.BadParameter(f"sweep {sweep_id!r} has no claim packet yet; run `claim run --sweep {sweep_id}`")
+        result = run_eval(ClaimPacket.model_validate_json(sweep.packet_path.read_text()), truth_data, targets, commit)
+        path = out_dir / f"results_{sweep_id}.md"
+        path.write_text(to_markdown(result))
+        typer.echo(f"{sweep_id}: {path}")
+        for m in result.measures:
+            typer.echo(f"    {'ok ' if m.met else '-- ' if m.met is None else 'MISS'} {m.name}: {m.result}")
+
+
 @app.command()
 def marker(out: Annotated[Path, typer.Option("--out", help="PDF to write.")] = Path("marker.pdf")) -> None:
     """Write a printable A4 scale card."""

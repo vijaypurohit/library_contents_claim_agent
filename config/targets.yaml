@@ -1,0 +1,9 @@
+# Accuracy targets the evaluation (`claim eval`) reports every measure against.
+book_count_error: 0.05          # |counted - true| / true
+title_correct: 0.70             # share of human-legible spines with a correct title
+title_confidently_wrong: 0.03   # share of books with a wrong title the system was sure of (no review)
+spine_dimension_error: 0.15     # per book, on a hand-measured sample
+book_price_error: 0.25          # per book, against a hand-checked price from the same kind of source
+items_found: 0.80               # share of true items found with the right category
+floor_area_error: 0.10
+wall_area_error: 0.15
