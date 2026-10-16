@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claim report · {{ p.sweep.id }}</title>
+<style>
+  :root { --ink:#1d2433; --muted:#5f6b7a; --line:#dfe3ea; --bg:#f7f8fa; --card:#fff; --ok:#1f7a4d; --warn:#a15c00; --bad:#b42318; }
+  @media (prefers-color-scheme: dark) { :root { --ink:#e6e9ef; --muted:#9aa4b2; --line:#2c3340; --bg:#12161d; --card:#1a1f28; --ok:#5fd39a; --warn:#f0b35a; --bad:#ff8a80; } }
+  * { box-sizing:border-box; }
+  body { margin:0; font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif; color:var(--ink); background:var(--bg); }
+  main { max-width:1100px; margin:0 auto; padding:24px 16px 64px; }
+  h1 { font-size:24px; margin:0 0 4px; } h2 { font-size:18px; margin:32px 0 12px; }
+  .muted { color:var(--muted); }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; }
+  .tile { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:12px 14px; }
+  .tile .v { font-size:22px; font-weight:600; } .tile .k { color:var(--muted); font-size:13px; }
+  table { width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+  th, td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; font-size:14px; }
+  th { font-weight:600; color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.03em; }
+  .scroll { overflow-x:auto; }
+  .tag { display:inline-block; padding:1px 7px; border-radius:10px; font-size:12px; border:1px solid currentColor; }
+  .identified { color:var(--ok); } .unidentified { color:var(--bad); } .needs_appraisal, .range, .unpriced { color:var(--warn); } .priced { color:var(--ok); }
+  .shelves { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:12px; }
+  .shelves img { width:100%; border-radius:6px; border:1px solid var(--line); }
+  .spine { max-height:60px; max-width:120px; border-radius:3px; }
+  a { color:inherit; }
+  ul.review li { margin-bottom:4px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Library contents claim</h1>
+  <div class="muted">Sweep {{ p.sweep.id }} · captured {{ p.sweep.captured_at.strftime("%Y-%m-%d %H:%M") }} UTC · priced in {{ p.sweep.country }} ({{ p.sweep.currency }})</div>
+
+  <h2>Totals</h2>
+  <div class="grid">
+    <div class="tile"><div class="v">{{ p.totals.book_count }}</div><div class="k">books counted</div></div>
+    <div class="tile"><div class="v">{{ p.totals.books_identified }}</div><div class="k">identified · {{ p.totals.books_unidentified }} unreadable</div></div>
+    <div class="tile"><div class="v">{{ p.totals.books_replacement_cost | money }}</div><div class="k">books, replacement cost</div></div>
+    <div class="tile"><div class="v">{{ p.totals.books_used_value | money }}</div><div class="k">books, used value</div></div>
+    <div class="tile"><div class="v">{{ p.totals.items_replacement_cost_low | money }} – {{ p.totals.items_replacement_cost_high | money }}</div><div class="k">items, replacement range</div></div>
+    <div class="tile"><div class="v">{{ p.totals.excluded_from_totals }}</div><div class="k">lines left out of totals (no price, or appraisal)</div></div>
+  </div>
+  <p class="muted">Totals are sums of the priced lines below, computed in code. Lines without a sourced price are left out and listed in the review queue.</p>
+
+  {% if shelves %}
+  <h2>Shelves</h2>
+  <div class="shelves">
+    {% for s in shelves %}<figure style="margin:0"><a href="{{ s.ref }}"><img src="{{ s.ref }}" alt="Shelf {{ s.name }} with numbered books"></a>
+      <figcaption class="muted">Shelf {{ s.name }} · {{ s.count }} books</figcaption></figure>{% endfor %}
+  </div>
+  {% endif %}
+
+  <h2>Books</h2>
+  <div class="scroll"><table>
+    <tr><th>#</th><th>Spine</th><th>Title / author</th><th>Status</th><th>Size (cm)</th><th>Replacement</th><th>Used</th><th>Evidence</th></tr>
+    {% for b in p.books %}
+    <tr>
+      <td>{{ b.id }}</td>
+      <td>{% if crops.get(b.id) %}<a href="{{ crops[b.id] }}"><img class="spine" src="{{ crops[b.id] }}" alt="spine of {{ b.id }}"></a>{% endif %}</td>
+      <td>{% if b.title %}<strong>{{ b.title }}</strong>{% else %}<span class="muted">not readable</span>{% endif %}
+          {% if b.author %}<br><span class="muted">{{ b.author }}</span>{% endif %}
+          {% if b.edition or b.isbn %}<br><span class="muted">{{ b.edition or "" }} {{ b.isbn or "" }}</span>{% endif %}</td>
+      <td><span class="tag {{ b.status }}">{{ b.status.replace("_", " ") }}</span>
+          {% if b.id_confidence is not none %}<br><span class="muted">id {{ "%.0f" % (b.id_confidence * 100) }}%</span>{% endif %}</td>
+      <td>{% if b.spine_height_cm %}{{ b.spine_height_cm }} × {{ b.spine_thickness_cm }}<br><span class="muted">{{ b.scale_method }}</span>{% else %}<span class="muted">–</span>{% endif %}</td>
+      <td>{{ b.replacement_cost.amount | money }}{% if b.replacement_cost.converted %} <span class="muted">(converted)</span>{% endif %}</td>
+      <td>{{ b.used_value.amount | money }}</td>
+      <td><a href="frames/{{ b.frame_ref }}">frame</a>
+          {% for q in b.replacement_cost.quotes + b.used_value.quotes %}<br><a href="{{ q.snapshot }}">{{ q.shop }} {{ q.listed }}</a> <a class="muted" href="{{ q.url }}">↗</a>{% endfor %}</td>
+    </tr>
+    {% endfor %}
+  </table></div>
+
+  <h2>Other items</h2>
+  <div class="scroll"><table>
+    <tr><th>#</th><th>Item</th><th>Status</th><th>Size (cm)</th><th>Replacement range</th><th>Evidence</th></tr>
+    {% for i in p.items %}
+    <tr>
+      <td>{{ i.id }}</td><td>{{ i.description or i.category }}</td>
+      <td><span class="tag {{ i.status }}">{{ i.status.replace("_", " ") }}</span></td>
+      <td>{% if i.dimensions_cm.w %}{{ i.dimensions_cm.w }} × {{ i.dimensions_cm.h }}{% else %}<span class="muted">–</span>{% endif %}</td>
+      <td>{{ i.replacement_cost.low | money }}{% if i.replacement_cost.low is not none %} – {{ i.replacement_cost.high | money }}{% endif %}</td>
+      <td><a href="frames/{{ i.frame_ref }}">frame</a>
+          {% for q in i.replacement_cost.quotes %}<br><a href="{{ q.snapshot }}">{{ q.shop }} {{ q.listed }}</a> <a class="muted" href="{{ q.url }}">↗</a>{% endfor %}</td>
+    </tr>
+    {% else %}<tr><td colspan="6" class="muted">No other items.</td></tr>{% endfor %}
+  </table></div>
+
+  <h2>Room</h2>
+  {% set r = p.room %}
+  {% if r.length_m or r.shelved_wall_area_m2 %}
+  <div class="grid">
+    {% if r.length_m %}<div class="tile"><div class="v">{{ r.length_m }} × {{ r.width_m }} m</div><div class="k">floor, {{ r.floor_area_m2 }} m²</div></div>{% endif %}
+    {% if r.wall_area_m2 %}<div class="tile"><div class="v">{{ r.wall_area_m2 }} m²</div><div class="k">wall area (gross)</div></div>{% endif %}
+    {% if r.shelved_wall_area_m2 %}<div class="tile"><div class="v">{{ r.shelved_wall_area_m2 }} m²</div><div class="k">shelved wall area</div></div>{% endif %}
+  </div>
+  {% else %}<p class="muted">The room could not be measured from this sweep; see the review queue.</p>{% endif %}
+
+  <h2>Review queue ({{ p.review_queue | length }})</h2>
+  <ul class="review">{% for e in p.review_queue %}<li><strong>{{ e.ref_id }}</strong>: {{ e.reason }}</li>{% endfor %}</ul>
+
+  {% if warnings %}<h2>Pipeline notes</h2><ul class="review muted">{% for w in warnings %}<li>{{ w }}</li>{% endfor %}</ul>{% endif %}
+</main>
+</body>
+</html>

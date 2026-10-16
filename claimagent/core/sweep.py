@@ -6,6 +6,8 @@
         stages/            one output file per stage, e.g. 3_detect.json
         debug/             images for a person to check a stage's work (overlays, contact sheets)
         evidence/          files the claim packet links to (annotated shelves, price page snapshots)
+        facts.json         things the user said during the sweep ("skip the top shelf", "that one is signed")
+        claim_packet.json  the final packet; report.html renders it; metrics.json has cost and latency
 
 Other modules ask SweepDir for paths instead of building them, so the layout can change in one place.
 """
@@ -89,6 +91,22 @@ class SweepDir:
     @property
     def manifest_path(self) -> Path:
         return self.root / "manifest.json"
+
+    @property
+    def facts_path(self) -> Path:
+        return self.root / "facts.json"
+
+    @property
+    def packet_path(self) -> Path:
+        return self.root / "claim_packet.json"
+
+    @property
+    def report_path(self) -> Path:
+        return self.root / "report.html"
+
+    @property
+    def metrics_path(self) -> Path:
+        return self.root / "metrics.json"
 
     def stage_file(self, order: int, name: str) -> Path:
         """Output file of a stage; the number prefix keeps the files in pipeline order."""

@@ -18,13 +18,30 @@ from pydantic import BaseModel, Field, model_validator
 from claimagent.domain.records import BBox
 
 
+class PriceEvidence(BaseModel):
+    """One shop listing a price was computed from."""
+
+    shop: str
+    url: str
+    amount: float               # in the packet's currency
+    listed: str                 # the price as listed, e.g. "6.49 USD"
+    converted: bool = False
+    available: bool = True      # False: sold out at that shop
+    retrieved_at: datetime
+    snapshot: str               # saved page, relative to the sweep folder
+
+
 class _Sourced(BaseModel):
-    """Where a price came from. Shared by book and item prices."""
+    """Where a price came from. Shared by book and item prices.
+
+    `url` and `snapshot` point at the listing nearest the reported amount; `quotes` lists every
+    listing the amount was computed from (a median or a range)."""
 
     source: str | None = None
     url: str | None = None
     retrieved_at: datetime | None = None
     snapshot: str | None = None  # path of the saved page, relative to the sweep folder
+    quotes: list[PriceEvidence] = Field(default_factory=list)
 
     def _require_source(self, has_amount: bool) -> None:
         if has_amount and not (self.source and self.url and self.retrieved_at):
@@ -138,7 +155,7 @@ class Totals(BaseModel):
     book_count: int
     books_identified: int
     books_unidentified: int
-    shelf_run_m: float
+    shelf_run_m: float | None       # None when no book's thickness could be measured
     books_replacement_cost: float
     books_used_value: float
     items_replacement_cost_low: float
@@ -170,7 +187,8 @@ def compute_totals(books: Sequence[Book], items: Sequence[Item]) -> Totals:
         book_count=len(books),
         books_identified=sum(b.status == "identified" for b in books),
         books_unidentified=sum(b.status == "unidentified" for b in books),
-        shelf_run_m=round(sum(b.spine_thickness_cm or 0.0 for b in books) / 100, 3),
+        shelf_run_m=(round(sum(b.spine_thickness_cm or 0.0 for b in books) / 100, 3)
+                     if any(b.spine_thickness_cm for b in books) else None),
         books_replacement_cost=round(sum(b.replacement_cost.amount for b in priced_books), 2),
         books_used_value=round(sum(b.used_value.amount or 0.0 for b in priced_books), 2),
         items_replacement_cost_low=round(sum(i.replacement_cost.low for i in priced_items), 2),
