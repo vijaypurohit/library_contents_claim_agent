@@ -32,6 +32,7 @@ class Secrets(BaseSettings):
     anthropic_api_key: str | None = Field(None, validation_alias="ANTHROPIC_API_KEY")
     groq_api_key: str | None = Field(None, validation_alias="GROQ_API_KEY")
     ollama_api_base: str | None = Field(None, validation_alias="OLLAMA_API_BASE")  # Ollama needs no key, only an address
+    google_books_api_key: str | None = Field(None, validation_alias="GOOGLE_BOOKS_API_KEY")  # optional; raises the quota
 
     def key_for(self, provider: str) -> str | None:
         """Return the key for a provider prefix ('gemini', 'openai', ...). Empty strings count as missing."""
@@ -82,6 +83,13 @@ class MarkerConfig(BaseModel):
     size_cm: float = 15.0            # printed side length of the black square
 
 
+class IdentifyConfig(BaseModel):
+    """How the identify stage reads spines and looks books up."""
+
+    batch_size: int = Field(5, ge=1, le=20)   # spine images sent to the model in one call
+    catalogues: list[str] = Field(default_factory=lambda: ["openlibrary", "googlebooks"])  # tried in this order
+
+
 class GatewayConfig(BaseModel):
     """How model calls are retried before moving on to the next provider."""
 
@@ -122,6 +130,7 @@ class Settings(BaseModel):
     keyframes: KeyframesConfig = Field(default_factory=KeyframesConfig)
     camera: CameraConfig = Field(default_factory=CameraConfig)
     marker: MarkerConfig = Field(default_factory=MarkerConfig)
+    identify: IdentifyConfig = Field(default_factory=IdentifyConfig)
     gateway: GatewayConfig = Field(default_factory=GatewayConfig)
     appraisal_threshold: float = 5000.0  # in the locale currency; anything above goes to a human appraiser
     models: ModelsConfig = Field(default_factory=ModelsConfig)

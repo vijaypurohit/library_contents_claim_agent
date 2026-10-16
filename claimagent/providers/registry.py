@@ -12,7 +12,7 @@ from __future__ import annotations
 from collections.abc import Callable, Sequence
 from typing import TYPE_CHECKING
 
-from claimagent.providers.base import ProviderError, ProviderUnavailable, T, VisionModel
+from claimagent.providers.base import Catalogue, ProviderError, ProviderUnavailable, T, VisionModel
 
 if TYPE_CHECKING:
     from claimagent.core.context import RunContext
@@ -90,3 +90,18 @@ def build_vision(ctx: RunContext, model_stage: str) -> FallbackVision:
         except ProviderUnavailable as exc:
             ctx.warn(f"{model_stage}: skipping {spec} ({exc})")
     return FallbackVision(models, ctx)
+
+
+def build_catalogues(ctx: RunContext) -> list[Catalogue]:
+    """The configured book catalogues, in order. Unknown names are skipped with a warning."""
+    from claimagent.providers.googlebooks import GoogleBooks
+    from claimagent.providers.openlibrary import OpenLibrary
+
+    known: dict[str, Callable[[RunContext], Catalogue]] = {"openlibrary": OpenLibrary, "googlebooks": GoogleBooks}
+    catalogues = []
+    for name in ctx.settings.identify.catalogues:
+        if name in known:
+            catalogues.append(known[name](ctx))
+        else:
+            ctx.warn(f"unknown catalogue {name!r}; known: {sorted(known)}")
+    return catalogues

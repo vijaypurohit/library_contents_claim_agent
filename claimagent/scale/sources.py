@@ -48,6 +48,30 @@ class ScaleEstimate(BaseModel):
     detail: str = ""                       # human-readable note on how it was obtained
 
 
+# Known-object sizes: long side, short side in cm, and how far the object's size can be trusted.
+# Power sockets and light switches are not listed: their plates differ between countries and makers.
+KNOWN_OBJECTS: dict[str, tuple[float, float | None, float]] = {
+    "a4_paper": (29.7, 21.0, 0.7),
+    "credit_card": (8.56, 5.4, 0.7),
+    "door": (205.0, None, 0.3),   # interior doors are roughly 200-210 cm tall; only the height is used
+}
+NOT_IN_PLANE = 0.7                # a reference object is rarely in exactly the same plane as the books
+
+
+def known_object_scale(reference_type: str, long_px: float, short_px: float) -> ScaleEstimate | None:
+    """Scale from a detected object of standard size; None for objects of unknown or variable size."""
+    if reference_type not in KNOWN_OBJECTS or long_px <= 0:
+        return None
+    long_cm, short_cm, trust = KNOWN_OBJECTS[reference_type]
+    ratios = [long_cm / long_px] + ([short_cm / short_px] if short_cm and short_px > 0 else [])
+    cm_per_px = sum(ratios) / len(ratios)
+    # Both sides agreeing means the object is seen nearly face-on; disagreeing means a slanted view.
+    if len(ratios) == 2 and abs(ratios[0] - ratios[1]) / cm_per_px > 0.15:
+        trust *= 0.6
+    return ScaleEstimate(method="known_object", cm_per_px=cm_per_px, confidence=round(trust * NOT_IN_PLANE, 3),
+                         detail=f"{reference_type.replace('_', ' ')} of standard size")
+
+
 class CardScale:
     """Finds the printed scale card (see `claim marker`) and measures its plane exactly.
 

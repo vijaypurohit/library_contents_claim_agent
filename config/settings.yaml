@@ -26,6 +26,10 @@ marker:               # printable scale card (`claim marker`)
   marker_id: 0
   size_cm: 15.0
 
+identify:
+  batch_size: 5                          # spine images per model call; small batches keep weak readers from mixing books up
+  catalogues: [openlibrary, googlebooks] # looked up in this order; Google Books uses GOOGLE_BOOKS_API_KEY if set
+
 gateway:
   cache_only: true    # development default: replay cached answers only. Pass --allow-calls to call models.
   retries: 2          # per provider, on rate limits and server errors

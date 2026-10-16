@@ -54,8 +54,9 @@ class ClaudeCLIVision(CachedVisionModel):
             ]
             start = time.perf_counter()
             try:
+                # The CLI reads each image file in its own turn, so a batch takes minutes, not seconds.
                 done = subprocess.run(command, capture_output=True, text=True,
-                                      timeout=self.ctx.settings.gateway.timeout_s * 3)
+                                      timeout=self.ctx.settings.gateway.timeout_s * (3 + len(paths)))
             except FileNotFoundError as exc:
                 raise ProviderUnavailable("the `claude` command is not installed") from exc
             except subprocess.TimeoutExpired as exc:

@@ -4,6 +4,7 @@ Each interface is deliberately small, so a local detector does not have to prete
 - VisionModel:    images + prompt -> structured JSON (Gemini, GPT, Claude, Qwen via Ollama, ...)
 - Detector:       image -> boxes for given labels (e.g. OWLv2, running locally)
 - DepthEstimator: image -> metric depth map (e.g. Depth Anything, running locally)
+- Catalogue:      title + author -> candidate book records (Open Library, Google Books)
 Concrete adapters live in this package and are created through registry.py.
 """
 
@@ -15,7 +16,7 @@ from typing import Protocol, TypeVar, runtime_checkable
 import numpy as np
 from pydantic import BaseModel
 
-from claimagent.domain.records import Detection
+from claimagent.domain.records import CatalogueRecord, Detection
 
 T = TypeVar("T", bound=BaseModel)  # the Pydantic model a caller expects back
 
@@ -26,6 +27,10 @@ class ProviderError(RuntimeError):
 
 class ProviderUnavailable(ProviderError):
     """The provider cannot be used at all: missing key, or retries exhausted."""
+
+
+class CatalogueError(RuntimeError):
+    """A catalogue lookup failed (network, quota). The stage carries on with the other catalogues."""
 
 
 @runtime_checkable
@@ -52,4 +57,18 @@ class DepthEstimator(Protocol):
 
     def depth_m(self, image: np.ndarray, hfov_deg: float) -> np.ndarray:
         """Per-pixel metric depth in metres for a BGR image."""
+        ...
+
+
+@runtime_checkable
+class Catalogue(Protocol):
+    name: str
+
+    def search(self, title: str, author: str | None) -> list[CatalogueRecord]:
+        """Candidate records for a title (and author, when known), best guesses first."""
+        ...
+
+    def editions(self, record: CatalogueRecord) -> list[CatalogueRecord]:
+        """Edition-level records of a search result: publisher, ISBN and printed height where known.
+        An edition-level record returns itself, completed with details."""
         ...

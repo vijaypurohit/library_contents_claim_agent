@@ -83,3 +83,19 @@ class ModelCall(BaseModel):
     output_tokens: int | None = None
     cost_usd: float | None = None  # None when the provider does not publish a price for the model
     error: str | None = None
+
+
+class CatalogueRecord(BaseModel):
+    """One book (a work or a specific edition) as a catalogue such as Open Library describes it."""
+
+    source: str                      # catalogue name, e.g. "openlibrary"
+    id: str                          # the catalogue's own id, e.g. "/works/OL1578299W"
+    url: str                         # page a person can open to check the record
+    title: str
+    subtitle: str | None = None
+    authors: list[str] = []
+    publisher: str | None = None     # edition records only
+    year: str | None = None
+    isbn: str | None = None          # edition records only
+    edition_level: bool = False      # True: one specific edition; False: a work with many editions
+    height_cm: float | None = None   # printed height of this edition, when the catalogue records it

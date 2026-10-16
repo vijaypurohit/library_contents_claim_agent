@@ -15,6 +15,7 @@ from claimagent.core.sweep import SweepDir
 from claimagent.domain.records import ModelCall
 
 if TYPE_CHECKING:
+    from claimagent.providers.base import Catalogue
     from claimagent.providers.registry import FallbackVision
 
 
@@ -54,3 +55,9 @@ class RunContext:
         from claimagent.providers.registry import build_vision  # imported here to avoid a circular import
 
         return build_vision(self, model_stage)
+
+    def catalogues(self) -> list[Catalogue]:
+        """The book catalogues to look titles up in, in the configured order."""
+        from claimagent.providers.registry import build_catalogues  # imported here to avoid a circular import
+
+        return build_catalogues(self)

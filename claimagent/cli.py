@@ -19,7 +19,7 @@ from claimagent.core.runner import Runner
 from claimagent.core.settings import Settings
 
 app = typer.Typer(no_args_is_help=True, add_completion=False, help="Library contents claim agent.")
-_state: dict = {"config": None, "allow_calls": False}  # set by the global options before any command runs
+_state: dict = {"config": None, "allow_calls": False, "profile": None}  # set by the global options before any command runs
 
 ConfigOpt = Annotated[Optional[Path], typer.Option("--config", help="Settings file (default: config/settings.yaml).")]
 SweepOpt = Annotated[str, typer.Option("--sweep", help="Sweep id.")]
@@ -28,16 +28,22 @@ SweepOpt = Annotated[str, typer.Option("--sweep", help="Sweep id.")]
 AllowCallsOpt = Annotated[bool, typer.Option("--allow-calls", help="Call model providers even if cache-only mode is on.")]
 
 
+ProfileOpt = Annotated[Optional[str], typer.Option("--profile", help="Model profile for this run, e.g. dev (default: settings).")]
+
+
 @app.callback()
-def main(config: ConfigOpt = None, allow_calls: AllowCallsOpt = False) -> None:
+def main(config: ConfigOpt = None, allow_calls: AllowCallsOpt = False, profile: ProfileOpt = None) -> None:
     _state["config"] = config
     _state["allow_calls"] = allow_calls
+    _state["profile"] = profile
 
 
 def _settings() -> Settings:
     settings = Settings.load(_state["config"])
     if _state["allow_calls"]:
         settings.gateway.cache_only = False
+    if _state["profile"]:
+        settings.models.profile = _state["profile"]
     return settings
 
 
