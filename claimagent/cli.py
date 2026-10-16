@@ -77,6 +77,32 @@ def run(
     _report(Runner(RunContext.open(_settings(), sweep)).run(from_stage))
 
 
+@app.command()
+def reprice(
+    sweep: SweepOpt,
+    country: Annotated[str, typer.Option("--country", help="ISO country code with a shop list in config/locales/.")],
+) -> None:
+    """Price an existing inventory for another country, without re-capturing.
+
+    Reruns price, room and packet with that country's shops and currency, and keeps a copy of the
+    result as claim_packet_<country>.json and report_<country>.html next to the main ones."""
+    import shutil
+
+    from claimagent.pricing.shop import LocaleShops
+
+    settings = _settings()
+    settings.locale.country = country.upper()
+    if not settings.locale.shops_file.exists():
+        raise typer.BadParameter(f"no shop list for {settings.locale.country} in config/locales/")
+    settings.locale.currency = LocaleShops.load(settings).currency
+    ctx = RunContext.open(settings, sweep)
+    _report(Runner(ctx).run(from_stage="price"))
+    for name, copy in ((ctx.sweep.packet_path, f"claim_packet_{settings.locale.country}.json"),
+                       (ctx.sweep.report_path, f"report_{settings.locale.country}.html")):
+        shutil.copy2(name, ctx.sweep.root / copy)
+    typer.echo(f"priced in {settings.locale.country} ({settings.locale.currency}): {ctx.sweep.root / f'claim_packet_{settings.locale.country}.json'}")
+
+
 @app.command("eval")
 def evaluate(
     sweeps: Annotated[list[str], typer.Option("--sweep", help="Sweep id; repeat for several.")],

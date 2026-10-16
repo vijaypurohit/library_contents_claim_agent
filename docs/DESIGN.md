@@ -195,7 +195,7 @@ Quality warnings from the recorder don't need a model. They are short fixed phra
 | `anthropic` | Claude, cascaded | Claude |
 | `groq` | Groq vision model, cascaded (Whisper on Groq for speech-to-text) | Groq vision model |
 | `local` | Qwen VL via Ollama, cascaded | OWLv2 + Qwen VL + Surya (one model loaded at a time) |
-| `dev` (development only) | Not supported: CLI startup is too slow for conversation | Claude Haiku through the local `claude -p` command, on the developer's own login |
+| `dev` (development only) | Cascaded only, several seconds per turn: for trying the flow | Claude Haiku through the local `claude -p` command, on the developer's own login |
 
 **Cache-only mode.** Every answer is cached. With cache-only mode on (the development default), no model is ever called: stages replay cached answers, and a missing answer fails clearly. This keeps development and tests free, and doubles as a replay mode for demos.
 
@@ -205,20 +205,21 @@ All hosted and Ollama model calls go through **LiteLLM**, which exposes Gemini, 
 
 ### 5.4 Price sources
 
-Every source is free and needs no API key. Shops are listed per country in config. Adding a country means adding its list.
+Every source is free and needs no API key. Shops are listed per country in config. Adding a country means adding its list, and adding a shop that uses one of the existing reading strategies is a config change only.
 
 | | India (INR) | US (USD) |
 |---|---|---|
-| **Books: new price** | Bookswagon, Sapna Online, Amazon.in | Amazon, Barnes & Noble |
-| **Books: used price** | Amazon.in used offers | ThriftBooks, AbeBooks |
-| **Non-book items** | DuckDuckGo search → product pages | DuckDuckGo search → product pages |
+| **Books: new price** | Oxford Bookstore, Flipkart | AbeBooks |
+| **Books: used price** | AbeBooks (USD, converted) | AbeBooks |
+| **Non-book items** | Flipkart search, using local words for categories (shelving → "almirah") | – |
 
-- Shop search pages are opened with Playwright. Prices are extracted from structured page data (schema.org `Offer`, meta tags) or a small parser per shop.
-- A result counts only when its title and author match the identified book.
-- Used value comes only from used listings and is capped at the replacement cost. A book with no used listing is left out of the used total.
+- Pages are fetched with plain HTTP. Prices are read only from structured page data: schema.org JSON-LD `Offer` records (search pages with full records, or product pages linked from a search page) and Shopify product JSON.
+- Shops that refuse automated requests are listed per country with the reason, skipped, and reported with each run. Checked when the shop lists were set up: Amazon.in and Amazon answer 503, ThriftBooks 406, Bookswagon refuses connections, Sapna Online renders prices only with JavaScript, Barnes & Noble's search is not reachable without a browser, and DuckDuckGo answers with a bot check. A headless-browser fetcher can be added behind the same fetch function for such shops.
+- A result counts only when its title and author match the identified book, and any class or part number on the spine appears in the listing. Without an author on one side, only an almost exact, specific title counts, and the book goes to review.
+- Prices in the country's currency are preferred; foreign prices are used only when none exist, and are marked as converted.
+- Used value comes only from used listings and is capped at the replacement cost. A book with no used listing, or no new price to cap against, is left out of the used total.
 - The appraisal threshold is set per country in its config file (for example ₹5,000 in India, $75 in the US).
-- A shop that blocks automated access is skipped and logged.
-- To stay inside the time-to-packet target, pages are fetched in parallel. Each book stops after the first two shops that return a match, and results are cached so reruns don't fetch again.
+- Each book stops after the first two shops that return a match; used-price sources are still searched. Results are cached so reruns don't fetch again.
 - Currency conversion uses Frankfurter (ECB rates).
 
 ## 6. Key design decisions
@@ -248,11 +249,11 @@ For each measured plane (a shelf unit or a wall), the system uses the highest ru
 | Area | Choice | Why |
 |---|---|---|
 | Server | Python 3.12, FastAPI, `uv` | Strong computer vision and model ecosystem; async WebSockets for live audio; fast, reproducible installs |
-| Frontend | React + TypeScript (Vite) | Live-updating inventory state, camera selection and settings in one app |
+| Frontend | Plain JavaScript modules served by FastAPI | One page (session, upload, settings) with no build step, so setup stays short and one origin serves both the API and the client through a tunnel |
 | Model gateway | LiteLLM | One API for Gemini, OpenAI, Anthropic, Groq and Ollama, so the provider is a setting |
 | Local models (optional) | Ollama (Qwen VL), OWLv2, Surya OCR, Depth Anything V2 | Used when a stage has no API key, and for offline, repeatable testing on recorded captures |
 | Vision and geometry | OpenCV | Blur and glare checks, marker detection, homography for de-duplication and measurement |
-| Web pricing | Playwright + DuckDuckGo search | Free, no API keys. Renders shop pages, extracts structured price data, saves snapshots |
+| Web pricing | httpx + schema.org JSON-LD / Shopify JSON | Free, no API keys. Reads structured price data from shop pages and saves snapshots; shops that need a browser are listed as blocked |
 | Book catalogues | Open Library, Google Books | Free, broad coverage |
 | Schemas | Pydantic v2 | Enforces the packet contract; model outputs have no price fields |
 

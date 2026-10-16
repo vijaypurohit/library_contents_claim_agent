@@ -4,7 +4,9 @@ An adapter (LiteLLM, Claude CLI, ...) only implements `_complete`: send a prompt
 return the raw text answer. This base class adds:
 - the JSON-schema instruction appended to every prompt
 - the cache: an identical request is answered from disk, for free
-- cache-only mode: never call a model, replay cached answers only (development and tests)
+- cache-only mode: never call a model, replay cached answers only (development and tests). If this
+  provider has no answer, an answer another provider gave to the identical prompt and images is
+  replayed instead (and recorded under that provider), so a replay works whatever the profile
 - checking that the answer matches the schema, asking again if it does not
 - recording every call for the stage's cost and latency report
 """
@@ -54,11 +56,18 @@ class CachedVisionModel(ABC):
         full_prompt = prompt + schema_instruction(schema)
         cache_key = self.ctx.cache.key(self.name, full_prompt, *images)
 
+        any_key = self.ctx.cache.key(full_prompt, *images)   # the same request, whichever provider answered
         cached = self.ctx.cache.get("llm", cache_key)
         if cached is not None:
             self.record(0.0, cached=True)
+            self._remember_for_any(any_key, cached)
             return parse_answer(cached, schema)
         if self.ctx.settings.gateway.cache_only:
+            other = self.ctx.cache.get("llm-any", any_key)
+            if other is not None:
+                entry = json.loads(other)
+                self.record(0.0, cached=True, provider=entry["provider"])
+                return parse_answer(entry["text"], schema)
             raise ProviderUnavailable("no cached answer and cache-only mode is on (use --allow-calls to call models)")
 
         last_error = ""
@@ -71,13 +80,20 @@ class CachedVisionModel(ABC):
                 self.record(0.0, ok=False, error=last_error)
                 continue
             self.ctx.cache.set("llm", cache_key, text)  # only valid answers are cached
+            self._remember_for_any(any_key, text)
             return result
         raise ProviderUnavailable(last_error)
 
+    def _remember_for_any(self, any_key: str, text: str) -> None:
+        """Index an answer by the request alone, for provider-independent replay."""
+        if self.ctx.cache.get("llm-any", any_key) is None:
+            self.ctx.cache.set("llm-any", any_key, json.dumps({"provider": self.name, "text": text}))
+
     def record(self, latency: float, *, cached: bool = False, ok: bool = True, error: str | None = None,
-               input_tokens: int | None = None, output_tokens: int | None = None, cost: float | None = None) -> None:
+               input_tokens: int | None = None, output_tokens: int | None = None, cost: float | None = None,
+               provider: str | None = None) -> None:
         self.ctx.record_call(ModelCall(
-            stage=self.ctx.stage, provider=self.name, latency_s=round(latency, 3), cached=cached, ok=ok,
+            stage=self.ctx.stage, provider=provider or self.name, latency_s=round(latency, 3), cached=cached, ok=ok,
             input_tokens=input_tokens, output_tokens=output_tokens, cost_usd=cost, error=error,
         ))
 
