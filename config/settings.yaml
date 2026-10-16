@@ -30,6 +30,17 @@ identify:
   batch_size: 5                          # spine images per model call; small batches keep weak readers from mixing books up
   catalogues: [openlibrary, googlebooks] # looked up in this order; Google Books uses GOOGLE_BOOKS_API_KEY if set
 
+live:
+  voice: gemini              # gemini (Gemini Live audio) or cascaded (browser speech + the 'live' vision models)
+  gemini_model: gemini-3.8-live
+  voice_name: Kore
+  frame_fps: 4               # evidence frames recorded per second (same as ingest, so thresholds carry over)
+  model_fps: 1               # frames per second the voice model sees
+  glare_max: 0.06            # share of blown-out pixels that counts as glare
+  motion_max: 0.11           # frame-to-frame change at 4 fps: the slow test sweep peaks at 0.10, the rushed one runs ~0.12
+  warn_every_s: 6            # a warning repeats at most this often
+  provisional_every_s: 20    # live spine count every N seconds (one detect call each); 0 = off
+
 gateway:
   cache_only: true    # development default: replay cached answers only. Pass --allow-calls to call models.
   retries: 2          # per provider, on rate limits and server errors
@@ -48,27 +59,33 @@ models:
       detect: [gemini/gemini-3.5-flash, gemini/gemini-3.8-flash, gemini/gemini-3.5-flash-lite]
       read: [gemini/gemini-3.5-flash, gemini/gemini-3.8-flash, gemini/gemini-3.5-flash-lite]
       classify: [gemini/gemini-3.5-flash, gemini/gemini-3.8-flash, gemini/gemini-3.5-flash-lite]
+      converse: [gemini/gemini-3.5-flash-lite, gemini/gemini-3.8-flash]   # cascaded live voice: fast models
     openai:
       live: [openai/gpt-realtime]
       detect: [openai/gpt-5-mini]
       read: [openai/gpt-5-mini]
       classify: [openai/gpt-5-mini]
+      converse: [openai/gpt-5-mini]
     anthropic:
       live: [anthropic/claude-sonnet-5-5]
       detect: [anthropic/claude-sonnet-5-5]
       read: [anthropic/claude-sonnet-5-5]
       classify: [anthropic/claude-sonnet-5-5]
+      converse: [anthropic/claude-haiku-5-5]
     groq:
       live: [groq/meta-llama/llama-4-scout-17b-16e-instruct]
       detect: [groq/meta-llama/llama-4-scout-17b-16e-instruct]
       read: [groq/meta-llama/llama-4-scout-17b-16e-instruct]
       classify: [groq/meta-llama/llama-4-scout-17b-16e-instruct]
+      converse: [groq/meta-llama/llama-4-scout-17b-16e-instruct]
     dev:                # occasional real answers through the local `claude` CLI login (no API key needed)
       detect: [claude-cli/haiku]
       read: [claude-cli/haiku]
       classify: [claude-cli/haiku]
+      converse: [claude-cli/haiku]   # slow (several seconds a turn); for trying the flow only
     local:
       live: [ollama/qwen2.5vl:7b]
       detect: [ollama/qwen2.5vl:7b]
       read: [ollama/qwen2.5vl:7b]
       classify: [ollama/qwen2.5vl:7b]
+      converse: [ollama/qwen2.5vl:7b]

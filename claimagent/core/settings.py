@@ -90,6 +90,23 @@ class IdentifyConfig(BaseModel):
     catalogues: list[str] = Field(default_factory=lambda: ["openlibrary", "googlebooks"])  # tried in this order
 
 
+class LiveConfig(BaseModel):
+    """The live sweep: what the browser sends, when the agent is warned, and the provisional count."""
+
+    voice: str = "gemini"                 # "gemini" (Gemini Live audio) or "cascaded" (browser speech + any vision model)
+    gemini_model: str = "gemini-3.8-live"
+    voice_name: str = "Kore"
+    frame_fps: float = Field(4.0, gt=0, le=5)        # evidence frames recorded; 4 matches ingest, so thresholds carry over
+    model_fps: float = Field(1.0, gt=0, le=5)        # of those, frames forwarded to the voice model
+    model_frame_side: int = 768                      # forwarded frames are shrunk to this long side
+    blurry_ratio: float = Field(0.5, gt=0, lt=1)     # sharpness below this share of the recent median is blurry
+    glare_max: float = Field(0.06, gt=0, lt=1)       # share of blown-out pixels above which glare is reported
+    motion_max: float = Field(0.11, gt=0, lt=1)      # change between frames 1/4 s apart: slow pan <= 0.10, rushed ~0.12
+    warn_every_s: float = Field(6.0, ge=1)           # the same warning is repeated at most this often
+    provisional_every_s: float = Field(20.0, ge=0)   # live spine count from one frame; 0 turns it off
+    max_minutes: float = Field(20.0, gt=0)
+
+
 class GatewayConfig(BaseModel):
     """How model calls are retried before moving on to the next provider."""
 
@@ -131,6 +148,7 @@ class Settings(BaseModel):
     camera: CameraConfig = Field(default_factory=CameraConfig)
     marker: MarkerConfig = Field(default_factory=MarkerConfig)
     identify: IdentifyConfig = Field(default_factory=IdentifyConfig)
+    live: LiveConfig = Field(default_factory=LiveConfig)
     gateway: GatewayConfig = Field(default_factory=GatewayConfig)
     appraisal_threshold: float = 5000.0  # in the locale currency; anything above goes to a human appraiser
     models: ModelsConfig = Field(default_factory=ModelsConfig)

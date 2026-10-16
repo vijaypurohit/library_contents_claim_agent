@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Library Claim Agent</title>
+<style>
+  :root { --ink:#1d2433; --muted:#5f6b7a; --line:#dfe3ea; --bg:#f7f8fa; --card:#fff; --accent:#2f5bd3; --warn:#a15c00; --warnbg:#fff4e0; --ok:#1f7a4d; }
+  @media (prefers-color-scheme: dark) { :root { --ink:#e6e9ef; --muted:#9aa4b2; --line:#2c3340; --bg:#12161d; --card:#1a1f28; --accent:#7ea0ff; --warn:#f0b35a; --warnbg:#3a2a10; --ok:#5fd39a; } }
+  * { box-sizing:border-box; }
+  body { margin:0; font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif; color:var(--ink); background:var(--bg); }
+  header { display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:10px 16px; border-bottom:1px solid var(--line); background:var(--card); position:sticky; top:0; z-index:2; }
+  header h1 { font-size:16px; margin:0 12px 0 0; }
+  nav button { background:none; border:none; color:var(--muted); font:inherit; padding:6px 10px; border-radius:6px; cursor:pointer; }
+  nav button.active { color:var(--ink); background:var(--bg); font-weight:600; }
+  .chip { margin-left:auto; font-size:13px; padding:3px 10px; border-radius:12px; border:1px solid var(--line); color:var(--muted); }
+  main { max-width:1100px; margin:0 auto; padding:16px; }
+  section[hidden] { display:none; }
+  .controls { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; align-items:center; }
+  select, input[type=text], button.primary, button.secondary { font:inherit; padding:7px 10px; border-radius:6px; border:1px solid var(--line); background:var(--card); color:var(--ink); }
+  button.primary { background:var(--accent); color:#fff; border-color:var(--accent); cursor:pointer; }
+  button.secondary { cursor:pointer; }
+  button:disabled { opacity:.5; cursor:default; }
+  .grid { display:grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap:14px; }
+  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:12px; }
+  video { width:100%; max-height:60vh; background:#000; border-radius:6px; }
+  #warning { display:none; margin-top:8px; padding:8px 10px; border-radius:6px; background:var(--warnbg); color:var(--warn); font-weight:600; }
+  #count { font-size:28px; font-weight:600; }
+  #transcript { height:42vh; overflow-y:auto; display:flex; flex-direction:column; gap:6px; }
+  .turn { padding:6px 9px; border-radius:8px; max-width:92%; }
+  .turn.user { align-self:flex-end; background:var(--bg); }
+  .turn.agent { align-self:flex-start; border:1px solid var(--line); }
+  .turn.tool { align-self:center; color:var(--muted); font-size:13px; }
+  .muted { color:var(--muted); font-size:13px; }
+  .row { display:flex; gap:8px; margin-top:8px; }
+  .row input { flex:1; min-width:0; }
+  a { color:var(--accent); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Library Claim Agent</h1>
+  <nav>
+    <button data-tab="session" class="active">Session</button>
+    <button data-tab="upload">Upload</button>
+    <button data-tab="settings">Settings</button>
+  </nav>
+  <span class="chip" id="status">idle</span>
+</header>
+<main>
+  <section id="tab-session">
+    <div class="controls">
+      <label>Source <select id="source"></select></label>
+      <input type="file" id="replay-file" accept="video/*" hidden>
+      <label>Voice <select id="voice"><option value="gemini">Gemini Live</option><option value="cascaded">Cascaded (browser speech)</option></select></label>
+      <button class="primary" id="start">Start sweep</button>
+      <button class="secondary" id="end" disabled>End sweep</button>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <video id="preview" playsinline muted></video>
+        <div id="warning" role="alert"></div>
+        <p class="muted">Start at the top shelf, pan slowly left to right, close enough to read the spines. Use headphones so the agent does not hear itself.</p>
+      </div>
+      <div class="card">
+        <div class="muted">Books in view (provisional)</div>
+        <div id="count">–</div>
+        <div class="muted" id="items"></div>
+        <hr style="border:none;border-top:1px solid var(--line)">
+        <div id="transcript" aria-live="polite"></div>
+        <div class="row"><input type="text" id="text" placeholder="Type to the agent…"><button class="secondary" id="send">Send</button></div>
+        <p id="result" class="muted"></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="tab-upload" hidden>
+    <div class="card">
+      <p>Upload a recorded sweep (video or photos). It is processed in the background; the report opens when ready.</p>
+      <div class="controls"><input type="file" id="upload-files" multiple accept="video/*,image/*"><button class="primary" id="upload">Upload</button></div>
+      <p id="upload-status" class="muted"></p>
+    </div>
+  </section>
+
+  <section id="tab-settings" hidden>
+    <div class="card">
+      <div class="controls">
+        <label>Country <select id="country"><option value="IN">India (INR)</option><option value="US">United States (USD)</option></select></label>
+        <label>Model profile <select id="profile"></select></label>
+        <button class="primary" id="save">Save</button>
+      </div>
+      <p id="config" class="muted"></p>
+    </div>
+  </section>
+</main>
+<script type="module" src="/web/app.js"></script>
+</body>
+</html>

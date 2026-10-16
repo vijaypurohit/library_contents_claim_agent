@@ -105,6 +105,69 @@ def evaluate(
 
 
 @app.command()
+def serve(
+    host: Annotated[str, typer.Option(help="Address to listen on.")] = "127.0.0.1",
+    port: Annotated[int, typer.Option(help="Port.")] = 8000,
+    tunnel: Annotated[bool, typer.Option("--tunnel", help="Also open a public HTTPS link (cloudflared) protected by an access token.")] = False,
+) -> None:
+    """Run the live agent and web client. Use `claim --allow-calls serve` for real sessions."""
+    import re
+    import subprocess
+    import threading
+
+    import uvicorn
+
+    from claimagent.api.app import create_app, new_token
+
+    settings = _settings()
+    token = new_token() if tunnel else None
+    if settings.gateway.cache_only:
+        typer.echo("note: cache-only mode is on, so new sweeps can't call models; start with `claim --allow-calls serve`")
+    typer.echo(f"local: http://{host}:{port}/" + (f"?token={token}" if token else ""))
+    if tunnel:
+        # cloudflared prints the public https://<name>.trycloudflare.com address on stderr.
+        process = subprocess.Popen(["cloudflared", "tunnel", "--url", f"http://localhost:{port}"],
+                                   stderr=subprocess.PIPE, text=True)
+
+        def announce():
+            for line in process.stderr:  # type: ignore[union-attr]
+                match = re.search(r"https://[a-z0-9-]+\.trycloudflare\.com", line)
+                if match:
+                    typer.echo(f"phone: {match.group(0)}/?token={token}")
+                    return
+
+        threading.Thread(target=announce, daemon=True).start()
+    try:
+        uvicorn.run(create_app(settings, token), host=host, port=port, log_level="warning")
+    finally:
+        if tunnel:
+            process.terminate()
+
+
+@app.command()
+def replay(
+    sources: Annotated[list[Path], typer.Argument(help="Recorded video and/or photos.")],
+    sweep_id: Annotated[str, typer.Option("--id", help="Sweep id; outputs go to replays/<id>/<time>/.")],
+) -> None:
+    """Ingest a recording, run every stage, and keep a copy of all outputs for comparing runs."""
+    import shutil
+    from datetime import datetime
+
+    from claimagent.core.settings import PROJECT_ROOT
+    from claimagent.ingest import ingest as run_ingest
+
+    settings = _settings()
+    sweep = run_ingest(sources, settings, sweep_id, replace=True)
+    _report(Runner(RunContext.open(settings, sweep.id)).run())
+    out = PROJECT_ROOT / "replays" / sweep.id / datetime.now().strftime("%Y%m%d-%H%M%S")
+    shutil.copytree(sweep.stages_dir, out / "stages")
+    for name in ("claim_packet.json", "report.html", "metrics.json"):
+        if (sweep.root / name).exists():
+            shutil.copy2(sweep.root / name, out / name)
+    typer.echo(f"replay outputs: {out}  (diff two runs with `diff -r`)")
+
+
+@app.command()
 def marker(out: Annotated[Path, typer.Option("--out", help="PDF to write.")] = Path("marker.pdf")) -> None:
     """Write a printable A4 scale card."""
     from claimagent.scale.marker import save_marker_pdf

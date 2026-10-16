@@ -5,6 +5,8 @@ description = "Live voice-and-vision agent that inventories, measures and prices
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
+    "fastapi>=0.143.2",
+    "google-genai>=2.31.0",
     "httpx>=0.28.1",
     "imagehash>=4.3",
     "litellm>=1.50",
@@ -14,9 +16,11 @@ dependencies = [
     "pillow-heif>=0.18",
     "pydantic>=2.7",
     "pydantic-settings>=2.3",
+    "python-multipart>=0.0.32",
     "pyyaml>=6.0",
     "rapidfuzz>=3.14.6",
     "typer>=0.12",
+    "uvicorn[standard]>=0.54.0",
 ]
 
 [project.scripts]

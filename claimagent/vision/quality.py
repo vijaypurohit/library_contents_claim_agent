@@ -22,3 +22,17 @@ def sharpness(image: np.ndarray) -> float:
     """
     gray = cv2.cvtColor(resize_max(image, ANALYSIS_SIDE), cv2.COLOR_BGR2GRAY)
     return float(cv2.Laplacian(gray, cv2.CV_64F).var())
+
+
+def glare(image: np.ndarray, level: int = 245) -> float:
+    """Share of pixels that are blown out (almost white): reflections on glossy covers or glass."""
+    gray = cv2.cvtColor(resize_max(image, ANALYSIS_SIDE), cv2.COLOR_BGR2GRAY)
+    return float((gray >= level).mean())
+
+
+def motion(previous: np.ndarray, current: np.ndarray) -> float:
+    """How much the view changed between two frames, 0 (still) to 1: the mean absolute difference
+    of small grey copies. A fast pan scores high and blurs spines."""
+    a = cv2.cvtColor(cv2.resize(previous, (160, 120)), cv2.COLOR_BGR2GRAY).astype(np.float32)
+    b = cv2.cvtColor(cv2.resize(current, (160, 120)), cv2.COLOR_BGR2GRAY).astype(np.float32)
+    return float(np.abs(a - b).mean() / 255.0)
