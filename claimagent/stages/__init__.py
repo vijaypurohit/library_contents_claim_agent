@@ -1,3 +1,3 @@
 """Pipeline stages. Importing this package registers every stage with the runner."""
 
-from claimagent.stages import detect, keyframes  # noqa: F401
+from claimagent.stages import detect, inventory, keyframes, scale  # noqa: F401

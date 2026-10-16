@@ -67,10 +67,73 @@ def frames_overlap(a: np.ndarray, b: np.ndarray) -> float:
     return 0.0 if homography is None else overlap_fraction(homography, a.shape, b.shape)
 
 
-def iou(a: BBox, b: BBox) -> float:
-    """Intersection over union of two boxes: 1 for identical boxes, 0 for disjoint ones."""
+def map_points(homography: np.ndarray, points: np.ndarray) -> np.ndarray:
+    """Apply a homography to an (N, 2) array of points; returns an (N, 2) array."""
+    pts = np.asarray(points, dtype=np.float64).reshape(-1, 1, 2)
+    return cv2.perspectiveTransform(pts, np.asarray(homography, dtype=np.float64)).reshape(-1, 2)
+
+
+def polygon_area(points: np.ndarray) -> float:
+    """Area of a simple polygon given as (N, 2) vertices in order (shoelace formula)."""
+    x, y = np.asarray(points, dtype=np.float64).T
+    return 0.5 * abs(float(np.dot(x, np.roll(y, -1)) - np.dot(y, np.roll(x, -1))))
+
+
+def local_scale(image_to_plane: np.ndarray, quad_px: np.ndarray) -> float:
+    """Plane units per image pixel over a region of the image, e.g. centimetres per pixel.
+
+    Under perspective the scale changes across the frame, so it is only meaningful for a region.
+    It is the square root of (region area on the plane / region area in the image).
+    """
+    area_px = polygon_area(quad_px)
+    if area_px <= 0:
+        raise ValueError("region has no area")
+    return (polygon_area(map_points(image_to_plane, quad_px)) / area_px) ** 0.5
+
+
+def plane_distance(image_to_plane: np.ndarray, p: tuple[float, float], q: tuple[float, float]) -> float:
+    """Distance on the plane (e.g. in cm) between two image points that lie on that plane."""
+    a, b = map_points(image_to_plane, np.array([p, q]))
+    return float(np.linalg.norm(a - b))
+
+
+def map_box(homography: np.ndarray, box: BBox) -> BBox:
+    """Box around `box` after mapping its four corners with a homography (e.g. into another frame)."""
+    corners = np.array([[box.x0, box.y0], [box.x1, box.y0], [box.x1, box.y1], [box.x0, box.y1]])
+    mapped = map_points(homography, corners)
+    return BBox(x0=float(mapped[:, 0].min()), y0=float(mapped[:, 1].min()),
+                x1=float(mapped[:, 0].max()), y1=float(mapped[:, 1].max()))
+
+
+def _intersection(a: BBox, b: BBox) -> float:
     ix = max(0.0, min(a.x1, b.x1) - max(a.x0, b.x0))
     iy = max(0.0, min(a.y1, b.y1) - max(a.y0, b.y0))
-    inter = ix * iy
+    return ix * iy
+
+
+def iou(a: BBox, b: BBox) -> float:
+    """Intersection over union of two boxes: 1 for identical boxes, 0 for disjoint ones."""
+    inter = _intersection(a, b)
     union = a.area + b.area - inter
     return inter / union if union > 0 else 0.0
+
+
+def containment(a: BBox, b: BBox) -> float:
+    """Share of the smaller box that lies inside the other: 1 when one box is inside the other.
+
+    Catches a partial detection (e.g. half a spine at the frame edge) that IoU scores low.
+    """
+    smaller = min(a.area, b.area)
+    return _intersection(a, b) / smaller if smaller > 0 else 0.0
+
+
+def intersect(a: BBox, b: BBox) -> BBox | None:
+    """The overlapping part of two boxes, or None if they don't overlap."""
+    box = BBox(x0=max(a.x0, b.x0), y0=max(a.y0, b.y0), x1=min(a.x1, b.x1), y1=min(a.y1, b.y1))
+    return box if box.width > 0 and box.height > 0 else None
+
+
+def outside_share(box: BBox, width: float, height: float) -> float:
+    """Share of a box's area that falls outside a width x height frame."""
+    inside = _intersection(box, BBox(x0=0, y0=0, x1=width, y1=height))
+    return 1 - inside / box.area if box.area > 0 else 1.0
