@@ -76,8 +76,9 @@ def title_score(read: str | None, candidate: str | None) -> float:
 
 def author_score(read: str | None, candidates: Sequence[str]) -> float | None:
     """Best similarity between any author read from the spine and any catalogue author; None if either side is empty."""
-    read_names = [normalise_name(n) for n in re.split(r",|;|\band\b|&", read or "") if n.strip()]
-    candidate_names = [normalise_name(c) for c in candidates if c and c.strip()]
+    # Names that are only punctuation normalise to "" and are dropped.
+    read_names = [n for n in (normalise_name(n) for n in re.split(r",|;|\band\b|&", read or "")) if n]
+    candidate_names = [n for n in (normalise_name(c) for c in candidates) if n]
     if not read_names or not candidate_names:
         return None
     best = 0.0

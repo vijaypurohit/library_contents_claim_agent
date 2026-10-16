@@ -1,5 +1,22 @@
 country: US
 currency: USD
 appraisal_threshold: 75     # any single item above this (USD) goes to a human appraiser, unpriced
-# Shop definitions are added with the price stage.
-shops: []
+
+shops:
+  - name: abebooks
+    kinds: [book]
+    strategy: jsonld             # search results carry full records with new and used offers
+    search_url: "https://www.abebooks.com/servlet/SearchResults?kn={query}"
+    used_source: true
+
+# Checked 2026-10-16: these refuse plain page requests, so they are not searched.
+blocked:
+  amazon.com: "HTTP 503 to automated requests"
+  thriftbooks.com: "HTTP 406 to automated requests"
+  barnesandnoble.com: "search pages not reachable without a browser"
+
+item_terms:
+  shelving: bookcase
+  furniture: furniture
+  lighting: lamp
+  rug: rug

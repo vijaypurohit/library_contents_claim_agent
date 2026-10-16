@@ -1,5 +1,37 @@
 country: IN
 currency: INR
 appraisal_threshold: 5000   # any single item above this (INR) goes to a human appraiser, unpriced
-# Shop definitions are added with the price stage.
-shops: []
+
+# Shops are searched in this order. A book stops after two shops give a matching new price;
+# shops marked used_source are still searched for used copies.
+shops:
+  - name: oxfordbookstore
+    kinds: [book]
+    strategy: shopify
+    search_url: "https://oxfordbookstore.com/search/suggest.json?q={query}&resources%5Btype%5D=product&resources%5Blimit%5D=8"
+    base_url: "https://oxfordbookstore.com"
+    currency: INR
+    follow: 3
+  - name: flipkart
+    kinds: [book, item]
+    strategy: jsonld
+    search_url: "https://www.flipkart.com/search?q={query}"
+    follow: 3
+  - name: abebooks
+    kinds: [book]
+    strategy: jsonld             # search results carry full records with new and used offers, in USD
+    search_url: "https://www.abebooks.com/servlet/SearchResults?kn={query}"
+    used_source: true
+
+# Checked 2026-10-16: these refuse plain page requests, so they are not searched.
+blocked:
+  amazon.in: "HTTP 503 to automated requests"
+  bookswagon.com: "connection refused"
+  sapnaonline.com: "prices are rendered by JavaScript, not in the page"
+
+# Words shops use for detected item categories.
+item_terms:
+  shelving: almirah
+  furniture: furniture
+  lighting: lamp
+  rug: rug
