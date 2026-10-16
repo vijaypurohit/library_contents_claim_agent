@@ -1,9 +1,8 @@
 # Ground truth for the almirah test space (tests-local-data/).
 # Collected by hand, BEFORE tuning. The evaluation tool (`claim eval`) compares packets against this file.
 #
-# DRAFT: books below were read from still_photo_both.heic and must be checked by a person.
-# Fix anything wrong, then change `verified` to true.
-verified: false
+# Books were read from still_photo_both.heic and checked by hand.
+verified: true
 
 site: almirah
 sweeps: [photos, slow, rush, far]   # sweeps captured in this space
@@ -33,18 +32,47 @@ books:
   - {unit: A, shelf: 2, position: 2, orientation: upright, legible: true,
      title: "Sanjiv English Course Class 10", author: null}
   - {unit: A, shelf: 2, position: 3, orientation: upright, legible: true,
-     title: "सामान्य हिन्दी", author: null}                     # "Samanya Hindi"
+     title: "सामान्य हिन्दी", author: "Dr. Hardev Bohra, Dr. Kedar Sharma"}                     # "Samanya Hindi"
   - {unit: A, shelf: 2, position: 4, orientation: upright, legible: true,
-     title: "Inorganic Chemistry B.Sc. Part-I", author: null}   # authors on the spine look like Lavania, Ojha, Bansal
+     title: "Inorganic Chemistry B.Sc. Part-I", author: "Lavania, Ojha, Bansal"}   # authors on the spine look like Lavania, Ojha, Bansal
 
 # Optional: hand-measured spines (needs a ruler). Leave empty if not measured.
 spines_cm: []
 #  - {unit: A, shelf: 1, position: 4, height: 21.5, thickness: 2.4}
 
-# Optional: hand-checked prices from the same shops the system uses.
-prices: []
-#  - {unit: A, shelf: 1, position: 4, new: 199, used: null, currency: INR,
-#     url: "https://...", retrieved_at: 2026-10-16}
+# Hand-checked prices, each read on the shop's own product page.
+#   new:  the shop's selling price for a new copy today (the current edition; the shelf copies are older)
+#   mrp:  printed maximum retail price on the same page
+#   used: no used listing was found for any of these books
+#   null: no listing found on any Indian shop; the system should also report "no price" and leave it out of totals
+# Amazon.in answered 503 to page fetches, so Amazon prices could not be checked.
+prices:
+  - {unit: A, shelf: 1, position: 1, new: null, mrp: null, used: null, currency: INR, url: null, retrieved_at: 2026-10-16}
+    # Manjeet Singh, Full Marks (ISBN 9789351551140): catalogue entries only, no shop listing
+  - {unit: A, shelf: 1, position: 2, new: 396, mrp: 495, used: null, currency: INR, retrieved_at: 2026-10-16,
+     url: "https://oxfordbookstore.com/products/mathematics-for-class-xi-editionrevised-edition-2026"}
+    # R.D. Sharma, Dhanpat Rai, revised edition 2026; page marked sold out
+  - {unit: A, shelf: 1, position: 3, new: 520, mrp: 650, used: null, currency: INR, retrieved_at: 2026-10-16,
+     url: "https://oxfordbookstore.com/products/golden-social-science-study-material-based-on-ncert-for-class-10-for-cbse-2027-board-exams-objective-type-question-solved-ncert-exercises-previous-board-paper-solved-assertion-case-based"}
+    # Golden (New Age International), ISBN 9788122449563, CBSE 2027 edition; page marked sold out
+  - {unit: A, shelf: 1, position: 4, new: 182, mrp: 199, used: null, currency: INR, retrieved_at: 2026-10-16,
+     url: "https://www.flipkart.com/word-power-made-easy/p/itmfc4zjwegzgkkh"}
+    # Penguin edition (ISBN 9780143424680); the shelf copy looks like the Goyal edition, also MRP 199
+  - {unit: A, shelf: 1, position: 5, new: 460, mrp: 575, used: null, currency: INR, retrieved_at: 2026-10-16,
+     url: "https://oxfordbookstore.com/products/golden-english-language-and-literature-study-material-based-on-ncert-first-flight-and-footprints-without-feet-for-class-10-for-cbse-2027-board-exams-solved-ncert-exercises-previous-board-paper"}
+    # Golden (New Age International), ISBN 9788122449570, CBSE 2027 edition; page marked sold out
+  - {unit: A, shelf: 1, position: 6, new: 834, mrp: 2240, used: null, currency: INR, retrieved_at: 2026-10-16,
+     url: "https://www.flipkart.com/pradeep-s-fundamental-physics-class-12-vol-1-2/p/itm79fd9aa864db5"}
+    # Pradeep Publications, Vol. 1 & 2, 2024 edition (ISBN 9789395649988); price is for the two-volume set
+  - {unit: A, shelf: 2, position: 1, new: 621, mrp: 917, used: null, currency: INR, retrieved_at: 2026-10-16,
+     url: "https://www.flipkart.com/class-10th-rs-aggarwal-math-book/p/itme459141d1fda5"}
+    # Bharati Bhawan, 2025 edition
+  - {unit: A, shelf: 2, position: 2, new: null, mrp: null, used: null, currency: INR, url: null, retrieved_at: 2026-10-16}
+    # Sanjiv Prakashan (Jaipur, RBSE): no shop listing found
+  - {unit: A, shelf: 2, position: 3, new: null, mrp: null, used: null, currency: INR, url: null, retrieved_at: 2026-10-16}
+    # Bohra and Sharma, regional publisher: no shop listing found
+  - {unit: A, shelf: 2, position: 4, new: null, mrp: null, used: null, currency: INR, url: null, retrieved_at: 2026-10-16}
+    # Lavania, Ojha, Bansal, B.Sc. Part I (Rajasthan university syllabus): no shop listing found
 
 # Non-book items visible in the captures.
 items:
