@@ -1,6 +1,6 @@
 # Evaluation: sweep `slow`
 
-Commit `32de3b9+changes` · 2026-10-16 12:34 UTC · ground truth verified
+Commit `4dd517e` · 2026-10-16 13:06 UTC · ground truth verified
 
 | Measure | Result | Target | |
 |---|---|---|---|
