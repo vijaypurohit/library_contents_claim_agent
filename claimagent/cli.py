@@ -168,6 +168,24 @@ def replay(
 
 
 @app.command()
+def export(
+    sweep: SweepOpt,
+    out: Annotated[Optional[Path], typer.Option("--out", help="Folder (default: release/<sweep>).")] = None,
+) -> None:
+    """Copy a sweep's packet, report, metrics and every frame and page snapshot they reference."""
+    from claimagent.core.settings import PROJECT_ROOT
+    from claimagent.core.sweep import SweepDir
+    from claimagent.report.export import export_sweep
+
+    settings = _settings()
+    target = out or PROJECT_ROOT / "release" / sweep
+    copied, missing = export_sweep(SweepDir.open(settings.runs_dir, sweep), target)
+    typer.echo(f"exported {copied} files to {target}")
+    for ref in missing:
+        typer.echo(f"    missing: {ref}")
+
+
+@app.command()
 def marker(out: Annotated[Path, typer.Option("--out", help="PDF to write.")] = Path("marker.pdf")) -> None:
     """Write a printable A4 scale card."""
     from claimagent.scale.marker import save_marker_pdf

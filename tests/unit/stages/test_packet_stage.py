@@ -87,3 +87,14 @@ def test_validator_finds_edited_totals(ctx: RunContext):
     _, packet = run(ctx)
     edited = packet.model_copy(update={"totals": packet.totals.model_copy(update={"books_replacement_cost": 999.0})})
     assert "totals do not equal the sum of the lines" in validate_packet(edited, ctx.sweep.root)
+
+
+def test_export_copies_the_packet_and_everything_it_references(ctx: RunContext, tmp_path):
+    from claimagent.report.export import export_sweep
+
+    run(ctx)
+    copied, missing = export_sweep(ctx.sweep, tmp_path / "release")
+    out = tmp_path / "release"
+    assert missing == [] and (out / "claim_packet.json").exists() and (out / "report.html").exists()
+    assert (out / "evidence/prices/p.html").exists()
+    assert len(list((out / "frames").glob("*.jpg"))) == 1     # only the referenced frame, not all of them
