@@ -4,6 +4,26 @@ A live voice-and-vision agent that inventories a home library from one camera sw
 
 Docs: [Architecture](docs/ARCHITECTURE.md) · [Design](docs/DESIGN.md) · [Testing](docs/TESTING.md) · [Failure log](docs/FAILURE_LOG.md) · [Requirements](docs/requirements.md) · [Evaluation results](eval/)
 
+## Start here
+
+**See what it does (2 minutes).** The demo videos are in `release/`; open them from GitHub or after cloning:
+
+- [`release/demo-gemini-chat/demo/demo.mp4`](release/demo-gemini-chat/demo/demo.mp4): a typed chat with the agent on Gemini, then the finished claim report (10 books counted of 10, 8 of 9 titles right). It runs 9 minutes: most of it is waiting for the models, so skip ahead.
+- [`release/demo-opus-capture-coaching/demo/demo.mp4`](release/demo-opus-capture-coaching/demo/demo.mp4): voiced, 3 minutes 41 seconds; the agent catches blur, glare and a fast pan and asks for a re-record.
+- Their reports open straight in a browser: [`report.html` (Gemini)](release/demo-gemini-chat/report.html) · [`report.html` (Opus)](release/demo-opus-capture-coaching/report.html). A short explanation of what these demos are is in [Demos](#demos).
+
+**Run it yourself in 15 minutes.**
+
+| Step | What you do | Time |
+|---|---|---|
+| 1 | Install [uv](https://docs.astral.sh/uv/), then `uv sync` and `cp .env.example .env` | 1 minute |
+| 2 | Get a free Gemini key at <https://aistudio.google.com/apikey> and put it in `.env` as `GEMINI_API_KEY=...` (no key? use `--profile dev` below) | 2 minutes |
+| 3 | Run it on any phone video of a bookshelf: `uv run claim --allow-calls replay path/to/shelves.mp4` | 3 to 10 minutes, printed stage by stage |
+| 4 | Open the report it prints: `open runs/<name>/report.html` | 1 minute |
+| 5 | Optional: the live agent in the browser: `uv run claim --allow-calls serve` and open <http://127.0.0.1:8000/> | 2 minutes |
+
+The test recordings the results were measured on are not published, so bring your own video, or use **Replay a video** on the live page. Works on macOS and Linux (the demo recorder is macOS only). Everything below explains each step and its options.
+
 ## 1. Set up (5 minutes)
 
 Needs [uv](https://docs.astral.sh/uv/) (it installs Python 3.12). Chrome or Safari for the live page; `brew install cloudflared` only if you want to use a phone.
@@ -11,7 +31,7 @@ Needs [uv](https://docs.astral.sh/uv/) (it installs Python 3.12). Chrome or Safa
 ```bash
 uv sync
 cp .env.example .env      # then put a GEMINI_API_KEY in it (one key covers Gemini Live and Gemini Flash)
-uv run pytest             # about 200 tests, no network and no keys needed
+uv run pytest             # about 215 tests, about 20 seconds, no network and no keys needed
 ```
 
 ### The three options you will see in commands
