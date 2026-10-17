@@ -36,6 +36,7 @@ live:
   voice_name: Kore
   frame_fps: 4               # evidence frames recorded per second (same as ingest, so thresholds carry over)
   model_fps: 1               # frames per second the voice model sees
+  evidence_side: 1920        # long side of recorded frames in pixels (a phone's 4K is shrunk to this; 1280 was too small to read spines)
   glare_max: 0.06            # share of blown-out pixels that counts as glare
   motion_max: 0.11           # frame-to-frame change at 4 fps: the slow test sweep peaks at 0.10, the rushed one runs ~0.12
   warn_every_s: 6            # a warning repeats at most this often

@@ -13,7 +13,7 @@ from claimagent.providers.googlebooks import parse_volume
 from claimagent.providers.http import fetch_json
 from claimagent.providers.openlibrary import parse_edition, parse_work
 from claimagent.providers.registry import FallbackVision
-from claimagent.stages.identify import (IdentifyStage, ReadAnswer, SpineReading, agreed_height, apply_reading,
+from claimagent.stages.identify import (IdentifyStage, repeated_readings, ReadAnswer, SpineReading, agreed_height, apply_reading,
                                         reading_view, status_for, unique_edition)
 from claimagent.stages.inventory import InventoryBook, InventoryOutput, View
 
@@ -226,3 +226,11 @@ def test_identical_text_for_different_books_is_not_trusted(ctx: RunContext, monk
     statuses = [b["status"] for b in out.data["books"]]
     assert statuses == ["unidentified", "unidentified", "spine_only"]
     assert out.data["books"][0]["title"] is None and "A2-2" in out.data["books"][0]["review"][0]
+
+
+def test_reordered_copies_of_one_text_are_distrusted():
+    """A weak reader that copies text between images often reorders it; word order must not hide that."""
+    read = lambda text: SpineReading(index=1, legible=True, text=text)
+    readings = {"A1-2": read("MATHEMATICS / R.D. SHARMA"), "A1-3": read("R.D. SHARMA / MATHEMATICS"),
+                "A1-4": read("Word Power Made Easy / Norman Lewis")}
+    assert repeated_readings(readings) == {"A1-2": ["A1-3"], "A1-3": ["A1-2"]}

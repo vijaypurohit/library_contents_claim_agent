@@ -11,8 +11,9 @@ Because each stage reads only files, any stage can be rerun alone after a fix.
 
 from __future__ import annotations
 
+import logging
 import time
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from datetime import UTC, datetime
 from typing import Any
 
@@ -41,9 +42,17 @@ class MissingStageOutput(RuntimeError):
     pass
 
 
+log = logging.getLogger("claim.pipeline")
+ProgressCallback = Callable[[dict[str, Any]], None]
+
+
 class Runner:
-    def __init__(self, ctx: RunContext, stages: Mapping[str, type[Stage]] | None = None):
+    def __init__(self, ctx: RunContext, stages: Mapping[str, type[Stage]] | None = None,
+                 on_progress: ProgressCallback | None = None):
+        """`on_progress` is called when a stage starts and when it ends, with a dict:
+        {stage, order, total, state: "start" | "done", elapsed_s, model_calls}."""
         self.ctx = ctx
+        self.on_progress = on_progress
         if stages is None:
             import claimagent.stages  # noqa: F401  importing the package registers the built-in stages
 
@@ -105,4 +114,24 @@ class Runner:
         if from_stage is not None:
             start = self._get(from_stage).order
             ordered = [s for s in ordered if s.order >= start]
-        return [self.run_stage(s.name) for s in ordered]
+        done = []
+        for number, stage in enumerate(ordered, start=1):
+            event = {"stage": stage.name, "order": number, "total": len(ordered)}
+            log.info("stage %d/%d %s started (%s)", number, len(ordered), stage.name, self.ctx.sweep.id)
+            self._announce({**event, "state": "start", "elapsed_s": 0.0, "model_calls": 0})
+            envelope = self.run_stage(stage.name)
+            log.info("stage %d/%d %s done in %.1f s (%d model calls)", number, len(ordered), stage.name,
+                     envelope.latency_s, len(envelope.model_calls))
+            for warning in envelope.warnings:
+                log.warning("%s: %s", stage.name, warning[:200])
+            self._announce({**event, "state": "done", "elapsed_s": envelope.latency_s,
+                            "model_calls": len(envelope.model_calls)})
+            done.append(envelope)
+        return done
+
+    def _announce(self, event: dict[str, Any]) -> None:
+        if self.on_progress is not None:
+            try:
+                self.on_progress(event)
+            except Exception:  # a broken listener (a closed browser) must never stop the pipeline
+                log.debug("progress listener failed", exc_info=True)

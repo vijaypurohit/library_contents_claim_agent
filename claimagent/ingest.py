@@ -15,6 +15,7 @@ import cv2
 import numpy as np
 from PIL import Image
 
+from claimagent.core.sessions import write_info
 from claimagent.core.settings import Settings
 from claimagent.core.sweep import SweepDir, frame_name
 from claimagent.domain.records import FrameInfo, Manifest
@@ -67,8 +68,10 @@ def _video_frames(path: Path, fps: float) -> Iterator[tuple[float, np.ndarray]]:
         capture.release()
 
 
-def ingest(sources: Sequence[Path], settings: Settings, sweep_id: str | None = None, *, replace: bool = False) -> SweepDir:
-    """Create a sweep from `sources` (videos and/or photos, in capture order) and return its folder."""
+def ingest(sources: Sequence[Path], settings: Settings, sweep_id: str | None = None, *, replace: bool = False,
+           origin: str = "ingest") -> SweepDir:
+    """Create a sweep from `sources` (videos and/or photos, in capture order) and return its folder.
+    `origin` says why it was made (see core/sessions.py): ingest, replay or upload."""
     for src in sources:
         if not src.exists():
             raise FileNotFoundError(src)
@@ -111,4 +114,6 @@ def ingest(sources: Sequence[Path], settings: Settings, sweep_id: str | None = N
         fps=cfg.fps,
         frames=frames,
     ))
+    write_info(sweep, origin, profile=settings.models.profile, country=settings.locale.country,
+               sources=[s.name for s in sources])
     return sweep

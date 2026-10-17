@@ -4,19 +4,26 @@
     GET  /api/config                what the client needs to know (voice, keys present, cache-only, country)
     PUT  /api/settings              change country/currency, voice or model profile for new sessions
     POST /api/sweeps/upload         recorded video or photos -> a sweep, processed in the background
-    GET  /api/sweeps/{id}/status    recording / processing / ready / failed
+    GET  /api/sweeps                every session (live, simulated, upload, replay...) with its origin and result
+    GET  /api/sweeps/{id}/status    recording / processing / ready / failed, and the stage being run
+    GET  /api/sweeps/{id}/log       the conversation and events of a live session
+    DELETE /api/sweeps/{id}         remove a session folder (not one that is recording or processing)
     GET  /api/sweeps/{id}/packet    the claim packet
     GET  /sweeps/{id}/report.html   the report (the whole sweep folder is served, so its links work)
-    WS   /ws/session?voice=...      one live sweep (protocol below)
+    WS   /ws/session?voice=gemini|cascaded|chat   one live sweep (protocol below); chat = typed text only
 
 Live protocol, all JSON:
     browser -> server  {type: "audio", data: base64 PCM16 16 kHz} | {type: "frame", data: base64 JPEG}
-                       {type: "text", text} | {type: "end"}
+                       {type: "text", text} | {type: "end"} | {type: "regenerate"}  (update the report with later corrections)
     server -> browser  {type: "ready", sweep_id, voice} | {type: "audio", data: base64 PCM16 24 kHz}
                        {type: "transcript", speaker, text, final} | {type: "interrupted"} | {type: "turn_complete"}
                        {type: "warning", kind, message, speak} | {type: "inventory", spines, items}
                        {type: "tool", name, args, result} | {type: "status", status, summary, report}
+                       {type: "progress", stage, order, total, state, elapsed_s} | {type: "stale"}
                        {type: "error", message}
+
+Every message except audio and frames is also written to the sweep's session log
+(runs/<id>/live_log.jsonl, see live/session.py), together with the notes the agent is sent.
 
 With an access token (claim serve --tunnel), every request must carry ?token=... once (it is then
 kept in a cookie); without one, the server only listens on this machine.
@@ -28,6 +35,7 @@ import asyncio
 import base64
 import contextlib
 import json
+import logging
 import secrets
 import shutil
 import threading
@@ -45,23 +53,29 @@ from fastapi.staticfiles import StaticFiles
 
 from claimagent.core.cache import DiskCache
 from claimagent.core.context import RunContext
+from claimagent.core.log import short
+from claimagent.core.sessions import list_sessions, read_log, remove_session
 from claimagent.core.settings import PROJECT_ROOT, Settings
 from claimagent.core.sweep import SweepDir, SweepNotFound
-from claimagent.live.session import LiveSession
+from claimagent.live.session import LiveSession, opening_note
 from claimagent.live.voice import VoiceSession
 from claimagent.vision.imaging import encode_jpeg, resize_max
 
 WEB_DIR = PROJECT_ROOT / "web"
 TOKEN_COOKIE = "claim_token"
-MAX_MESSAGE = 2_000_000          # bytes of one WebSocket message (a 1280 px JPEG is well under this)
+MAX_MESSAGE = 4_000_000          # bytes of one WebSocket message (a 1920 px JPEG as base64 is about 0.7 MB)
+
+log = logging.getLogger("claim.live")        # what happens inside a live session
+server_log = logging.getLogger("claim.server")   # uploads, settings, History
 
 VoiceFactory = Callable[[str, Settings, RunContext], contextlib.AbstractAsyncContextManager[VoiceSession]]
 
 
 @contextlib.asynccontextmanager
 async def default_voice(kind: str, settings: Settings, ctx: RunContext):
-    """Open the requested voice session: Gemini Live, or the cascaded fallback."""
-    if kind == "cascaded":
+    """Open the requested voice session: Gemini Live, or the cascaded fallback.
+    "chat" is the cascaded model with the browser's speech switched off: the user types and reads."""
+    if kind in ("cascaded", "chat"):
         from claimagent.live.cascaded import Cascaded
 
         yield Cascaded(ctx)
@@ -105,6 +119,7 @@ def create_app(settings: Settings, token: str | None = None, voice_factory: Voic
                 "has_gemini_key": bool(settings.secrets.gemini_api_key), "cache_only": settings.gateway.cache_only,
                 "country": settings.locale.country, "currency": settings.locale.currency,
                 "frame_fps": settings.live.frame_fps, "model_fps": settings.live.model_fps,
+                "evidence_side": settings.live.evidence_side,
                 "profiles": sorted(settings.models.profiles)}
 
     @app.put("/api/settings")
@@ -116,21 +131,28 @@ def create_app(settings: Settings, token: str | None = None, voice_factory: Voic
                 raise HTTPException(400, f"no shop list for country {settings.locale.country}")
         if "currency" in body:
             settings.locale.currency = str(body["currency"]).upper()
-        if body.get("voice") in ("gemini", "cascaded"):
+        if body.get("voice") in ("gemini", "cascaded", "chat"):
             settings.live.voice = body["voice"]
         if body.get("profile") in settings.models.profiles:
             settings.models.profile = body["profile"]
+        server_log.info("settings now: country %s, voice %s, profile %s", settings.locale.country, settings.live.voice,
+                        settings.models.profile)
         return config()
 
     # ---- Sweeps ----
 
     def run_pipeline(sweep_id: str) -> None:
+        """Run every stage of an uploaded sweep, keeping `jobs[sweep_id]` current for the status endpoint."""
         from claimagent.core.runner import Runner
 
+        def progress(event: dict) -> None:
+            jobs[sweep_id] = {"status": "processing", **event}
+
         try:
-            Runner(RunContext.open(settings, sweep_id)).run()
+            Runner(RunContext.open(settings, sweep_id), on_progress=progress).run()
             jobs[sweep_id] = {"status": "ready"}
         except Exception as exc:
+            server_log.error("processing %s failed: %s: %s", sweep_id, type(exc).__name__, exc)
             jobs[sweep_id] = {"status": "failed", "error": f"{type(exc).__name__}: {exc}"}
 
     @app.post("/api/sweeps/upload")
@@ -147,11 +169,12 @@ def create_app(settings: Settings, token: str | None = None, voice_factory: Voic
                 shutil.copyfileobj(f.file, out)
             paths.append(path)
         try:
-            await asyncio.to_thread(ingest, paths, settings, sweep_id)
+            await asyncio.to_thread(ingest, paths, settings, sweep_id, origin="upload")
         except ValueError as exc:
             raise HTTPException(400, str(exc)) from exc
         with lock:
             jobs[sweep_id] = {"status": "processing"}
+        server_log.info("upload %s: %d file(s), processing started", sweep_id, len(paths))
         threading.Thread(target=run_pipeline, args=(sweep_id,), daemon=True).start()
         return {"sweep_id": sweep_id, "status": "processing"}
 
@@ -160,6 +183,25 @@ def create_app(settings: Settings, token: str | None = None, voice_factory: Voic
             return SweepDir.open(settings.runs_dir, sweep_id)
         except (SweepNotFound, ValueError) as exc:
             raise HTTPException(404, "no such sweep") from exc
+
+    @app.get("/api/sweeps")
+    def sweeps():
+        """Every session on disk, newest first, with where it came from and what it produced."""
+        return list_sessions(settings.runs_dir, {k: v.get("status", "") for k, v in jobs.items() if v.get("status")})
+
+    @app.get("/api/sweeps/{sweep_id}/log")
+    def sweep_log(sweep_id: str):
+        return read_log(open_sweep(sweep_id))
+
+    @app.delete("/api/sweeps/{sweep_id}")
+    def delete_sweep(sweep_id: str):
+        if (jobs.get(sweep_id) or {}).get("status") in ("recording", "processing"):
+            raise HTTPException(409, "this session is still running")
+        open_sweep(sweep_id)
+        remove_session(settings.runs_dir, sweep_id)
+        jobs.pop(sweep_id, None)
+        server_log.info("removed session %s", sweep_id)
+        return {"removed": sweep_id}
 
     @app.get("/api/sweeps/{sweep_id}/status")
     def status(sweep_id: str):
@@ -188,17 +230,24 @@ def create_app(settings: Settings, token: str | None = None, voice_factory: Voic
             return
         await ws.accept()
         voice_kind = ws.query_params.get("voice") or settings.live.voice
-        session = LiveSession(settings, "live-" + datetime.now().strftime("%Y%m%d-%H%M%S"))
+        origin = "simulate" if ws.query_params.get("origin") == "simulate" else "live"
+        session = LiveSession(settings, "live-" + datetime.now().strftime("%Y%m%d-%H%M%S"), origin=origin, voice=voice_kind)
         ctx = RunContext(settings=settings, sweep=session.recorder.sweep, cache=DiskCache(settings.cache_path))
         loop = asyncio.get_running_loop()
         send_lock = asyncio.Lock()
 
         async def send(payload: dict) -> None:
+            if payload.get("type") != "audio":
+                session.log("out", payload)
+                log_event(session, payload)
             async with send_lock:
                 with contextlib.suppress(Exception):
                     await ws.send_json(payload)
 
         try:
+            log.info("session %s opened (voice %s, models: %s, model calls %s)", session.sweep_id, voice_kind,
+                     settings.models.profile, "allowed" if not settings.gateway.cache_only else "OFF: cache-only")
+            jobs[session.sweep_id] = {"status": "recording"}
             async with voice_factory(voice_kind, settings, ctx) as voice:
                 await send({"type": "ready", "sweep_id": session.sweep_id, "voice": voice.name,
                             "speaks_warnings": voice.speaks_warnings})
@@ -206,26 +255,56 @@ def create_app(settings: Settings, token: str | None = None, voice_factory: Voic
                 def finished(s: LiveSession) -> None:
                     """Called from the pipeline thread: tell the browser and the agent."""
                     report = f"/sweeps/{s.sweep_id}/report.html" if s.status == "ready" else None
+                    jobs[s.sweep_id] = {"status": s.status, **({"error": s.error} if s.error else {})}
                     asyncio.run_coroutine_threadsafe(send({"type": "status", "status": s.status, "summary": s.summary,
                                                            "error": s.error, "report": report}), loop)
                     if voice.speaks_warnings:
                         note = "[status] Processing finished. Call sweep_status and read the summary to the user."
-                        asyncio.run_coroutine_threadsafe(voice.send_text(note, from_user=False), loop)
+                        asyncio.run_coroutine_threadsafe(tell_agent(session, voice, note), loop)
+
+                def progress(event: dict) -> None:
+                    """Called from the pipeline thread at the start and end of each stage."""
+                    jobs[session.sweep_id] = {"status": "processing", **event}
+                    asyncio.run_coroutine_threadsafe(send({"type": "progress", **event}), loop)
 
                 session.on_finished = finished
-                await asyncio.wait([asyncio.create_task(c) for c in (
+                session.on_progress = progress
+                await tell_agent(session, voice, opening_note(settings))   # the agent speaks first
+                tasks = [asyncio.create_task(c) for c in (
                     _client_to_server(ws, session, voice, send, settings),
                     _voice_to_client(session, voice, send),
                     _provisional(ctx, session, voice, send, settings),
-                )], timeout=settings.live.max_minutes * 60, return_when=asyncio.FIRST_COMPLETED)
+                )]
+                try:
+                    done, _ = await asyncio.wait(tasks, timeout=settings.live.max_minutes * 60,
+                                                 return_when=asyncio.FIRST_COMPLETED)
+                finally:
+                    # One side ended (usually the browser disconnecting): stop the others, or the
+                    # provisional count would keep calling the detector for a session nobody watches.
+                    for task in tasks:
+                        task.cancel()
+                    await asyncio.gather(*tasks, return_exceptions=True)
+                for task in done:
+                    if not task.cancelled() and isinstance(task.exception(), Exception) \
+                            and not isinstance(task.exception(), WebSocketDisconnect):
+                        raise task.exception()  # type: ignore[misc]
         except WebSocketDisconnect:
-            pass
+            log.info("session %s: the browser disconnected", session.sweep_id)
         except Exception as exc:
+            log.error("session %s ended with an error: %s: %s", session.sweep_id, type(exc).__name__, exc)
             await send({"type": "error", "message": f"live session ended: {type(exc).__name__}: {exc}"})
         finally:
-            session.recorder.write_manifest()   # the recorded frames stay usable from the CLI
-            if session.status == "recording" and session.recorder.frames:
-                jobs[session.sweep_id] = {"status": "recorded"}
+            if not session.recorder.frames:
+                # Nothing was filmed, so there is nothing to process or show: do not leave an empty folder in History.
+                jobs.pop(session.sweep_id, None)
+                shutil.rmtree(session.recorder.sweep.root, ignore_errors=True)
+                log.info("session %s closed with no frames: discarded", session.sweep_id)
+            else:
+                session.recorder.write_manifest()   # the recorded frames stay usable from the CLI
+                if session.status == "recording":
+                    jobs[session.sweep_id] = {"status": "recorded"}
+                log.info("session %s closed (%d frames kept in %s)", session.sweep_id, len(session.recorder.frames),
+                         session.recorder.sweep.root)
             with contextlib.suppress(Exception):
                 await ws.close()
 
@@ -249,22 +328,33 @@ async def _client_to_server(ws: WebSocket, session: LiveSession, voice: VoiceSes
             image = cv2.imdecode(np.frombuffer(base64.b64decode(message["data"]), np.uint8), cv2.IMREAD_COLOR)
             if image is None:
                 continue
+            if len(session.recorder.frames) % 40 == 0:
+                log.debug("session %s: %d frames recorded", session.sweep_id, len(session.recorder.frames))
             for warning in await asyncio.to_thread(session.add_frame, image):
                 await send({"type": "warning", "kind": warning.kind, "message": warning.message,
                             "speak": not voice.speaks_warnings})
                 if voice.speaks_warnings:
-                    await voice.send_text(f"[camera] {warning.message}", from_user=False)
+                    await tell_agent(session, voice, f"[camera] {warning.message}")
             now = time.monotonic()
             if now - last_model_frame >= 1 / settings.live.model_fps:
                 last_model_frame = now
                 await voice.send_frame(encode_jpeg(resize_max(image, settings.live.model_frame_side), 80))
         elif kind == "text" and str(message.get("text", "")).strip():
-            await voice.send_text(str(message["text"])[:2000])
+            text = str(message["text"])[:2000]
+            session.log("in", {"type": "text", "text": text})
+            await voice.send_text(text)
+        elif kind == "regenerate":
+            if session.status in ("ready", "failed"):
+                session.log("in", {"type": "regenerate"})
+                log.info("session %s: updating the report with later corrections", session.sweep_id)
+                session.start_pipeline("price")      # facts are applied from the price stage on
+                await send({"type": "status", "status": "processing", "summary": None, "report": None})
         elif kind == "end":
+            session.log("in", {"type": "end"})
             result = session.call_tool("end_sweep", {})
             await send({"type": "status", "status": result["status"], "summary": None, "report": None})
             if voice.speaks_warnings:
-                await voice.send_text("[status] The user pressed End. Tell them processing has started.", from_user=False)
+                await tell_agent(session, voice, "[status] The user pressed End. Tell them processing has started.")
 
 
 async def _voice_to_client(session: LiveSession, voice: VoiceSession, send) -> None:
@@ -279,6 +369,8 @@ async def _voice_to_client(session: LiveSession, voice: VoiceSession, send) -> N
         elif event.kind == "tool_call":
             result = session.call_tool(event.name, event.args)
             await send({"type": "tool", "name": event.name, "args": event.args, "result": result})
+            if event.name == "record_user_fact" and session.status in ("ready", "failed"):
+                await send({"type": "stale"})    # the page offers "Update report"
             if event.name == "end_sweep":
                 await send({"type": "status", "status": session.status, "summary": None, "report": None})
             await voice.send_tool_result(event.call_id, event.name, result)
@@ -300,8 +392,34 @@ async def _provisional(ctx: RunContext, session: LiveSession, voice: VoiceSessio
         if count is None:
             continue
         await send({"type": "inventory", "spines": count.spines, "items": count.items})
-        await voice.send_text(f"[count] About {count.spines} book spines are in view right now (provisional).",
-                              from_user=False, respond=False)
+        await tell_agent(session, voice, f"[count] About {count.spines} book spines are in view right now (provisional).",
+                         respond=False)
+
+
+async def tell_agent(session: LiveSession, voice: VoiceSession, note: str, respond: bool = True) -> None:
+    """A system note to the voice agent ("[start] ...", "[camera] ..."), also kept in the session log."""
+    session.log("agent-note", {"type": "note", "text": note})
+    await voice.send_text(note, from_user=False, respond=respond)
+
+
+def log_event(session: LiveSession, payload: dict) -> None:
+    """One terminal line per message sent to the browser, so a person can see what the session is doing."""
+    kind = payload.get("type")
+    if kind == "ready":
+        log.info("voice ready: %s (warnings spoken by %s)", payload["voice"], "the model" if payload["speaks_warnings"] else "the page")
+    elif kind == "transcript" and payload.get("final"):
+        log.info("%s: %s", payload["speaker"], short(payload["text"]))
+    elif kind == "warning":
+        log.info("capture warning (%s): %s", payload["kind"], payload["message"])
+    elif kind == "tool":
+        log.info("tool %s %s -> %s", payload["name"], short(json.dumps(payload["args"], ensure_ascii=False), 90),
+                 short(json.dumps(payload["result"], ensure_ascii=False), 60))
+    elif kind == "inventory":
+        log.info("provisional count: %s spines in view", payload["spines"])
+    elif kind == "status":
+        log.info("status %s%s", payload["status"], f": {short(payload['summary'])}" if payload.get("summary") else "")
+    elif kind == "error":
+        log.error("%s", payload["message"])
 
 
 def new_token() -> str:

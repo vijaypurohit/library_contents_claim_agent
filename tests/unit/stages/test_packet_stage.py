@@ -98,3 +98,14 @@ def test_export_copies_the_packet_and_everything_it_references(ctx: RunContext, 
     assert missing == [] and (out / "claim_packet.json").exists() and (out / "report.html").exists()
     assert (out / "evidence/prices/p.html").exists()
     assert len(list((out / "frames").glob("*.jpg"))) == 1     # only the referenced frame, not all of them
+
+
+def test_a_fact_that_matches_no_line_goes_to_review(ctx: RunContext):
+    facts = [{"kind": "first_edition", "target": "the Hindi book", "text": "the Hindi book is a first edition"},
+             {"kind": "skip_shelf", "target": "a 2", "text": "skip the second shelf"}]   # tidied to "A2": applies
+    _, packet = run(ctx, facts)
+    assert [b.id for b in packet.books] == ["A1-1", "A1-2"]
+    assert all(b.status != "needs_appraisal" for b in packet.books)
+    missed = [e for e in packet.review_queue if "matches no shelf, book or item" in e.reason]
+    assert len(missed) == 1 and "the Hindi book is a first edition" in missed[0].reason
+    assert missed[0].ref_id == "the Hindi book"                  # free text is kept as spoken, not squashed

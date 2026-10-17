@@ -5,36 +5,82 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Library Claim Agent</title>
 <style>
-  :root { --ink:#1d2433; --muted:#5f6b7a; --line:#dfe3ea; --bg:#f7f8fa; --card:#fff; --accent:#2f5bd3; --warn:#a15c00; --warnbg:#fff4e0; --ok:#1f7a4d; }
-  @media (prefers-color-scheme: dark) { :root { --ink:#e6e9ef; --muted:#9aa4b2; --line:#2c3340; --bg:#12161d; --card:#1a1f28; --accent:#7ea0ff; --warn:#f0b35a; --warnbg:#3a2a10; --ok:#5fd39a; } }
+  :root { --ink:#1d2433; --muted:#5f6b7a; --line:#dfe3ea; --bg:#f4f6f9; --card:#fff; --accent:#2f5bd3; --accent-ink:#fff;
+          --warn:#a15c00; --warnbg:#fff4e0; --ok:#1f7a4d; --okbg:#e6f6ee; --bad:#b42318; --badbg:#fdecea; }
+  @media (prefers-color-scheme: dark) { :root { --ink:#e6e9ef; --muted:#9aa4b2; --line:#2c3340; --bg:#12161d; --card:#1a1f28;
+          --accent:#7ea0ff; --accent-ink:#0b1020; --warn:#f0b35a; --warnbg:#3a2a10; --ok:#5fd39a; --okbg:#10301f; --bad:#ff8a80; --badbg:#3a1512; } }
   * { box-sizing:border-box; }
   body { margin:0; font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif; color:var(--ink); background:var(--bg); }
-  header { display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:10px 16px; border-bottom:1px solid var(--line); background:var(--card); position:sticky; top:0; z-index:2; }
+  header { display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:10px 16px; border-bottom:1px solid var(--line); background:var(--card); position:sticky; top:0; z-index:3; }
   header h1 { font-size:16px; margin:0 12px 0 0; }
   nav button { background:none; border:none; color:var(--muted); font:inherit; padding:6px 10px; border-radius:6px; cursor:pointer; }
   nav button.active { color:var(--ink); background:var(--bg); font-weight:600; }
   .chip { margin-left:auto; font-size:13px; padding:3px 10px; border-radius:12px; border:1px solid var(--line); color:var(--muted); }
-  main { max-width:1100px; margin:0 auto; padding:16px; }
-  section[hidden] { display:none; }
+  .chip.live { color:var(--ok); border-color:var(--ok); } .chip.busy { color:var(--warn); border-color:var(--warn); } .chip.bad { color:var(--bad); border-color:var(--bad); }
+  main { max-width:1180px; margin:0 auto; padding:16px; }
+  section[hidden], [hidden] { display:none !important; }
   .controls { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; align-items:center; }
-  select, input[type=text], button.primary, button.secondary { font:inherit; padding:7px 10px; border-radius:6px; border:1px solid var(--line); background:var(--card); color:var(--ink); }
-  button.primary { background:var(--accent); color:#fff; border-color:var(--accent); cursor:pointer; }
-  button.secondary { cursor:pointer; }
+  .controls label { color:var(--muted); font-size:13px; }
+  select, input[type=text], button.primary, button.secondary, button.danger { font:inherit; padding:7px 10px; border-radius:6px; border:1px solid var(--line); background:var(--card); color:var(--ink); }
+  button.primary { background:var(--accent); color:var(--accent-ink); border-color:var(--accent); cursor:pointer; }
+  button.secondary, button.danger { cursor:pointer; } button.danger { color:var(--bad); }
   button:disabled { opacity:.5; cursor:default; }
-  .grid { display:grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap:14px; }
-  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+  .grid { display:grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap:14px; align-items:start; }
+  .grid2 { display:grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap:14px; margin-top:14px; align-items:start; }
+  @media (max-width: 860px) { .grid, .grid2 { grid-template-columns: 1fr; } }
   .card { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:12px; }
-  video { width:100%; max-height:60vh; background:#000; border-radius:6px; }
+  .card h2 { font-size:14px; margin:0 0 8px; }
+  video { width:100%; max-height:52vh; background:#000; border-radius:6px; }
+  .notice { margin-bottom:12px; padding:8px 10px; border-radius:6px; background:var(--warnbg); color:var(--warn); }
   #warning { display:none; margin-top:8px; padding:8px 10px; border-radius:6px; background:var(--warnbg); color:var(--warn); font-weight:600; }
-  #count { font-size:28px; font-weight:600; }
-  #transcript { height:42vh; overflow-y:auto; display:flex; flex-direction:column; gap:6px; }
-  .turn { padding:6px 9px; border-radius:8px; max-width:92%; }
-  .turn.user { align-self:flex-end; background:var(--bg); }
-  .turn.agent { align-self:flex-start; border:1px solid var(--line); }
-  .turn.tool { align-self:center; color:var(--muted); font-size:13px; }
   .muted { color:var(--muted); font-size:13px; }
-  .row { display:flex; gap:8px; margin-top:8px; }
-  .row input { flex:1; min-width:0; }
+  .big { font-size:28px; font-weight:600; }
+
+  /* chat */
+  #transcript, .transcript { height:46vh; overflow-y:auto; display:flex; flex-direction:column; gap:6px; padding:2px; }
+  .turn { padding:6px 10px; border-radius:10px; max-width:92%; white-space:pre-wrap; word-wrap:break-word; }
+  .turn.user { align-self:flex-end; background:var(--accent); color:var(--accent-ink); }
+  .turn.agent { align-self:flex-start; border:1px solid var(--line); }
+  .turn.note { align-self:center; color:var(--muted); font-size:13px; background:var(--bg); max-width:100%; }
+  .turn.warn { align-self:center; color:var(--warn); background:var(--warnbg); font-size:13px; max-width:100%; }
+  .turn.result { align-self:stretch; background:var(--okbg); color:var(--ok); max-width:100%; }
+  .turn.bad { align-self:stretch; background:var(--badbg); color:var(--bad); max-width:100%; }
+  .turn a { color:inherit; font-weight:600; }
+  .row { display:flex; gap:8px; margin-top:8px; } .row input { flex:1; min-width:0; }
+
+  /* claim sheet: a sheet of ruled paper that fills in as the session goes on */
+  .paper { color:#2a2a2a; background:#fffef6; border:1px solid #e4dcc0; border-radius:4px; padding:10px 16px 10px 54px; position:relative;
+           font:15px/28px Georgia,"Times New Roman",serif; box-shadow:0 1px 0 #fff inset, 0 3px 10px rgba(0,0,0,.12);
+           background-image:repeating-linear-gradient(transparent 0, transparent 27px, #d8e2f0 27px, #d8e2f0 28px); background-position:0 10px; }
+  .paper::before { content:""; position:absolute; left:40px; top:0; bottom:0; width:2px; background:#e9a3a3; }
+  .paper h2 { font:600 18px/28px Georgia,serif; margin:0; display:flex; justify-content:space-between; }
+  .paper h3 { font:600 13px/28px system-ui,sans-serif; text-transform:uppercase; letter-spacing:.06em; color:#6a6a6a; margin:0; }
+  .paper p, .paper ul { margin:0; padding:0; list-style:none; }
+  .paper li { padding-left:14px; position:relative; } .paper li::before { content:"–"; position:absolute; left:0; }
+  .paper .field { display:flex; justify-content:space-between; gap:12px; }
+  .paper .field b { font-weight:600; }
+  .paper .pending { color:#9a9a9a; font-style:italic; }
+  .paper .tag { display:inline-block; padding:0 8px; margin-right:6px; line-height:20px; border-radius:10px; background:#fde8c8; color:#8a4b00; font:12px/20px system-ui,sans-serif; }
+  .paper .stamp { display:inline-block; border:2px solid #1f7a4d; color:#1f7a4d; padding:0 8px; line-height:22px; border-radius:4px; font:700 12px/22px system-ui,sans-serif; letter-spacing:.08em; transform:rotate(-3deg); }
+
+  /* progress */
+  .steps { list-style:none; margin:0 0 8px; padding:0; display:grid; gap:4px; }
+  .steps li { display:flex; gap:8px; align-items:center; color:var(--muted); }
+  .steps li .dot { width:18px; text-align:center; }
+  .steps li.running { color:var(--ink); font-weight:600; } .steps li.done { color:var(--ok); }
+  .steps li .t { margin-left:auto; font-variant-numeric:tabular-nums; font-size:12px; }
+  .bar { height:6px; background:var(--line); border-radius:3px; overflow:hidden; margin:6px 0 10px; } .bar > div { height:100%; background:var(--accent); width:0; transition:width .4s; }
+  @keyframes spin { to { transform:rotate(360deg); } } .spin { display:inline-block; animation:spin 1s linear infinite; }
+  iframe { width:100%; height:60vh; border:1px solid var(--line); border-radius:6px; background:#fff; margin-top:8px; }
+
+  /* history */
+  table { width:100%; border-collapse:collapse; } th, td { text-align:left; padding:7px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { font-size:12px; color:var(--muted); font-weight:600; }
+  .badge { display:inline-block; padding:1px 8px; border-radius:10px; font-size:12px; border:1px solid var(--line); color:var(--muted); }
+  .badge.ready { color:var(--ok); border-color:var(--ok); } .badge.processing, .badge.recording { color:var(--warn); border-color:var(--warn); } .badge.failed { color:var(--bad); border-color:var(--bad); }
+  td .actions { display:flex; gap:6px; flex-wrap:wrap; } td button, td a.button { font-size:13px; padding:3px 8px; }
+  a.button { text-decoration:none; border:1px solid var(--line); border-radius:6px; color:var(--ink); background:var(--card); }
+  a.button.primary { background:var(--accent); color:var(--accent-ink); border-color:var(--accent); padding:7px 12px; }
   a { color:var(--accent); }
 </style>
 </head>
@@ -43,38 +89,108 @@
   <h1>Library Claim Agent</h1>
   <nav>
     <button data-tab="session" class="active">Session</button>
+    <button data-tab="history">History</button>
     <button data-tab="upload">Upload</button>
     <button data-tab="settings">Settings</button>
   </nav>
   <span class="chip" id="status">idle</span>
 </header>
 <main>
+  <!-- ============ Session ============ -->
   <section id="tab-session">
+    <div class="notice" id="calls-off" hidden></div>
     <div class="controls">
-      <label>Source <select id="source"></select></label>
+      <label>Camera <select id="source"></select></label>
       <input type="file" id="replay-file" accept="video/*" hidden>
-      <label>Voice <select id="voice"><option value="gemini">Gemini Live</option><option value="cascaded">Cascaded (browser speech)</option></select></label>
+      <label>Talk by <select id="voice">
+        <option value="chat">Chat (type, no voice)</option>
+        <option value="gemini">Voice: Gemini Live</option>
+        <option value="cascaded">Voice: browser speech</option>
+      </select></label>
       <button class="primary" id="start">Start sweep</button>
       <button class="secondary" id="end" disabled>End sweep</button>
+      <span class="muted" id="mode-hint"></span>
     </div>
     <div class="grid">
       <div class="card">
         <video id="preview" playsinline muted></video>
         <div id="warning" role="alert"></div>
-        <p class="muted">Start at the top shelf, pan slowly left to right, close enough to read the spines. Use headphones so the agent does not hear itself.</p>
+        <p class="muted">Start at the top shelf, pan slowly left to right, close enough to read the spines. With voice, use headphones so the agent does not hear itself.</p>
       </div>
       <div class="card">
-        <div class="muted">Books in view (provisional)</div>
-        <div id="count">–</div>
-        <div class="muted" id="items"></div>
-        <hr style="border:none;border-top:1px solid var(--line)">
+        <h2>Conversation</h2>
         <div id="transcript" aria-live="polite"></div>
-        <div class="row"><input type="text" id="text" placeholder="Type to the agent…"><button class="secondary" id="send">Send</button></div>
-        <p id="result" class="muted"></p>
+        <div class="row"><input type="text" id="text" placeholder="Type to the agent…" autocomplete="off"><button class="secondary" id="send">Send</button></div>
+      </div>
+    </div>
+    <div class="grid2">
+      <!-- the claim sheet fills in while the session runs -->
+      <div class="paper" id="sheet">
+        <h2><span>Contents claim</span><span id="sheet-stamp"></span></h2>
+        <p class="field"><span>Session</span><b id="sheet-id" class="pending">not started</b></p>
+        <p class="field"><span>Priced in</span><b id="sheet-locale">–</b></p>
+        <h3>In view now (provisional)</h3>
+        <p class="field"><span>Book spines</span><b id="count">–</b></p>
+        <p id="items" class="pending">other items: none seen yet</p>
+        <h3>Logged by the agent</h3>
+        <ul id="sheet-obs"><li class="pending">nothing yet</li></ul>
+        <h3>You told me</h3>
+        <ul id="sheet-facts"><li class="pending">nothing yet</li></ul>
+        <h3>Film again</h3>
+        <ul id="sheet-refilm"><li class="pending">nothing asked</li></ul>
+        <h3>Capture problems</h3>
+        <p id="sheet-issues"><span class="pending">none so far</span></p>
+        <div id="sheet-result" hidden>
+          <h3>Result (computed from the packet, not by the model)</h3>
+          <div id="sheet-totals"></div>
+        </div>
+      </div>
+      <div>
+        <div class="card" id="progress-card" hidden>
+          <h2 id="progress-title">Processing your sweep</h2>
+          <div class="bar"><div id="bar"></div></div>
+          <ul class="steps" id="steps"></ul>
+          <p class="muted" id="elapsed"></p>
+          <div class="muted" id="while-wait">
+            <b>While you wait</b>
+            <ul style="margin:4px 0 0 16px;padding:0">
+              <li>Keep chatting: ask how it is going, or say a correction (for example "the Hindi book is a first edition", "that painting is a print").</li>
+              <li>A correction said before <i>Price</i> finishes is included on its own. A later one is saved, and an <b>Update report</b> button appears.</li>
+              <li>You can close the page: the session is saved under <b>History</b>, with its report and this conversation.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card" id="report-card" hidden>
+          <h2>Claim report</h2>
+          <p id="report-summary" class="muted"></p>
+          <div class="controls">
+            <a class="button primary" id="report-open" target="_blank" rel="noopener">Open the report</a>
+            <button class="secondary" id="report-toggle">Show it here</button>
+            <button class="secondary" id="regenerate" hidden>Update report with my corrections</button>
+          </div>
+          <iframe id="report-frame" title="Claim report" hidden></iframe>
+        </div>
       </div>
     </div>
   </section>
 
+  <!-- ============ History ============ -->
+  <section id="tab-history" hidden>
+    <div class="card">
+      <div class="controls"><h2 style="margin:0">All sessions</h2><button class="secondary" id="refresh">Refresh</button>
+        <span class="muted">Every session is kept in <code>runs/</code>: its frames, report and, for live ones, the conversation.</span></div>
+      <div style="overflow-x:auto"><table>
+        <thead><tr><th>Started</th><th>How it was made</th><th>Status</th><th>Result</th><th>Session</th><th></th></tr></thead>
+        <tbody id="history-rows"><tr><td colspan="6" class="muted">Loading…</td></tr></tbody>
+      </table></div>
+    </div>
+    <div class="card" id="history-view" style="margin-top:14px" hidden>
+      <h2 id="history-title">Conversation</h2>
+      <div class="transcript" id="history-log"></div>
+    </div>
+  </section>
+
+  <!-- ============ Upload ============ -->
   <section id="tab-upload" hidden>
     <div class="card">
       <p>Upload a recorded sweep (video or photos). It is processed in the background; the report opens when ready.</p>
@@ -83,14 +199,16 @@
     </div>
   </section>
 
+  <!-- ============ Settings ============ -->
   <section id="tab-settings" hidden>
     <div class="card">
       <div class="controls">
         <label>Country <select id="country"><option value="IN">India (INR)</option><option value="US">United States (USD)</option></select></label>
-        <label>Model profile <select id="profile"></select></label>
+        <label>Models <select id="profile"></select></label>
         <button class="primary" id="save">Save</button>
       </div>
       <p id="config" class="muted"></p>
+      <p class="muted">Changes apply to the next session. "Models" is the profile in <code>config/settings.yaml</code> (gemini, dev, …).</p>
     </div>
   </section>
 </main>

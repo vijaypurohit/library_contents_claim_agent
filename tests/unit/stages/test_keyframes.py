@@ -82,4 +82,16 @@ def test_view_with_only_blurry_frames_is_warned(ctx: RunContext):
     blurred = cv2.GaussianBlur(img[:, 1600:2400], (31, 31), 0)
     write_sweep(ctx, [(img[:, 0:800], "clip.mp4"), (img[:, 50:850], "clip.mp4"), (blurred, "clip.mp4")])
     out = Runner(ctx, {"keyframes": KeyframesStage}).run_stage("keyframes")
-    assert any("only blurry frames" in w for w in out.warnings)
+    assert any("blurry and match no view" in w for w in out.warnings)
+    assert len(out.data["keyframes"]) == 1          # the blurred frame is not sent to detection as a view of its own
+
+
+def test_blurred_rushed_pan_does_not_split_into_many_views(ctx: RunContext):
+    img = scene()
+    blur = lambda x: cv2.GaussianBlur(x, (31, 31), 0)
+    sharp = [img[:, 0:800], img[:, 40:840], img[:, 80:880]]
+    rushed = [blur(img[:, x:x + 800]) for x in (500, 900, 1300)]      # each blurred frame shows somewhere new
+    write_sweep(ctx, [(f, "clip.mp4") for f in sharp + rushed + [img[:, 1600:2400]]])
+    out = Runner(ctx, {"keyframes": KeyframesStage}).run_stage("keyframes")
+    assert [f["view"] for f in out.data["frames"]] == [0, 0, 0, 0, 0, 0, 1]
+    assert sum("match no view" in w for w in out.warnings) == 1     # one warning for the whole blurred stretch

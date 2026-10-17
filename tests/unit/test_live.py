@@ -120,6 +120,49 @@ def test_cascaded_turn_with_frame_and_tool(ctx, monkeypatch):
     assert after_tool.text == "Done." and "record_user_fact returned" in model.prompts[1][0]
 
 
+def test_cascaded_reply_does_not_block_and_answers_quick_lines_once(ctx, monkeypatch):
+    import threading
+
+    release = threading.Event()
+
+    class SlowModel(ScriptedModel):
+        def generate_json(self, prompt, images, schema):
+            release.wait(5)                      # the model is thinking
+            return super().generate_json(prompt, images, schema)
+
+    model = SlowModel([Reply(say="Got both.")])
+    monkeypatch.setattr(ctx, "vision", lambda stage: model)
+    voice = Cascaded(ctx)
+
+    async def scenario():
+        await voice.send_text("first")           # returns at once although the model has not answered
+        await voice.send_text("second")
+        await voice.send_text("[count] About 4 spines", from_user=False, respond=False)
+        release.set()
+        events = [await asyncio.wait_for(voice._events.get(), 5) for _ in range(4)]
+        await asyncio.sleep(0.05)                # the second queued reply finds nothing new and is skipped
+        await voice.close()
+        return events
+
+    events = asyncio.run(scenario())
+    assert [e.text for e in events if e.kind == "transcript"] == ["first", "second", "Got both."]
+    assert len(model.prompts) == 1 and "first" in model.prompts[0][0] and "second" in model.prompts[0][0]
+
+
+def test_cascaded_answers_the_opening_note(ctx, monkeypatch):
+    model = ScriptedModel([Reply(say="Hello! Pricing in India, in rupees: is that right?")])
+    monkeypatch.setattr(ctx, "vision", lambda stage: model)
+    voice = Cascaded(ctx)
+
+    async def scenario():
+        await voice.send_text("[start] The claim is priced in country IN with currency INR.", from_user=False)
+        return [await asyncio.wait_for(voice._events.get(), 5) for _ in range(2)]
+
+    events = asyncio.run(scenario())
+    assert events[0].speaker == "agent" and "India" in events[0].text   # no user turn is shown for a system note
+    assert "system: [start]" in model.prompts[0][0]
+
+
 # ---- WebSocket protocol ----
 
 class FakeVoice:
@@ -190,6 +233,13 @@ def test_websocket_session_records_relays_and_ends(settings, monkeypatch):
     assert started and voice.frames == 1 and voice.tool_results[0][0] == "end_sweep"
     sweep = settings.runs_dir / started[0]
     assert len(list((sweep / "frames").glob("*.jpg"))) == 1 and (sweep / "manifest.json").exists()
+    # The agent spoke first, and the session log kept the conversation (but no audio).
+    assert voice.texts[0].startswith("[start]") and "IN" in voice.texts[0] and "INR" in voice.texts[0]
+    log = [json.loads(line) for line in (sweep / "live_log.jsonl").read_text().splitlines()]
+    assert [e["type"] for e in log if e["direction"] == "agent-note"] == ["note"]
+    assert {"direction": "in", "type": "text", "text": "hello"}.items() <= next(e for e in log if e.get("text") == "hello").items()
+    assert any(e["direction"] == "out" and e["type"] == "tool" for e in log)
+    assert not any(e["type"] == "audio" for e in log)
 
 
 def test_capture_warning_reaches_browser_and_agent(settings):
@@ -217,3 +267,76 @@ def test_config_and_settings_update(settings):
     assert client.get("/api/config").json()["country"] == "IN"
     assert client.put("/api/settings", json={"country": "US", "currency": "USD"}).json()["currency"] == "USD"
     assert client.put("/api/settings", json={"country": "ZZ"}).status_code == 400
+
+
+# ---- Gemini Live bridge (no network: the SDK's own message types, a fake connection) ----
+
+def test_gemini_live_config_and_events_use_the_sdk_types(settings):
+    """Builds the real LiveConnectConfig and turns real LiveServerMessages into VoiceEvents."""
+    from google.genai import types
+
+    from claimagent.live.gemini_realtime import GeminiRealtime, live_config
+
+    config = live_config(settings)
+    names = [f.name for f in config.tools[0].function_declarations]
+    assert names == ["log_observation", "request_recapture", "record_user_fact", "end_sweep", "sweep_status"]
+    assert config.response_modalities == ["AUDIO"] and config.input_audio_transcription is not None
+
+    def content(**fields):
+        return types.LiveServerMessage(server_content=types.LiveServerContent(**fields))
+
+    turns = [[
+        content(input_transcription=types.Transcription(text="skip the ")),
+        content(input_transcription=types.Transcription(text="bottom shelf")),
+        types.LiveServerMessage(tool_call=types.LiveServerToolCall(function_calls=[
+            types.FunctionCall(id="c1", name="record_user_fact", args={"kind": "skip_shelf", "text": "skip it"})])),
+        content(output_transcription=types.Transcription(text="Done."),
+                model_turn=types.Content(parts=[types.Part(inline_data=types.Blob(data=b"\x01\x02", mime_type="audio/pcm;rate=24000"))])),
+        content(turn_complete=True),
+    ], [content(interrupted=True)]]
+
+    class FakeConnection:
+        """receive() ends after each turn, as the Live API's does."""
+        def __init__(self):
+            self.sent = []
+
+        async def receive(self):
+            for message in turns.pop(0) if turns else []:
+                yield message
+            if not turns:
+                await asyncio.sleep(3600)
+
+        async def send_tool_response(self, function_responses):
+            self.sent.append(function_responses)
+
+    connection = FakeConnection()
+    voice = GeminiRealtime(connection)
+
+    async def scenario():
+        events, stream = [], voice.events()
+        while len(events) < 9:
+            events.append(await asyncio.wait_for(stream.__anext__(), 2))
+        await voice.send_tool_result("c1", "record_user_fact", {"ok": True})
+        return events
+
+    events = asyncio.run(scenario())
+    assert [e.kind for e in events] == ["transcript", "transcript", "tool_call", "transcript", "audio",
+                                        "transcript", "transcript", "turn_complete", "interrupted"]
+    assert events[1].text == "skip the bottom shelf" and not events[1].final
+    assert events[2].name == "record_user_fact" and events[2].args["kind"] == "skip_shelf" and events[2].call_id == "c1"
+    assert events[4].audio == b"\x01\x02"
+    assert (events[5].speaker, events[5].text, events[5].final) == ("user", "skip the bottom shelf", True)
+    assert (events[6].speaker, events[6].text, events[6].final) == ("agent", "Done.", True)
+    assert connection.sent[0][0].id == "c1" and connection.sent[0][0].response == {"ok": True}
+
+
+def test_fact_targets_are_tidied_only_when_they_are_ids(settings):
+    session = LiveSession(settings, "live-targets")
+    for target in ("a 2", "a1 - 3", "i4", "the bottom shelf", "", None):
+        session.call_tool("record_user_fact", {"kind": "note", "target": target, "text": "x"})
+    assert [f.target for f in session.facts] == ["A2", "A1-3", "I4", "the bottom shelf", None, None]
+
+
+def test_config_tells_the_client_the_evidence_frame_size(settings):
+    client, _ = make_client(settings)
+    assert client.get("/api/config").json()["evidence_side"] == 1920

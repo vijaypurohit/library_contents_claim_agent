@@ -21,6 +21,7 @@ def fake_run(monkeypatch):
 
     def run(command, **kwargs):
         seen["command"] = command
+        seen["stdin"] = kwargs.get("stdin")
         # the image files must exist while the CLI runs
         seen["images_existed"] = all(__import__("os").path.exists(p) for p in command[2].split("\n") if p.endswith(".jpg"))
         return seen["reply"]
@@ -42,6 +43,7 @@ def test_structured_output_is_used_and_images_are_passed(ctx: RunContext, fake_r
     assert command[:2] == ["claude", "-p"] and command[command.index("--model") + 1] == "haiku"
     assert "image_1.jpg" in command[2] and fake_run["images_existed"]
     assert ctx.tracker.calls[0].cost_usd == 0.001
+    assert fake_run["stdin"] is subprocess.DEVNULL      # a detached CLI must not wait for piped input
 
 
 def test_text_result_is_parsed_when_no_structured_output(ctx: RunContext, fake_run):

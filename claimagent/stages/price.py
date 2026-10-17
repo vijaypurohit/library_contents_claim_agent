@@ -38,6 +38,7 @@ from pydantic import BaseModel, Field
 
 from claimagent.core.context import RunContext
 from claimagent.core.stage import Stage, register
+from claimagent.domain.facts import UserFact, load_facts
 from claimagent.pricing.extract import Listing
 from claimagent.pricing.fetch import ShopBlocked
 from claimagent.pricing.fx import RateUnavailable, rate
@@ -198,6 +199,20 @@ def item_matches(query: str, listing_title: str) -> bool:
 
 # ---- Stage ----
 
+def print_items(items: list[InventoryItem], facts: list[UserFact]) -> set[str]:
+    """Art items the user said are prints. A print fact names an item id; one without a usable id
+    counts only when the sweep has exactly one piece of art, so it cannot land on the wrong one."""
+    art = [i.item_id for i in items if i.category == "art"]
+    found = set()
+    for fact in (f for f in facts if f.kind == "print"):
+        target = (fact.target or "").strip().upper()
+        if target in art:
+            found.add(target)
+        elif len(art) == 1:
+            found.add(art[0])
+    return found
+
+
 @register
 class PriceStage(Stage):
     name = "price"
@@ -212,7 +227,8 @@ class PriceStage(Stage):
         pricer = Pricer(ctx, locale)
         with ThreadPoolExecutor(PARALLEL_BOOKS) as pool:
             books = list(pool.map(pricer.price_book, identify.books))
-        items = [pricer.price_item(item) for item in inventory.items]
+        prints = print_items(inventory.items, load_facts(ctx.sweep.facts_path))
+        items = [pricer.price_item(item, is_print=item.item_id in prints) for item in inventory.items]
         for shop, reason in pricer.blocked.items():
             ctx.warn(f"price: shop {shop} unavailable ({reason})")
         return PriceOutput(country=locale.country, currency=locale.currency, books=books, items=items,
@@ -319,10 +335,11 @@ class Pricer:
         return BookPrice(book_id=book.book_id, status="priced", currency=currency, replacement_cost=replacement,
                          used_value=used_value, quotes=quotes, review=review)
 
-    def price_item(self, item: InventoryItem) -> ItemPrice:
+    def price_item(self, item: InventoryItem, is_print: bool = False) -> ItemPrice:
+        """A sourced price range for one non-book item. Art goes to appraisal unless the user said it is a print."""
         currency = self.locale.currency
         query = item_query(item, self.locale.item_terms)
-        if item.category == "art":
+        if item.category == "art" and not is_print:
             return ItemPrice(item_id=item.item_id, status="needs_appraisal", currency=currency, query=query,
                              review=["art is appraised by a person unless it is a print"])
         quotes = []

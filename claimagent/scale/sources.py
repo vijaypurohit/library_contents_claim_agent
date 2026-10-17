@@ -94,7 +94,7 @@ class CardScale:
         corners, ids, _ = self._detector.detectMarkers(grey)
         if ids is None:
             return None
-        for quad, marker_id in zip(corners, ids.ravel()):
+        for quad, marker_id in zip(corners, ids.ravel(), strict=True):
             if int(marker_id) == self.cfg.marker_id:  # other ids have no known size
                 return quad.reshape(4, 2).astype(np.float64)
         return None

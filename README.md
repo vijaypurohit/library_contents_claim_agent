@@ -1,57 +1,108 @@
 # Library Contents Claim Agent
 
-A live voice-and-vision agent that inventories a home library from one camera sweep. It counts, identifies, measures and prices every book from its spine, prices non-book items, measures the room, and produces a claim packet in which every number is traced to a frame or a price source. Totals are computed in code, and anything uncertain goes to a review queue instead of being guessed.
+A live voice-and-vision agent that inventories a home library from one camera sweep. It counts, identifies, measures and prices every book from its spine, prices non-book items, measures the room, and writes a claim packet in which every number traces to a frame or a price source. Totals are computed in code, and anything uncertain goes to a review queue instead of being guessed.
 
-Docs: [Architecture](docs/ARCHITECTURE.md) · [Design](docs/DESIGN.md) · [Implementation plan](docs/IMPLEMENTATION_PLAN.md) · [Testing](docs/TESTING.md) · [Failure log](docs/FAILURE_LOG.md) · [Evaluation results](eval/)
+Docs: [Architecture](docs/ARCHITECTURE.md) · [Design](docs/DESIGN.md) · [Testing](docs/TESTING.md) · [Failure log](docs/FAILURE_LOG.md) · [Requirements](docs/requirements.md) · [Evaluation results](eval/)
 
-## Setup
+## 1. Set up (5 minutes)
 
-Requires [uv](https://docs.astral.sh/uv/) (it installs Python 3.12). For phone access, also `brew install cloudflared`.
+Needs [uv](https://docs.astral.sh/uv/) (it installs Python 3.12). Chrome or Safari for the live page; `brew install cloudflared` only if you want to use a phone.
 
 ```bash
 uv sync
-cp .env.example .env          # add GEMINI_API_KEY (one key covers Gemini Live and Gemini Flash)
-uv run pytest                 # 180+ unit tests: no network, no keys
+cp .env.example .env      # then put a GEMINI_API_KEY in it (one key covers Gemini Live and Gemini Flash)
+uv run pytest             # about 200 tests, no network and no keys needed
 ```
+
+### The three options you will see in commands
+
+| Option | Plain meaning |
+|---|---|
+| `--allow-calls` | "Yes, you may call the AI models." Without it the program refuses to call any model, so nothing is billed by accident. Put it **before** the command name: `uv run claim --allow-calls replay …`. |
+| `--profile NAME` | *Which* AI models answer. Leave it out for the default (`gemini`). Use `--profile dev` if you have no API key (see the table). |
+| `--id NAME` | A **name for this run**. Its results go in `runs/NAME/`. Optional: if you leave it out, a time-stamped name is made. Using the same name again replaces that run. |
+
+| Profile | Needs | Use it for |
+|---|---|---|
+| `gemini` (default) | `GEMINI_API_KEY` in `.env` | normal use, live voice included |
+| `openai`, `anthropic`, `groq` | that provider's key | the same stages on another provider |
+| `local` | Ollama running | no network |
+| `dev` | the `claude` command-line tool, logged in | trying everything with no API key (Claude Haiku: slow, about 10 minutes per sweep, and chat or browser-speech only) |
+
+## 2. Run it on a recorded video or photos (offline path)
+
+Any phone video (`.mp4`, `.mov`) or photos (`.jpg`, `.heic`) of shelves works; give them in capture order. Film slowly, left to right, top shelf first, with the spines readable.
+
+```bash
+uv run claim --allow-calls replay path/to/shelves.mp4 --id mine     # all nine stages; prints each stage as it runs
+open runs/mine/report.html                                          # the claim report (Linux: xdg-open)
+```
+
+(No API key? Add `--profile dev`. No `--id`? A time-stamped name is used and printed at the end.) You get, in `runs/mine/`: `claim_packet.json`, `report.html`, `metrics.json` (time and cost per stage), annotated shelf images and price-page snapshots under `evidence/`. Add `--profile dev` if you have no API key.
+
+Useful follow-ups on the same sweep (no new model calls):
+
+```bash
+uv run claim reprice --sweep mine --country US     # same books priced for another country (IN and US are provided)
+uv run claim export --sweep mine                   # packet + every frame and price page it cites -> release/mine/
+uv run claim run --sweep mine --from price         # rerun from one stage onward
+uv run claim sessions                              # list everything in runs/: how each was made and what it produced
+uv run claim clean mine                            # delete a run (asks first); `claim clean --unfinished` removes runs with no packet
+```
+
+For real dimensions, put a printed scale card in view: `uv run claim marker --out marker.pdf`, print it at 100%, and tape it to a shelf. Without a scale, sizes stay empty and the packet says why.
+
+## 3. Run the live agent
+
+```bash
+uv run claim --allow-calls serve          # then open http://127.0.0.1:8000/
+```
+
+On the page: pick a camera, pick **Talk by** (below), press **Start sweep**, film the shelves, and press **End sweep** (or just say or type "I'm done"). The agent greets you, guides the sweep shelf by shelf, warns about blur, glare and panning too fast, and records what you say that changes the claim ("skip the top shelf", "that one is signed").
+
+- **Talk by:** *Chat* (you type, the agent types back: no microphone, saves Gemini Live quota), *Voice: Gemini Live* (speak, it speaks back, you can interrupt; headphones please) or *Voice: browser speech* (the browser listens and speaks for any model).
+- **While you film:** the **claim sheet** (a sheet of paper under the chat) fills in live: books in view, what the agent logged, what you told it, shelves to film again, capture problems.
+- **After End sweep:** a progress card shows the nine steps with a running timer and what you can do meanwhile (keep chatting, add corrections, or close the page). A correction made after the report exists gets an **Update report** button. When it is done, the report opens from the chat, from the card, or inline.
+- **History tab:** every session, how it was made (live, simulated, upload, replay), its result, its report and its conversation. Sessions can be deleted there. A session with no camera frames is not kept.
+- **No camera?** Choose **Replay a video…** as the camera and pick a recording: it plays into the session as if it were the camera. The **Upload** tab processes a recorded video without the live agent.
+- **Phone:** `uv run claim --allow-calls serve --tunnel` prints an `https://….trycloudflare.com/?token=…` link; open it on the phone.
+
+**What the terminal shows.** The server prints what is happening, so you can tell what works:
+
+```
+14:02:11 INFO  live      session live-20261017-140211 opened (voice chat, models: dev, model calls allowed)
+14:02:19 INFO  live      agent: Hi! We're pricing this claim in India, in rupees…
+14:02:31 INFO  live      capture warning (glare): There is glare on the spines…
+14:02:40 INFO  live      tool record_user_fact {"kind": "first_edition", …} -> {"ok": true, …}
+14:03:05 INFO  pipeline  stage 3/9 detect started (live-20261017-140211)
+14:05:10 INFO  pipeline  stage 3/9 detect done in 125.0 s (4 model calls)
+```
+
+Add `--log-level debug` for more (frame batches), or `warning` for problems only: `uv run claim --allow-calls --log-level debug serve`. A yellow banner on the page warns when model calls are off. Each session also keeps its own log, `runs/<id>/live_log.jsonl`.
+
+## 4. Run the tests (optional)
+
+You do not need this to use the app. These commands check that the code itself works; run them after changing something.
+
+```bash
+uv run pytest                      # unit tests: no network, no keys
+node --test tests/web/             # the browser's audio encoder
+```
+
+These two need the recordings of the test space, which are kept locally and not published (`tests-local-data/`), so skip them on a fresh clone:
+
+```bash
+uv run pytest -o addopts="" tests/integration          # replays a cached sweep through every stage
+uv run claim --allow-calls --profile dev simulate      # a scripted live session with a reference camera feed, end to end
+```
+
+`claim simulate` starts the real server, streams a camera feed built from the recordings (glare, blur and a fast pan added), plays a scripted user, and writes the packet plus `runs/<id>/simulation/transcript.md`. Edit `config/live_script.yaml` to point it at your own videos. To compare any packet with your own hand-made ground truth (same format as `ground_truth/almirah/truth.yaml`): `uv run claim eval --sweep mine --truth my_truth.yaml`. Details: [Testing](docs/TESTING.md).
 
 ## Configuration
 
 - **`.env`**: API keys only. A stage whose provider has no key moves on to the next provider in its list.
-- **`config/settings.yaml`**: everything else.
-  - `locale`: country and currency. Shops, item search words and the appraisal threshold are per country in `config/locales/<country>.yaml` (India and the US are provided).
-  - `models.profile`: providers for every model stage at once (`gemini`, `openai`, `anthropic`, `groq`, `local`, `dev`); `models.overrides` changes one stage. `--profile <name>` on the command line overrides it for one run.
-  - `gateway.cache_only: true` (the default): no model is ever called; stages replay cached answers. Add `--allow-calls` to a command to call models.
-  - `live`: voice mode, frame rate and the capture-warning thresholds.
+- **`config/settings.yaml`**: everything else: `locale` (country and currency; shops, item search words and the appraisal threshold are per country in `config/locales/<country>.yaml`), `models` (profiles and per-stage overrides), `live` (voice, frame rate, capture-warning thresholds), `gateway.cache_only`.
 - **`config/targets.yaml`**: accuracy targets the evaluation reports against.
-
-## Running the pipeline on a recording
-
-```bash
-uv run claim ingest tests-local-data/video_slow.mp4 --id slow     # video or photos -> runs/slow/
-uv run claim --allow-calls run --sweep slow                        # all nine stages
-uv run claim stage price --sweep slow                              # rerun one stage
-uv run claim run --sweep slow --from price                         # rerun from a stage onward
-open runs/slow/report.html                                         # the claim report
-uv run claim reprice --sweep slow --country US                     # same inventory, US shops and USD
-uv run claim eval --sweep slow                                     # vs ground truth -> eval/results_slow.md
-uv run claim export --sweep slow                                   # packet + every referenced file -> release/slow/
-uv run claim replay tests-local-data/video_slow.mp4 --id slow      # ingest + all stages, outputs kept under replays/
-```
-
-Outputs per sweep (`runs/<id>/`): `claim_packet.json`, `report.html`, `metrics.json` (latency, model calls and cost per stage), `stages/*.json`, annotated shelf images and price-page snapshots under `evidence/`.
-
-## Live agent
-
-```bash
-uv run claim --allow-calls serve              # http://127.0.0.1:8000/
-uv run claim --allow-calls serve --tunnel     # also prints a phone link: https://<name>.trycloudflare.com/?token=...
-```
-
-Open the page, choose a camera (or **Replay a video** to play a recording into the session), choose the voice, and press **Start sweep**. The agent guides the sweep shelf by shelf, warns about blur, glare and panning too fast, and records what you say that changes the claim ("skip the top shelf", "that one is signed"). Say you are done (or press **End sweep**); the pipeline runs and the agent reads back a summary built from the finished packet, with a link to the report. Use headphones so the agent does not hear itself.
-
-- **Gemini Live** (default): audio in and out, and you can interrupt the agent.
-- **Cascaded**: the browser's speech recognition and speech synthesis around any vision model (the profile's `converse` chain). Works with every provider; slower.
-- **Upload** tab: process a recorded video or photos without the live agent.
 
 ## Results on the test captures
 

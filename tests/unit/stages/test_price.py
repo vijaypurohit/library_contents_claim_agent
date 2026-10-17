@@ -7,6 +7,7 @@ import httpx
 import pytest
 
 from claimagent.core.context import RunContext
+from claimagent.domain.facts import UserFact
 from claimagent.domain.records import BBox
 from claimagent.pricing import fetch as fetch_module
 from claimagent.pricing.extract import (Listing, item_list_links, jsonld_blocks, listings_from_jsonld, shopify_listing,
@@ -15,7 +16,7 @@ from claimagent.pricing.fetch import Page, ShopBlocked, fetch_page
 from claimagent.pricing.shop import ConfiguredShop, Found, LocaleShops, ShopConfig
 from claimagent.stages.identify import IdentifiedBook
 from claimagent.stages.inventory import InventoryItem
-from claimagent.stages.price import (Pricer, Quote, book_values, item_matches, item_query, match_listing, prefer_local,
+from claimagent.stages.price import (Pricer, print_items, Quote, book_values, item_matches, item_query, match_listing, prefer_local,
                                      price_range, title_variants)
 
 NOW = datetime(2026, 10, 16, tzinfo=UTC)
@@ -233,3 +234,17 @@ def test_fetch_page_caches_snapshots_and_reports_refusals(ctx: RunContext, monke
     monkeypatch.setattr(fetch_module.httpx, "get", lambda url, **kwargs: httpx.Response(503, text="no"))
     with pytest.raises(ShopBlocked, match="HTTP 503"):
         fetch_page(ctx, "https://amazon.example/s")
+
+
+def test_art_is_priced_only_after_the_user_says_it_is_a_print(ctx: RunContext):
+    box = BBox(x0=0, y0=0, x1=1, y1=1)
+    art = InventoryItem(item_id="I2", category="art", label="framed painting", material=None, brand=None, unit=None,
+                        frame_ref="f", bbox=box, plane_box=box, views=[])
+    p = pricer(ctx, [])
+    assert p.price_item(art).status == "needs_appraisal"
+    assert p.price_item(art, is_print=True).status == "no_quotes"          # priced like any item (no shop here)
+    said = [UserFact(kind="print", target=None, text="the painting is only a print")]
+    assert print_items([art], said) == {"I2"}
+    other = art.model_copy(update={"item_id": "I3"})
+    assert print_items([art, other], said) == set()                        # two pieces of art: which one is unclear
+    assert print_items([art, other], [UserFact(kind="print", target="i3", text="that one is a print")]) == {"I3"}

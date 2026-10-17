@@ -11,10 +11,14 @@ and sends whatever this returns to the browser and the voice model, so all of it
   end_sweep, sweep_status. record_user_fact writes facts.json, which the packet stage applies.
 - The summary read back to the user is built in code from the claim packet: the agent never
   invents counts or totals.
+- The session log (runs/<id>/live_log.jsonl): every message between the user, the agent and the
+  browser except raw audio and frames, with its time in the sweep, so an adjuster can see what
+  the agent said and which warnings the user was given.
 """
 
 from __future__ import annotations
 
+import json
 import statistics
 import threading
 import time
@@ -27,6 +31,7 @@ import numpy as np
 from pydantic import ValidationError
 
 from claimagent.core.settings import LiveConfig, Settings
+from claimagent.core.sessions import write_info
 from claimagent.core.sweep import SweepDir, frame_name
 from claimagent.domain.facts import UserFact
 from claimagent.domain.packet import ClaimPacket
@@ -129,6 +134,13 @@ class QualityMonitor:
         return due
 
 
+def opening_note(settings: Settings) -> str:
+    """The note that starts every session: the agent greets the user and confirms where the claim is priced."""
+    return (f"[start] The session has started. The claim is priced in country {settings.locale.country} "
+            f"with currency {settings.locale.currency}. Greet the user, confirm the country and currency, "
+            "and explain the sweep in one or two sentences.")
+
+
 def summary_for_voice(packet: ClaimPacket) -> str:
     """What the agent reads back when processing finishes. Built from the packet's computed totals only."""
     t, currency = packet.totals, packet.sweep.currency
@@ -160,6 +172,8 @@ class LiveSession:
 
     settings: Settings
     sweep_id: str
+    origin: str = "live"                   # "live" (the web page) or "simulate" (`claim simulate`); see core/sessions.py
+    voice: str = ""                        # voice mode asked for: gemini, cascaded or chat
     recorder: Recorder = field(init=False)
     quality: QualityMonitor = field(init=False)
     observations: list[dict] = field(default_factory=list)
@@ -169,12 +183,23 @@ class LiveSession:
     summary: str | None = None
     error: str | None = None
     on_finished: Any = None                # called with the session when processing ends (set by the server)
+    on_progress: Any = None                # called with a stage progress dict (core/runner.py) from the pipeline thread
     latest: np.ndarray | None = None       # most recent frame, for the provisional count
     _pipeline: threading.Thread | None = field(default=None, init=False)
 
     def __post_init__(self):
         self.recorder = Recorder(self.settings, self.sweep_id)
         self.quality = QualityMonitor(self.settings.live)
+        write_info(self.recorder.sweep, self.origin, voice=self.voice, profile=self.settings.models.profile,
+                   country=self.settings.locale.country, currency=self.settings.locale.currency,
+                   calls_allowed=not self.settings.gateway.cache_only)
+
+    def log(self, direction: str, message: dict[str, Any]) -> None:
+        """Append one event to the session log. `direction`: "in" (from the browser), "out" (to it)
+        or "agent-note" (a system note the voice agent was sent)."""
+        entry = {"t": self._t(), "direction": direction, **message}
+        with self.recorder.sweep.live_log_path.open("a") as out:
+            out.write(json.dumps(entry, ensure_ascii=False, default=str) + "\n")
 
     def add_frame(self, image: np.ndarray) -> list[QualityWarning]:
         """Record an evidence frame; returns the capture warnings now due."""
@@ -206,6 +231,8 @@ class LiveSession:
     def _tool_record_user_fact(self, kind: str, text: str, target: str | None = None) -> dict:
         self.facts.append(UserFact(kind=kind, target=target or None, text=text))  # type: ignore[arg-type]
         self.recorder.sweep.facts_path.write_text("[" + ",".join(f.model_dump_json() for f in self.facts) + "]")
+        if self.status in ("ready", "failed"):   # the report was already made: it needs updating to include this
+            return {"ok": True, "recorded": kind, "note": "saved; the report must be updated to include it"}
         return {"ok": True, "recorded": kind}
 
     def _tool_end_sweep(self) -> dict:
@@ -224,9 +251,11 @@ class LiveSession:
 
     # ---- Pipeline ----
 
-    def start_pipeline(self) -> None:
-        """Run every stage in a background thread; `on_finished(session)` is called when it ends."""
+    def start_pipeline(self, from_stage: str | None = None) -> None:
+        """Run the stages in a background thread (all of them, or `from_stage` onward, to include corrections
+        made after the report); `on_finished(session)` is called when it ends."""
         self.status = "processing"
+        self.summary = self.error = None
         self.recorder.write_manifest()
 
         def work():
@@ -235,7 +264,7 @@ class LiveSession:
 
             try:
                 ctx = RunContext.open(self.settings, self.sweep_id)
-                Runner(ctx).run()
+                Runner(ctx, on_progress=self.on_progress).run(from_stage)
                 packet = ClaimPacket.model_validate_json(ctx.sweep.packet_path.read_text())
                 self.summary = summary_for_voice(packet)
                 self.status = "ready"

@@ -2,7 +2,8 @@
 
   1. One packet line per book (inventory + identify + measure + price) and per item.
   2. User facts (runs/<id>/facts.json, see domain/facts.py) are applied: skipped shelves are left
-     out, first editions and signed copies go to appraisal unpriced.
+     out, first editions and signed copies go to appraisal unpriced. A fact that matches no shelf,
+     book or item goes to the review queue instead of being lost.
   3. Every review note from every stage is gathered into one review queue.
   4. Totals are computed in code from the lines (domain/packet.py); a model never writes them.
   5. The validator (report/validate.py) checks every referenced frame and snapshot exists and every
@@ -31,10 +32,28 @@ from claimagent.stages.inventory import InventoryOutput
 from claimagent.stages.measure import MeasureOutput
 from claimagent.stages.price import BookPrice as StageBookPrice
 from claimagent.stages.price import ItemPrice as StageItemPrice
-from claimagent.stages.price import PriceOutput, Quote
+from claimagent.stages.price import PriceOutput, Quote, print_items
 from claimagent.stages.room import RoomOutput
 
 APPRAISAL_FACTS = {"first_edition": "the user said it is a first edition", "signed": "the user said it is signed"}
+
+
+def unmatched_facts(facts: list[UserFact], inventory: InventoryOutput) -> list[UserFact]:
+    """Facts that change nothing in the packet because their target is not a shelf, book or art item.
+
+    The live agent cannot know book ids during a sweep, so it may record "the Hindi book" or no
+    target at all; such a fact must reach a person rather than vanish."""
+    shelves = {f"{b.unit}{b.shelf}" for b in inventory.books}
+    books = {b.book_id for b in inventory.books}
+    missed = []
+    for fact in facts:
+        if fact.kind == "skip_shelf" and fact.target not in shelves:
+            missed.append(fact)
+        elif fact.kind in APPRAISAL_FACTS and fact.target not in books:
+            missed.append(fact)
+        elif fact.kind == "print" and not print_items(inventory.items, [fact]):
+            missed.append(fact)
+    return missed
 
 
 class PacketOutput(BaseModel):
@@ -129,6 +148,8 @@ class PacketStage(Stage):
             review.append(ReviewEntry(ref_id=frame, reason="no detector could analyse this keyframe"))
         review += [ReviewEntry(ref_id="room", reason=r) for r in room.review]
         review += [ReviewEntry(ref_id=f.target or "sweep", reason=f"user: {f.text}") for f in facts if f.kind == "note"]
+        review += [ReviewEntry(ref_id=f.target or "sweep", reason=f"user said \"{f.text}\" ({f.kind}), but it matches "
+                               "no shelf, book or item: apply it by hand") for f in unmatched_facts(facts, inventory)]
 
         manifest = ctx.sweep.read_manifest()
         sweep = SweepInfo(id=ctx.sweep.id, captured_at=manifest.created_at,

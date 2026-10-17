@@ -1,0 +1,49 @@
+# A scripted live session for `claim simulate`: what the camera shows and what the user says.
+#
+# The camera is a reference sweep made from the recordings of the test space, and it is one
+# continuous view of the same almirah: a step back, a step in, and (after the faults) the same
+# shelves filmed again as the agent asks. Every frame is real footage; the capture faults the
+# agent has to catch (glare, blur, a fast pan) are added on top and marked `synthetic: true`.
+# Paths are relative to the project folder.
+#
+# Camera segments, played in order at the live frame rate (live.frame_fps):
+#   video:  a recorded video; `speed` > 1 skips frames (a faster pan than was filmed); `repeat` > 1
+#           shows each frame that many times with slight hand shake (a person pausing on each view:
+#           the test recordings are only a few seconds long)
+#   pan:    a photo seen through a portrait phone-shaped window that slides from `from` to `to`
+#           (0 = left edge, 1 = right edge) over `seconds`. Not in the default script: a close-up
+#           still cannot be linked to a wide shot, so mixing them double-counts books
+#   hold:   the last frame of the previous segment held for `seconds` with slight hand shake
+#   effect: glare (a blown-out reflection), blur (lost focus), applied to that segment
+#
+# User lines, sent in order as typed (or recognised) speech. A line is sent once all its
+# conditions hold:
+#   after_agent: true    the agent has answered since the previous line (waits up to 90 s)
+#   camera_t: N          the camera has been running N seconds
+#   camera_done: true    the camera has finished
+#   start_camera: true   the camera starts right after this line is sent
+#   end: true            this line ends the sweep; if the agent does not call end_sweep within
+#                        `end_grace_s`, the simulator presses End like the user would
+
+camera:
+  width: 900
+  height: 1600
+  crossfade_frames: 2        # frames blended at each cut, so a cut is not a jump the motion check reports
+  segments:
+    - {video: tests-local-data/video_far_focus.mp4, repeat: 2, note: "the whole almirah from a step back"}
+    - {video: tests-local-data/video_slow.mp4, repeat: 3, note: "stepping in, a slow pan down both shelves"}
+    - {hold: 2, effect: glare, synthetic: true, note: "a lamp reflecting on the covers"}
+    - {hold: 2, effect: blur, synthetic: true, note: "the camera loses focus"}
+    - {video: tests-local-data/video_rush.mp4, speed: 2, synthetic: true, note: "a rushed pan, played twice as fast"}
+    - {video: tests-local-data/video_slow.mp4, repeat: 3, note: "both shelves filmed again, steadily"}
+
+user:
+  - {after_agent: true, start_camera: true,
+     say: "Yes, India and rupees is right. I'm starting with the whole almirah, then each shelf."}
+  - {after_agent: true, camera_t: 14,
+     say: "One thing: the Hindi book on the bottom shelf is a first edition."}
+  - {after_agent: true, camera_done: true, end: true,
+     say: "That's both shelves. I'm done."}
+
+end_grace_s: 60
+packet_timeout_s: 3600       # how long to wait for the claim packet after the sweep ends (slow CLI models need long)

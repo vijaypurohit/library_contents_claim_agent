@@ -98,6 +98,7 @@ class LiveConfig(BaseModel):
     voice_name: str = "Kore"
     frame_fps: float = Field(4.0, gt=0, le=5)        # evidence frames recorded; 4 matches ingest, so thresholds carry over
     model_fps: float = Field(1.0, gt=0, le=5)        # of those, frames forwarded to the voice model
+    evidence_side: int = Field(1920, ge=640)         # long side of recorded frames; spine crops are cut from these, so bigger reads better
     model_frame_side: int = 768                      # forwarded frames are shrunk to this long side
     blurry_ratio: float = Field(0.5, gt=0, lt=1)     # sharpness below this share of the recent median is blurry
     glare_max: float = Field(0.06, gt=0, lt=1)       # share of blown-out pixels above which glare is reported

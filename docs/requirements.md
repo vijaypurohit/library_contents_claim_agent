@@ -1,4 +1,4 @@
-# **Take-Home Assignment: Library Contents Claim Agent**
+# **Library Contents Claim Agent: Requirements**
 
 ## **The brief**
 
@@ -10,7 +10,7 @@ This is a test of three things: whether you can get real measurements out of mes
 ## **Reference and how this differs**
 
 Start from the [Insurance Claim Live Agent Team](https://github.com/Shubhamsaboo/awesome-llm-apps/tree/main/voice_ai_agents/insurance_claim_live_agent_team) example. Read it and run it before you write any code. It shows the interaction pattern we want: a claimant talks, the camera is on, a claim file builds itself in real time, and background agents assemble the adjuster packet.  
-The reference describes what it sees. Yours has to measure, count and price it. That gap is the assignment.
+The reference describes what it sees. Yours has to measure, count and price it. That gap is the point of this project.
 
 |  | Reference app | Your agent |
 | :---- | :---- | :---- |

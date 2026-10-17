@@ -1,10 +1,16 @@
 """The `claim` command line. Run `uv run claim --help` for the full list.
 
 Typical use:
-    uv run claim ingest tests-local-data/video_slow.mp4 --id slow   # recorded video -> sweep "slow"
-    uv run claim stage detect --sweep slow                 # run one stage
-    uv run claim run --sweep slow --from price             # rerun price and everything after it
-    uv run claim --allow-calls stage detect --sweep slow   # allow real model calls (cache-only is the default)
+    uv run claim --allow-calls replay shelves.mp4           # a recording -> every stage -> runs/<name>/report.html
+    uv run claim --allow-calls serve                        # the live agent in the browser
+    uv run claim sessions                                   # what is in runs/, and where each came from
+    uv run claim run --sweep slow --from price              # rerun price and everything after it (cached, free)
+
+Two options you will see before the command name:
+    --allow-calls   let the command call the AI models. Off by default, so nothing is billed by accident.
+    --profile NAME  which models answer (gemini, openai, anthropic, groq, local, dev). Default: settings.yaml.
+And one after it:
+    --id NAME       a name for the run; its results go to runs/NAME/. Optional: a time-stamped name is made if omitted.
 """
 
 from __future__ import annotations
@@ -19,7 +25,7 @@ from claimagent.core.runner import Runner
 from claimagent.core.settings import Settings
 
 app = typer.Typer(no_args_is_help=True, add_completion=False, help="Library contents claim agent.")
-_state: dict = {"config": None, "allow_calls": False, "profile": None}  # set by the global options before any command runs
+_state: dict = {"config": None, "allow_calls": False, "profile": None, "log_level": "info"}  # set by the global options before any command runs
 
 ConfigOpt = Annotated[Optional[Path], typer.Option("--config", help="Settings file (default: config/settings.yaml).")]
 SweepOpt = Annotated[str, typer.Option("--sweep", help="Sweep id.")]
@@ -29,10 +35,17 @@ AllowCallsOpt = Annotated[bool, typer.Option("--allow-calls", help="Call model p
 
 
 ProfileOpt = Annotated[Optional[str], typer.Option("--profile", help="Model profile for this run, e.g. dev (default: settings).")]
+LogLevelOpt = Annotated[str, typer.Option("--log-level", help="debug, info (default), warning or error: how much to print while running.")]
 
 
 @app.callback()
-def main(config: ConfigOpt = None, allow_calls: AllowCallsOpt = False, profile: ProfileOpt = None) -> None:
+def main(config: ConfigOpt = None, allow_calls: AllowCallsOpt = False, profile: ProfileOpt = None,
+         log_level: LogLevelOpt = "info") -> None:
+    from claimagent.core.log import LEVELS, setup
+
+    if log_level.lower() not in LEVELS:
+        raise typer.BadParameter(f"log level must be one of {', '.join(LEVELS)}")
+    setup(log_level)           # stage progress and live-session events are printed as they happen
     _state["config"] = config
     _state["allow_calls"] = allow_calls
     _state["profile"] = profile
@@ -149,7 +162,7 @@ def serve(
     token = new_token() if tunnel else None
     if settings.gateway.cache_only:
         typer.echo("note: cache-only mode is on, so new sweeps can't call models; start with `claim --allow-calls serve`")
-    typer.echo(f"local: http://{host}:{port}/" + (f"?token={token}" if token else ""))
+    typer.echo(f"open: http://{host}:{port}/" + (f"?token={token}" if token else "") + "   (Ctrl+C to stop; what happens is printed below)")
     if tunnel:
         # cloudflared prints the public https://<name>.trycloudflare.com address on stderr.
         process = subprocess.Popen(["cloudflared", "tunnel", "--url", f"http://localhost:{port}"],
@@ -173,9 +186,11 @@ def serve(
 @app.command()
 def replay(
     sources: Annotated[list[Path], typer.Argument(help="Recorded video and/or photos.")],
-    sweep_id: Annotated[str, typer.Option("--id", help="Sweep id; outputs go to replays/<id>/<time>/.")],
+    sweep_id: Annotated[Optional[str], typer.Option("--id", help="A name for this run (default: replay-<date>-<time>). "
+                                                    "Results go to runs/<name>/, and a copy to replays/<name>/<time>/.")] = None,
 ) -> None:
-    """Ingest a recording, run every stage, and keep a copy of all outputs for comparing runs."""
+    """Ingest a recording (video or photos), run every stage, and keep a copy of all outputs for comparing runs.
+    Re-using a name replaces that run."""
     import shutil
     from datetime import datetime
 
@@ -183,14 +198,56 @@ def replay(
     from claimagent.ingest import ingest as run_ingest
 
     settings = _settings()
-    sweep = run_ingest(sources, settings, sweep_id, replace=True)
+    sweep_id = sweep_id or datetime.now().strftime("replay-%Y%m%d-%H%M%S")
+    sweep = run_ingest(sources, settings, sweep_id, replace=True, origin="replay")
     _report(Runner(RunContext.open(settings, sweep.id)).run())
     out = PROJECT_ROOT / "replays" / sweep.id / datetime.now().strftime("%Y%m%d-%H%M%S")
     shutil.copytree(sweep.stages_dir, out / "stages")
     for name in ("claim_packet.json", "report.html", "metrics.json"):
         if (sweep.root / name).exists():
             shutil.copy2(sweep.root / name, out / name)
+    typer.echo(f"report: {sweep.report_path}")
     typer.echo(f"replay outputs: {out}  (diff two runs with `diff -r`)")
+
+
+@app.command()
+def sessions() -> None:
+    """List everything in runs/: what each folder is, where it came from, and what it produced."""
+    from datetime import datetime
+
+    from claimagent.core.sessions import list_sessions
+
+    rows = list_sessions(_settings().runs_dir)
+    if not rows:
+        typer.echo("no sessions yet")
+    for r in rows:
+        books = f"{r['books']} books" if r["books"] is not None else "no packet"
+        started = datetime.fromisoformat(r["created_at"]).astimezone().strftime("%Y-%m-%d %H:%M")   # local time
+        typer.echo(f"{r['id']:<28} {r['label']:<18} {started}  {r['status']:<9} {books}")
+    typer.echo("remove with: claim clean <id> ...   (or: claim clean --unfinished)")
+
+
+@app.command()
+def clean(
+    ids: Annotated[Optional[list[str]], typer.Argument(help="Session ids to delete (see `claim sessions`).")] = None,
+    unfinished: Annotated[bool, typer.Option("--unfinished", help="Delete every session that has no claim packet.")] = False,
+    yes: Annotated[bool, typer.Option("--yes", help="Do not ask for confirmation.")] = False,
+) -> None:
+    """Delete sessions from runs/ (frames, stage outputs, packet, report). Asks first."""
+    from claimagent.core.sessions import list_sessions, remove_session
+
+    settings = _settings()
+    chosen = list(ids or [])
+    if unfinished:
+        chosen += [r["id"] for r in list_sessions(settings.runs_dir) if r["status"] != "ready" and r["id"] not in chosen]
+    if not chosen:
+        raise typer.BadParameter("name the sessions to delete, or use --unfinished (see `claim sessions`)")
+    typer.echo("will delete: " + ", ".join(chosen))
+    if not yes and not typer.confirm("Delete these sessions for good?"):
+        raise typer.Abort()
+    for sweep_id in chosen:
+        remove_session(settings.runs_dir, sweep_id)
+        typer.echo(f"deleted {sweep_id}")
 
 
 @app.command()
@@ -209,6 +266,28 @@ def export(
     typer.echo(f"exported {copied} files to {target}")
     for ref in missing:
         typer.echo(f"    missing: {ref}")
+
+
+@app.command()
+def simulate(
+    script: Annotated[Path, typer.Option("--script", help="Camera feed and user lines.")] = Path("config/live_script.yaml"),
+    voice: Annotated[str, typer.Option("--voice", help="cascaded (the profile's converse models) or gemini (Gemini Live).")] = "cascaded",
+    url: Annotated[Optional[str], typer.Option("--url", help="ws:// address of a running server (default: start one).")] = None,
+) -> None:
+    """Run a scripted live session through the real server: reference camera feed, scripted user, real models.
+
+    Needs model calls, e.g. `claim --allow-calls --profile dev simulate`. Writes the sweep as usual,
+    plus runs/<sweep>/simulation/ (reference.mp4, events.jsonl, transcript.md, simulation.json)."""
+    from claimagent.live.simulate import simulate as run_simulation
+
+    settings = _settings()
+    if settings.gateway.cache_only:
+        raise typer.BadParameter("a live session needs fresh model answers: run `claim --allow-calls simulate`")
+    if voice not in ("cascaded", "gemini"):
+        raise typer.BadParameter("voice must be cascaded or gemini")
+    result = run_simulation(settings, script, voice, url, log=typer.echo)
+    typer.echo(f"sweep {result['sweep_id']}: {result['status']}, packet {result['time_to_packet_s']} s after the sweep ended")
+    typer.echo(f"transcript: {settings.runs_dir / result['sweep_id'] / 'simulation' / 'transcript.md'}")
 
 
 @app.command()

@@ -97,6 +97,16 @@ class SweepDir:
         return self.root / "facts.json"
 
     @property
+    def session_path(self) -> Path:
+        """How this sweep was made (see core/sessions.py)."""
+        return self.root / "session.json"
+
+    @property
+    def live_log_path(self) -> Path:
+        """What was said and shown during a live session, one JSON event per line."""
+        return self.root / "live_log.jsonl"
+
+    @property
     def packet_path(self) -> Path:
         return self.root / "claim_packet.json"
 

@@ -29,6 +29,38 @@ Measured on the four sweeps of the almirah test space (`photos`, `slow`, `rush`,
 *Root cause:* no rung of the scale ladder applies. There is no printed card in the captures, the catalogue records found carry no printed heights (Open Library has no dimensions for these Indian editions, and Google Books' anonymous quota was used up and does not accept the project key), detect found no known-size object, and the depth rung is not installed.
 *What to change:* have the live agent ask for an A4 sheet or the printed card on each shelf when no scale has been seen (both rungs exist and are tested), add the depth model as the last rung, and use a Google Books key for catalogue heights.
 
+## The live path, run end to end on Claude Haiku (scripted session)
+
+A scripted session (`claim simulate`, [Testing §10.1](TESTING.md#101-scripted-live-session-no-person-needed)) streamed a 46 s reference feed built from the almirah recordings through the real server, with the voice agent and every stage on Claude Haiku (the `dev` profile, through the local `claude` command; no paid key). The same script was also run through the web page in Chrome (`scripts/record_demo.py`). Both sweeps were then compared with the ground truth (`eval/results_live-*.md`).
+
+| | Scripted session | Same script, in Chrome |
+|---|---|---|
+| Packet produced and valid | yes | yes |
+| Book count (true 10) | **47** | **40** |
+| Lines with a title (of the count) | 9 | 3 |
+| Titles confidently wrong | 0 | 0 |
+| Agent ended the sweep itself | yes | no: the recorder pressed End after 60 s |
+| Time from end of sweep to packet | 748 s | about 740 s |
+
+**5. The live path over-counts badly with a weak detector (47 and 40 books for 10).**
+*What happens:* the packet counts four to five times the true number, and says so without a warning. The spoken summary repeats it ("I counted 47 books"). The packet is valid and every line is sourced, but the lines are mostly duplicates and unreadable.
+*Root cause (likely, not proven):* the detector. Claude Haiku returns 7–14 spine boxes per keyframe on a scene with 10 books, and its boxes are loose (tall boxes reaching into empty space above the books). The inventory stage merges the same book across views by mapping boxes onto one reference frame, so loose boxes do not land on each other: 15 of the 47 lines were seen in 2 views and 10 in 3, where each book should be one line. The recorded sweeps were detected by Gemini Flash and counted 10 of 10, so the merge itself works with precise boxes. A first run on a feed that jumped between wide shots and close-up stills counted 45; making the feed one continuous recording did not fix it, which points at the model and not the feed.
+*What to check first:* rerun detection on a copy of the live sweep with the `gemini` profile (12 calls) and compare the counts.
+*What to change:* a detector that locates objects well is a requirement, not a choice (the design says so; this measures it). Add a count check that compares the final count with the most spines seen in any single view and sends a doubtful count to the review queue; it needs care, because a real room has many views.
+
+**6. Smaller findings from the same runs**
+- *Reading from live frames:* live frames used to be capped at 1280 px, too small to cut readable spine crops from. They are now 1920 px (`live.evidence_side`). Haiku still read only 3 to 9 titles; the readings it did give were not wrong.
+- *Warnings were debounced away:* glare, blur and a fast pan arrived within 6 s of each other, so only the first (all three kinds on the first glare frame) was reported; the later blur and rushed-pan stretches were silent. Each kind is debounced on its own, but one bad stretch of footage trips several kinds on its first frame, and the user hears a single warning for it.
+- *The agent does not always end the sweep:* Haiku called `end_sweep` in one run of two. The End button (and in the simulator, a fallback press) covers it.
+- *A correction that names no line:* "the Hindi book on the bottom shelf is a first edition" was recorded with the target "bottom shelf". It matches no book id, so the packet put it in the review queue ("matches no shelf, book or item") instead of applying it. Before this run it would have been dropped without a word.
+- *Not tested:* Gemini Live audio (no quota), interruption by voice, a person's real camera and microphone.
+
+**7. A fresh offline run on Claude Haiku (`claim replay` on `video_slow.mp4`, no API key).**
+The whole pipeline ran in about 6 minutes (detect 163 s, identify 182 s, price 16 s, the rest under 3 s) and the packet validated, but accuracy was poor: count 13 for 10, 1 of 9 titles correct, and 2 of 10 books with a confidently wrong title (20%, against a limit of 3%). Gemini Flash read this same recording at 78% with none confidently wrong (`eval/results_slow.md`), so the reader model is the difference, and a key-less Haiku run is a check that the flow works, not a measure of accuracy.
+*Two gaps in the safeguards showed up:* (a) the check that distrusts identical spine text missed a copy with the words in a different order ("MATHEMATICS / R.D. SHARMA" for two different books); (b) Haiku invented the spine "MARCEL PROUST" for a school textbook, the catalogue held a book of that name, so it passed as identified with full confidence, and its printed height (30 cm) then set the scale for its whole shelf: heights of 31 cm and a shelf run of 1.1 m for a cupboard about a third of that, flagged only by a 0.48 confidence.
+*Fixed:* (a) word order is now ignored (`repeated_readings`, unit-tested). Rerun on the cached answers: confidently wrong titles 2 → 1, but one correct title was lost with the copy it shared text with (correct 1 → 0).
+*Not fixed:* (b). A hallucinated reading that happens to match a catalogue entry cannot be caught from the text alone; what would help is requiring two identified books whose catalogue heights agree before a shelf takes its scale from the catalogue (today one book is enough, at 0.6 trust), and checking the reading from a second view.
+
 ## One fix, measured: class numbers must agree
 
 *Error:* the first identify run took "MATHEMATICS / CLASS XI" by R.D. Sharma for the catalogue's "Mathematics class 8" at a score of 91, so a wrong title went out as confidently identified. The same weakness let the price stage quote other classes' books.
@@ -52,11 +84,11 @@ First runs (the only ones that call models; reruns replay the cache at no cost):
 | Stage | Calls per sweep | Cost per sweep | Latency |
 |---|---|---|---|
 | 3 Detect (Gemini Flash, free tier) | 2–4 keyframes, plus retries | $0.01–0.03 | 35 s (`rush`) to 155 s (`far`: 13 attempts through 503 and quota errors) |
-| 5 Identify (Claude Haiku via the CLI) | 2 (5 spines each) | about $0.10–0.24 estimated by the CLI (subscription, not billed) | 100–270 s; a hosted Flash model would take a few seconds |
+| 5 Identify (Claude Haiku via the CLI) | 2 (5 spines each; 8–10 in the live runs, which had 40+ lines) | about $0.10–0.24 estimated by the CLI (subscription, not billed) | 100–270 s; a hosted Flash model would take a few seconds |
 | 7 Price (no model) | 30–90 page fetches | free | 10–30 s first time, under 1 s cached |
 | Other stages | none | free | under 2 s each |
 
-Time to packet is dominated by model latency and rate limits, not by the pipeline's own work.
+Time to packet is dominated by model latency and rate limits, not by the pipeline's own work. In the live runs on Haiku through the local CLI it was about 12 minutes (detect 137–209 s, identify 459–503 s, price 28 s, the rest under 15 s), which is above the 5-minute target; a hosted model answers these calls in seconds.
 
 ## With two more weeks
 - Price from MRP plus sale median, with edition matching (error 1).

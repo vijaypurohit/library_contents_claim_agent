@@ -371,9 +371,9 @@ class InventoryStage(Stage):
 
         books: list[InventoryBook] = []
         for unit in sorted(set(units)):
-            members = [c for c, u in zip(clusters, units) if u == unit]
+            members = [c for c, u in zip(clusters, units, strict=True) if u == unit]
             places = shelf_positions([c.plane_box for c in members], [c.first.obj.orientation == "flat" for c in members])
-            for cluster, (shelf, position) in zip(members, places):
+            for cluster, (shelf, position) in zip(members, places, strict=True):  # one place per book
                 books.append(_book(cluster, unit, shelf, position, images, reference))
         books.sort(key=lambda b: (b.unit, b.shelf, b.position))
 

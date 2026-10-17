@@ -163,10 +163,13 @@ def reading_view(patch: np.ndarray, orientation: str, number: int) -> np.ndarray
 
 
 def repeated_readings(readings: dict[str, SpineReading]) -> dict[str, list[str]]:
-    """Books whose legible spine text is identical to another book's, mapped to the other book ids."""
+    """Books whose legible spine text is identical to another book's, mapped to the other book ids.
+
+    Word order is ignored: a weak reader that copies text between images often reorders it
+    ("MATHEMATICS / R.D. SHARMA" for one book, "R.D. SHARMA / MATHEMATICS" for the next)."""
     by_text: dict[str, list[str]] = {}
     for book_id, reading in readings.items():
-        key = normalise(reading.text)
+        key = " ".join(sorted(normalise(reading.text).split()))
         if reading.legible and key:
             by_text.setdefault(key, []).append(book_id)
     return {b: [o for o in ids if o != b] for ids in by_text.values() if len(ids) > 1 for b in ids}
