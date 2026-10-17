@@ -23,7 +23,7 @@ let config = {};
 let socket = null, mic = null, speaker = null, frameTimer = null, recognition = null;
 let voiceMode = "chat", speaksWarnings = false, sweepId = null;
 let agentTurn = null, userTurn = null;
-let processingStart = null, tickTimer = null, issues = {};
+let processingStart = null, tickTimer = null, issues = {}, framesSent = 0;
 
 // ---- Tabs ----
 const TABS = ["session", "history", "upload", "settings"];
@@ -57,6 +57,8 @@ async function openSource() {
     video.srcObject = null;
     video.src = URL.createObjectURL(file);
     video.loop = false;
+    video.load();               // shows the first frame; playback starts only when the session is ready (see start)
+    return "replay";
   } else {
     const deviceId = $("source").value;
     video.srcObject = await navigator.mediaDevices.getUserMedia({
@@ -64,6 +66,7 @@ async function openSource() {
     });
   }
   await video.play();
+  return "camera";
 }
 
 function grabFrame() {
@@ -273,7 +276,7 @@ function handle(message) {
         addTurn("bad", `Processing failed: ${message.error || "unknown error"}. The frames are kept; see History.`);
       }
       break;
-    case "error": addTurn("bad", `⚠ ${message.message}`); break;
+    case "error": addTurn("bad", `⚠ ${message.message}`); if (message.fatal) setStatus("failed", "bad"); break;
   }
 }
 
@@ -298,13 +301,19 @@ async function start() {
   resetSheet();
   $("transcript").innerHTML = "";
   try {
-    await openSource();
+    const kind = await openSource();
     voiceMode = $("voice").value;
+    framesSent = 0; $("frame-count").textContent = "";
     const scheme = location.protocol === "https:" ? "wss" : "ws";
     socket = new WebSocket(withToken(`${scheme}://${location.host}/ws/session?voice=${voiceMode}`));
     socket.onmessage = (e) => handle(JSON.parse(e.data));
-    socket.onclose = () => {
-      if ($("status").textContent === "recording") setStatus("disconnected", "bad");
+    socket.onclose = (e) => {
+      // Say why: a closed connection used to leave the page silent, with the input doing nothing.
+      if ($("status").textContent === "recording") {
+        setStatus("disconnected", "bad");
+        addTurn("bad", `Connection to the server closed${e.code ? ` (code ${e.code}${e.reason ? `: ${e.reason}` : ""})` : ""} after ${framesSent} camera frames. ` +
+          "The frames sent so far are kept (History). Press Start sweep to begin a new session; the terminal running the server shows the cause.");
+      }
       stopCapture(); socket = null;
     };
     await new Promise((resolve, reject) => { socket.onopen = resolve; socket.onerror = reject; });
@@ -317,8 +326,18 @@ async function start() {
     }                                                  // chat: no microphone, no speech
     frameTimer = setInterval(() => {
       const data = grabFrame();
-      if (data && socket?.readyState === 1) socket.send(JSON.stringify({ type: "frame", data }));
+      if (data && socket?.readyState === 1) {
+        socket.send(JSON.stringify({ type: "frame", data }));
+        framesSent += 1;
+        $("frame-count").textContent = `Camera frames sent: ${framesSent}`;
+      }
     }, 1000 / (config.frame_fps || 2));
+    if (kind === "replay") {
+      // Play the recording only now that frames can be sent; a short clip would otherwise end before this point.
+      const video = $("preview");
+      video.onended = () => addTurn("note", `The replay video ended after ${framesSent} frames. Press End sweep to process it.`);
+      await video.play();
+    }
     $("end").disabled = false;
   } catch (error) {
     addTurn("bad", `Could not start: ${error.message || error}`);
@@ -348,6 +367,7 @@ $("report-toggle").addEventListener("click", () => {
 });
 const sendText = () => {
   const text = $("text").value.trim();
+  if (text && !socket) { addTurn("bad", "Not connected: press Start sweep to begin a session, then type."); return; }
   if (text && socket) {
     socket.send(JSON.stringify({ type: "text", text }));
     if (voiceMode === "gemini") addTurn("user", text);     // the other modes echo the user's turn from the server

@@ -26,6 +26,7 @@ uv run pytest             # about 200 tests, no network and no keys needed
 |---|---|---|
 | `gemini` (default) | `GEMINI_API_KEY` in `.env` | normal use, live voice included |
 | `openai`, `anthropic`, `groq` | that provider's key | the same stages on another provider |
+| `dev-sonnet` | the same `claude` tool | like `dev` with Claude Sonnet 5.5: slower per call, better at locating and reading |
 | `local` | Ollama running | no network |
 | `dev` | the `claude` command-line tool, logged in | trying everything with no API key (Claude Haiku: slow, about 10 minutes per sweep, and chat or browser-speech only) |
 
@@ -64,7 +65,7 @@ On the page: pick a camera, pick **Talk by** (below), press **Start sweep**, fil
 - **While you film:** the **claim sheet** (a sheet of paper under the chat) fills in live: books in view, what the agent logged, what you told it, shelves to film again, capture problems.
 - **After End sweep:** a progress card shows the nine steps with a running timer and what you can do meanwhile (keep chatting, add corrections, or close the page). A correction made after the report exists gets an **Update report** button. When it is done, the report opens from the chat, from the card, or inline.
 - **History tab:** every session, how it was made (live, simulated, upload, replay), its result, its report and its conversation. Sessions can be deleted there. A session with no camera frames is not kept.
-- **No camera?** Choose **Replay a video…** as the camera and pick a recording: it plays into the session as if it were the camera. The **Upload** tab processes a recorded video without the live agent.
+- **No camera?** Choose **Replay a video…** as the camera and pick a recording: it plays into the session as if it were the camera (capture warnings such as "moving too fast" and "blurry" fire on it too). It starts playing once the session is ready, and a counter under the video shows how many frames were sent. If no frames arrive, the page warns after 15 seconds, and **End sweep** refuses to process an empty session. The **Upload** tab processes a recorded video without the live agent.
 - **Phone:** `uv run claim --allow-calls serve --tunnel` prints an `https://….trycloudflare.com/?token=…` link; open it on the phone.
 
 **What the terminal shows.** The server prints what is happening, so you can tell what works:

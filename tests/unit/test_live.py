@@ -340,3 +340,43 @@ def test_fact_targets_are_tidied_only_when_they_are_ids(settings):
 def test_config_tells_the_client_the_evidence_frame_size(settings):
     client, _ = make_client(settings)
     assert client.get("/api/config").json()["evidence_side"] == 1920
+
+
+# ---- Nothing filmed: say so instead of failing quietly ----
+
+def test_ending_with_no_frames_is_refused_with_a_reason(settings):
+    session = LiveSession(settings, "live-empty")
+    result = session.call_tool("end_sweep", {})
+    assert "No camera frames" in result["error"] and session.status == "recording"
+    session.add_frame(textured(0))
+    started = []
+    session.start_pipeline = lambda *a, **k: started.append(1) or setattr(session, "status", "processing")   # type: ignore[method-assign]
+    assert session.call_tool("end_sweep", {})["status"] == "processing" and started
+
+
+def test_no_frames_watchdog_warns_the_browser(settings):
+    from claimagent.api.app import _frame_watch
+
+    session = LiveSession(settings, "live-quiet")
+    sent = []
+
+    async def send(payload):
+        sent.append(payload)
+
+    async def scenario():
+        task = asyncio.create_task(_frame_watch(session, send, after_s=0.05))
+        await asyncio.sleep(0.2)
+        assert not task.done()            # it warns, then waits: it must never end the session
+        task.cancel()
+
+    asyncio.run(scenario())
+    assert sent and sent[0]["kind"] == "nocamera" and "No camera frames" in sent[0]["message"]
+
+
+def test_end_button_with_no_frames_shows_an_error_not_a_status(settings):
+    client, _ = make_client(settings)
+    with client.websocket_connect("/ws/session") as ws:
+        ws.receive_json()
+        ws.send_text(json.dumps({"type": "end"}))
+        message = ws.receive_json()
+        assert message["type"] == "error" and "No camera frames" in message["message"]

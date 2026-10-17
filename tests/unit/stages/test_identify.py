@@ -1,5 +1,7 @@
 """Identify stage: spine readings, catalogue matching, edition and height rules. No network, no models."""
 
+import threading
+
 import httpx
 import numpy as np
 import pytest
@@ -38,10 +40,16 @@ WORK = CatalogueRecord(source="openlibrary", id="/works/W1", url="https://openli
 class FakeReader:
     def __init__(self, answers):
         self.name, self.answers, self.calls = "fake-reader", list(answers), 0
+        self.lock = threading.Lock()
 
     def generate_json(self, prompt, images, schema):
-        self.calls += 1
-        return self.answers.pop(0)
+        """Batches are read in parallel, so answers are matched by batch size, not handed out in call order."""
+        with self.lock:
+            self.calls += 1
+            fits = [a for a in self.answers if len(a.spines) == len(images)]
+            answer = fits[0] if fits else self.answers[0]
+            self.answers.remove(answer)
+            return answer
 
 
 class FakeCatalogue:
@@ -234,3 +242,30 @@ def test_reordered_copies_of_one_text_are_distrusted():
     readings = {"A1-2": read("MATHEMATICS / R.D. SHARMA"), "A1-3": read("R.D. SHARMA / MATHEMATICS"),
                 "A1-4": read("Word Power Made Easy / Norman Lewis")}
     assert repeated_readings(readings) == {"A1-2": ["A1-3"], "A1-3": ["A1-2"]}
+
+
+def test_spine_batches_are_read_in_parallel_and_merged_in_order(ctx: RunContext, monkeypatch):
+    """Eleven books make three batches (5, 5, 1); each batch waits for the others, so a sequential loop would hang."""
+    import threading
+
+
+    barrier = threading.Barrier(3, timeout=5)
+
+    class Reader:
+        name = "fake-reader"
+
+        def generate_json(self, prompt, images, schema, accept=None):
+            barrier.wait()                                   # all three calls must be in flight together
+            return ReadAnswer(spines=[SpineReading(index=i, legible=True, text=f"book {len(images)}-{i}", title=f"T{len(images)}-{i}")
+                                      for i in range(1, len(images) + 1)])
+
+    monkeypatch.setattr(ctx, "vision", lambda stage: Reader())
+    box = BBox(x0=0, y0=0, x1=10, y1=30)
+    books = [InventoryBook(book_id=f"A1-{i}", unit="A", shelf=1, position=i, orientation="upright", frame_ref="f",
+                           bbox=box, plane_box=box, views=[View(frame="f", bbox=box, truncated=False)], annotated_ref=None,
+                           review=[]) for i in range(1, 12)]
+    crops = {b.book_id: np.full((60, 20, 3), 200, np.uint8) for b in books}
+    readings, reader = IdentifyStage._read(ctx, books, crops)
+    assert reader == "fake-reader" and len(readings) == 11
+    assert readings["A1-1"].title == "T5-1" and readings["A1-6"].title == "T5-1" and readings["A1-11"].title == "T1-1"
+    assert readings["A1-10"].title == "T5-5"                  # each book got the reading of its own place in its batch

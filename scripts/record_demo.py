@@ -11,9 +11,12 @@ What is real and what is simulated:
 A banner across the top of the page says so for the whole recording. It is one continuous take:
 nothing is cut, sped up or stitched.
 
-Run (uses model calls; the dev profile answers through the local `claude` command):
+Run (uses model calls; the dev profiles answer through the local `claude` command):
     uv run --with playwright playwright install ffmpeg          # once: the page recorder
-    uv run --with playwright --with imageio-ffmpeg python scripts/record_demo.py
+    uv run --with playwright --with imageio-ffmpeg python scripts/record_demo.py [profile]
+`profile` is dev-sonnet (default), dev (Claude Haiku) or any other profile in config/settings.yaml.
+The take ends on the finished claim report: the claim sheet with its totals, the report inline,
+then the full report scrolled from the top.
 Needs Google Chrome and macOS `say`. Writes runs/<sweep>/demo/demo.mp4 (plus page.webm, audio.wav
 and timeline.json).
 """
@@ -43,9 +46,10 @@ LEAD_IN_S = 14          # the camera rests on the first view while the agent gre
 TAIL_S = 30             # the last view is held this long, so Chrome's fake camera never loops back
 AGENT_VOICE, USER_VOICE = "Samantha", "Aman"
 RATE = 22050            # audio sample rate of the soundtrack
+PROFILE = sys.argv[1] if len(sys.argv) > 1 else "dev-sonnet"
 BANNER = ("SIMULATED SWEEP · camera: recorded footage of the test space (glare, blur and fast-pan faults added) · "
           "user: scripted lines, spoken by a computer voice · agent, warnings, count and pipeline: live "
-          "(Claude Haiku via the dev profile) · one continuous take")
+          f"(models: {PROFILE}) · one continuous take")
 
 # Runs in the page before its own scripts: the banner, a speech-recognition stand-in the recorder
 # can "speak" into, and a log of everything the page asks the browser to say.
@@ -134,7 +138,7 @@ def main() -> None:
 
     settings = Settings.load()
     settings.gateway.cache_only = False      # a live sweep needs fresh answers
-    settings.models.profile = "dev"
+    settings.models.profile = PROFILE
     settings.live.voice = "cascaded"
     script = Script.load(ROOT / "config" / "live_script.yaml")
     fps = settings.live.frame_fps
@@ -157,6 +161,7 @@ def main() -> None:
         page.goto(http_url + "/")
         page.wait_for_function("document.getElementById('config').textContent.length > 0")
         page.wait_for_timeout(1500)
+        page.select_option("#voice", "cascaded")     # browser speech: the stand-ins below speak and hear for it
         page.click("#start")
         started = time.time()
 
@@ -192,20 +197,24 @@ def main() -> None:
                 page.click("#end")
 
         print("waiting for the claim packet…")
-        page.wait_for_selector("#result a", timeout=script.packet_timeout_s * 1000)
-        print(f"[{time.time() - start:6.1f}s] packet ready: {page.inner_text('#result')}")
-        page.wait_for_timeout(12000)          # the summary is read out
-        report = page.get_attribute("#result a", "href")
+        page.wait_for_selector("#report-card:not([hidden])", timeout=script.packet_timeout_s * 1000)
+        print(f"[{time.time() - start:6.1f}s] packet ready: {page.inner_text('#report-summary')}")
+        report = page.get_attribute("#report-open", "href")
         sweep_id = report.split("/")[2]
         spoken = page.evaluate("window.__spoken")   # what the page said, read before leaving it
+        # The ending is the finished claim, with no idle wait: the summary is read out while these three views
+        # follow each other. 1) the claim sheet with its computed totals, 2) the report inline, 3) the full report.
+        page.wait_for_timeout(1000)                  # the totals are fetched from the packet just after "ready"
+        page.evaluate("document.getElementById('sheet').scrollIntoView({block: 'center'})")
+        page.wait_for_timeout(5000)
+        page.click("#report-toggle")
+        page.evaluate("document.getElementById('report-frame').scrollIntoView({block: 'start'})")
+        page.wait_for_timeout(4000)
         page.goto(http_url + report)
-        for _ in range(24):                   # scroll through the report
-            page.mouse.wheel(0, 500)
-            page.wait_for_timeout(900)
-        page.goto(f"{http_url}/api/sweeps/{sweep_id}/packet")
-        for _ in range(8):
-            page.mouse.wheel(0, 700)
-            page.wait_for_timeout(700)
+        page.wait_for_timeout(4000)                  # the report's totals, at the top
+        for _ in range(5):                           # then the shelves and the books
+            page.mouse.wheel(0, 650)
+            page.wait_for_timeout(1500)
         length = time.time() - start
         video = page.video.path()
         context.close()

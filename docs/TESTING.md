@@ -363,7 +363,7 @@ Check: every frame and price link in the exported report opens from inside `rele
 
 ```bash
 uv run --with playwright playwright install ffmpeg      # once: Playwright's page recorder
-uv run --with playwright --with imageio-ffmpeg python scripts/record_demo.py
+uv run --with playwright --with imageio-ffmpeg python scripts/record_demo.py dev-sonnet   # or dev (Haiku), or any profile
 ```
 
-Chrome's fake camera plays the reference feed; the script's lines go to the page's speech-recognition handler; what the page asks the browser to say, and the user's lines, are voiced with macOS `say` at the moments they happened. A banner across the page states what is simulated for the whole take. Output: `runs/<id>/demo/demo.mp4`, one continuous take of the page, report and packet. Needs Google Chrome and macOS.
+Chrome's fake camera plays the reference feed; the script's lines go to the page's speech-recognition handler; what the page asks the browser to say, and the user's lines, are voiced with macOS `say` at the moments they happened. A banner across the page states what is simulated for the whole take. Output: `runs/<id>/demo/demo.mp4`, one continuous take of the page ending on the finished claim report (about 3 minutes on `dev-sonnet`). Needs Google Chrome and macOS.

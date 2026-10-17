@@ -48,6 +48,7 @@ from typing import Any
 import cv2
 import numpy as np
 from fastapi import FastAPI, File, HTTPException, Request, UploadFile, WebSocket, WebSocketDisconnect
+from starlette.websockets import WebSocketState
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -274,6 +275,7 @@ def create_app(settings: Settings, token: str | None = None, voice_factory: Voic
                     _client_to_server(ws, session, voice, send, settings),
                     _voice_to_client(session, voice, send),
                     _provisional(ctx, session, voice, send, settings),
+                    _frame_watch(session, send),
                 )]
                 try:
                     done, _ = await asyncio.wait(tasks, timeout=settings.live.max_minutes * 60,
@@ -291,8 +293,12 @@ def create_app(settings: Settings, token: str | None = None, voice_factory: Voic
         except WebSocketDisconnect:
             log.info("session %s: the browser disconnected", session.sweep_id)
         except Exception as exc:
-            log.error("session %s ended with an error: %s: %s", session.sweep_id, type(exc).__name__, exc)
-            await send({"type": "error", "message": f"live session ended: {type(exc).__name__}: {exc}"})
+            if ws.client_state != WebSocketState.CONNECTED:
+                # The browser had already gone (a closed tab, a reload, a sleeping laptop): not a server fault.
+                log.info("session %s: the browser disconnected (%s)", session.sweep_id, type(exc).__name__)
+            else:
+                log.error("session %s ended with an error: %s: %s", session.sweep_id, type(exc).__name__, exc)
+                await send({"type": "error", "fatal": True, "message": f"live session ended: {type(exc).__name__}: {exc}"})
         finally:
             if not session.recorder.frames:
                 # Nothing was filmed, so there is nothing to process or show: do not leave an empty folder in History.
@@ -352,6 +358,9 @@ async def _client_to_server(ws: WebSocket, session: LiveSession, voice: VoiceSes
         elif kind == "end":
             session.log("in", {"type": "end"})
             result = session.call_tool("end_sweep", {})
+            if "error" in result:    # nothing was filmed: say so instead of starting a pipeline that cannot work
+                await send({"type": "error", "message": result["error"]})
+                continue
             await send({"type": "status", "status": result["status"], "summary": None, "report": None})
             if voice.speaks_warnings:
                 await tell_agent(session, voice, "[status] The user pressed End. Tell them processing has started.")
@@ -374,6 +383,20 @@ async def _voice_to_client(session: LiveSession, voice: VoiceSession, send) -> N
             if event.name == "end_sweep":
                 await send({"type": "status", "status": session.status, "summary": None, "report": None})
             await voice.send_tool_result(event.call_id, event.name, result)
+
+
+async def _frame_watch(session: LiveSession, send, after_s: float = 15.0) -> None:
+    """If no camera frame has arrived a while after the session opened, say so (never ends the session).
+
+    The usual causes: the camera or replay video is not playing, the tab is in the background, or the
+    camera was blocked. Without this the agent talks happily about shelves nobody is filming."""
+    await asyncio.sleep(after_s)
+    if session.status == "recording" and not session.recorder.frames:
+        log.warning("session %s: no camera frames received %d s after the start", session.sweep_id, after_s)
+        await send({"type": "warning", "kind": "nocamera", "speak": False,
+                    "message": "No camera frames have reached the server yet. Check that the camera (or the replay video) is "
+                               "playing and this tab is in front."})
+    await asyncio.Event().wait()
 
 
 async def _provisional(ctx: RunContext, session: LiveSession, voice: VoiceSession, send, settings: Settings) -> None:

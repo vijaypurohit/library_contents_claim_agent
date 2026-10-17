@@ -25,6 +25,7 @@ Output: one record per book; debug/spine_<book_id>.jpg shows exactly what the mo
 from __future__ import annotations
 
 import statistics
+from concurrent.futures import ThreadPoolExecutor
 from collections.abc import Mapping
 from typing import Literal
 
@@ -46,6 +47,7 @@ CROP_PAD = 0.06          # a little margin around the box, so text at the box ed
 SEND_MAX_SIDE = 1280     # long side of each crop sent to the model
 HEIGHT_AGREEMENT = 0.10  # editions' heights must agree within this share to be used without a known edition
 SPINE_ONLY_CONFIDENCE = 0.5
+IDENTIFY_PARALLEL = 4    # spine-reading batches in flight at once (detect runs 4 at once too)
 GAP_PX = 24              # white space between the two copies in a reading view
 
 Status = Literal["identified", "spine_only", "unidentified"]
@@ -245,10 +247,10 @@ class IdentifyStage(Stage):
             return {}, None
         prompt = load_prompt("read_spines")
         size = ctx.settings.identify.batch_size
-        readings: dict[str, SpineReading] = {}
-        for start in range(0, len(books), size):
-            batch = books[start:start + size]
+        batches = [books[start:start + size] for start in range(0, len(books), size)]
 
+        def read_batch(batch: list[InventoryBook]) -> ReadAnswer | None:
+            """One model call for up to `size` spines; None if no provider could answer it."""
             def accept(answer: ReadAnswer, n=len(batch)) -> str | None:
                 got = sorted(s.index for s in answer.spines)
                 return None if got == list(range(1, n + 1)) else f"expected one reading per image 1-{n}, got {got}"
@@ -259,11 +261,18 @@ class IdentifyStage(Stage):
                     view = reading_view(crops[b.book_id], b.orientation, n)
                     write_jpeg(ctx.sweep.debug_dir / f"spine_{b.book_id}.jpg", view)  # exactly what the model sees
                     views.append(encode_jpeg(view, 90, SEND_MAX_SIDE))
-                answer = model.generate_json(prompt, views, ReadAnswer, accept=accept)
+                return model.generate_json(prompt, views, ReadAnswer, accept=accept)
             except ProviderUnavailable as exc:
                 ctx.warn(f"identify: books {batch[0].book_id}..{batch[-1].book_id} could not be read ({exc})")
-                continue
-            for spine in answer.spines:
+                return None
+
+        # Batches are independent, so they run side by side: a slow reader (a CLI model takes about a
+        # minute per batch) would otherwise make this stage the longest part of the wait for the packet.
+        with ThreadPoolExecutor(IDENTIFY_PARALLEL) as pool:
+            answers = list(pool.map(read_batch, batches))
+        readings: dict[str, SpineReading] = {}
+        for batch, answer in zip(batches, answers, strict=True):
+            for spine in answer.spines if answer else []:
                 readings[batch[spine.index - 1].book_id] = spine
         return readings, model.name
 

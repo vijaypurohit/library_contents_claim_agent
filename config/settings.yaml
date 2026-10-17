@@ -84,6 +84,11 @@ models:
       read: [claude-cli/haiku]
       classify: [claude-cli/haiku]
       converse: [claude-cli/haiku]   # slow (several seconds a turn); for trying the flow only
+    dev-sonnet:         # like `dev`, with Claude Sonnet 5.5 through the same local `claude` command (no API key)
+      detect: [claude-cli/sonnet]
+      read: [claude-cli/sonnet]
+      classify: [claude-cli/sonnet]
+      converse: [claude-cli/sonnet]
     local:
       live: [ollama/qwen2.5vl:7b]
       detect: [ollama/qwen2.5vl:7b]

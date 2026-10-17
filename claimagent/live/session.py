@@ -236,6 +236,9 @@ class LiveSession:
         return {"ok": True, "recorded": kind}
 
     def _tool_end_sweep(self) -> dict:
+        if self.status == "recording" and not self.recorder.frames:
+            return {"error": "No camera frames were recorded, so there is nothing to process. Make sure the camera or "
+                             "replay video is playing, then film the shelves and end the sweep again."}
         if self.status == "recording":
             self.start_pipeline()
         return {"status": self.status, "frames": len(self.recorder.frames),

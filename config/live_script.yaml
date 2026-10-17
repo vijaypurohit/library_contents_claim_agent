@@ -45,5 +45,5 @@ user:
   - {after_agent: true, camera_done: true, end: true,
      say: "That's both shelves. I'm done."}
 
-end_grace_s: 60
+end_grace_s: 20
 packet_timeout_s: 3600       # how long to wait for the claim packet after the sweep ends (slow CLI models need long)
