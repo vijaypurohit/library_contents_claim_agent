@@ -1,0 +1,51 @@
+{"t": 2.59, "direction": "out", "type": "ready", "sweep_id": "live-20261017-212621", "voice": "cascaded", "speaks_warnings": false}
+{"t": 2.59, "direction": "agent-note", "type": "note", "text": "[start] The session has started. The claim is priced in country IN with currency INR. Greet the user, confirm the country and currency, and explain the sweep in one or two sentences."}
+{"t": 10.52, "direction": "out", "type": "transcript", "speaker": "agent", "text": "Hi, I'm your AI assistant for this library claim. I have the claim priced in India, in rupees. Is that right? Then we'll film each bookcase one shelf at a time, starting at the top and panning slowly from left to right, close enough that I can read the spines.", "final": true}
+{"t": 10.52, "direction": "out", "type": "turn_complete"}
+{"t": 10.79, "direction": "in", "type": "text", "text": "Yes, India and rupees is right. I'm starting with the whole almirah, then each shelf."}
+{"t": 10.79, "direction": "out", "type": "transcript", "speaker": "user", "text": "Yes, India and rupees is right. I'm starting with the whole almirah, then each shelf.", "final": true}
+{"t": 20.4, "direction": "out", "type": "transcript", "speaker": "agent", "text": "That overview of the almirah looks good, I can see two shelves with the doors open. Now move in closer to the top shelf and pan slowly from left to right until the spine titles are readable.", "final": true}
+{"t": 20.4, "direction": "out", "type": "turn_complete"}
+{"t": 21.04, "direction": "out", "type": "warning", "kind": "blur", "message": "Frames are blurry: hold the phone steady for a moment on each shelf.", "speak": true}
+{"t": 27.72, "direction": "in", "type": "text", "text": "One thing: the Hindi book on the bottom shelf is a first edition."}
+{"t": 27.72, "direction": "out", "type": "transcript", "speaker": "user", "text": "One thing: the Hindi book on the bottom shelf is a first edition.", "final": true}
+{"t": 36.2, "direction": "out", "type": "transcript", "speaker": "agent", "text": "Got it, I've noted the Hindi book on the bottom shelf as a first edition. Its spine is right at the left edge of the frame, so when you reach that shelf, step a little closer so the title is readable.", "final": true}
+{"t": 36.2, "direction": "out", "type": "tool", "name": "record_user_fact", "args": {"kind": "first_edition", "target": "A2", "text": "The Hindi book on the bottom shelf is a first edition."}, "result": {"ok": true, "recorded": "first_edition"}}
+{"t": 36.2, "direction": "out", "type": "turn_complete"}
+{"t": 36.95, "direction": "out", "type": "inventory", "spines": 2, "items": ["shelving"]}
+{"t": 36.95, "direction": "agent-note", "type": "note", "text": "[count] About 2 book spines are in view right now (provisional)."}
+{"t": 38.04, "direction": "out", "type": "warning", "kind": "blur", "message": "Frames are blurry: hold the phone steady for a moment on each shelf.", "speak": true}
+{"t": 38.04, "direction": "out", "type": "warning", "kind": "glare", "message": "There is glare on the spines: tilt the phone slightly or move away from the light.", "speak": true}
+{"t": 38.04, "direction": "out", "type": "warning", "kind": "motion", "message": "You are moving too fast: pan more slowly so each spine stays sharp.", "speak": true}
+{"t": 51.06, "direction": "out", "type": "transcript", "speaker": "agent", "text": "The left door is swung in front of the shelves and is hiding their left side, so please open it all the way. Then come closer to the top shelf and pan slowly from left to right.", "final": true}
+{"t": 51.06, "direction": "out", "type": "turn_complete"}
+{"t": 60.29, "direction": "in", "type": "text", "text": "That's both shelves. I'm done."}
+{"t": 60.29, "direction": "out", "type": "transcript", "speaker": "user", "text": "That's both shelves. I'm done.", "final": true}
+{"t": 76.32, "direction": "out", "type": "transcript", "speaker": "agent", "text": "Before we finish: the left door still hides part of both shelves, and the books on the right edge are cut off. Could you open the door fully and pan each shelf once more, closer up? Or tell me and I'll end the sweep now.", "final": true}
+{"t": 76.32, "direction": "out", "type": "tool", "name": "request_recapture", "args": {"where": "Both shelves of the almirah (top and bottom)", "reason": "left door blocks the left side of the shelves and the right-edge spines are cut off"}, "result": {"ok": true, "say": "Please film Both shelves of the almirah (top and bottom) again: left door blocks the left side of the shelves and the right-edge spines are cut off."}}
+{"t": 76.32, "direction": "out", "type": "turn_complete"}
+{"t": 76.83, "direction": "out", "type": "inventory", "spines": 12, "items": ["shelving"]}
+{"t": 76.83, "direction": "agent-note", "type": "note", "text": "[count] About 12 book spines are in view right now (provisional)."}
+{"t": 80.43, "direction": "in", "type": "end"}
+{"t": 80.43, "direction": "out", "type": "status", "status": "processing", "summary": null, "report": null}
+{"t": 80.43, "direction": "out", "type": "progress", "stage": "keyframes", "order": 1, "total": 9, "state": "start", "elapsed_s": 0.0, "model_calls": 0}
+{"t": 86.85, "direction": "out", "type": "transcript", "speaker": "agent", "text": "Thanks, the door is out of the way now. Please pan slowly to the right along the top shelf, then the bottom one, so the books at the right edge come into view.", "final": true}
+{"t": 86.85, "direction": "out", "type": "turn_complete"}
+{"t": 90.76, "direction": "out", "type": "progress", "stage": "keyframes", "order": 1, "total": 9, "state": "done", "elapsed_s": 10.328, "model_calls": 0}
+{"t": 90.76, "direction": "out", "type": "progress", "stage": "scale", "order": 2, "total": 9, "state": "start", "elapsed_s": 0.0, "model_calls": 0}
+{"t": 90.89, "direction": "out", "type": "progress", "stage": "scale", "order": 2, "total": 9, "state": "done", "elapsed_s": 0.128, "model_calls": 0}
+{"t": 90.89, "direction": "out", "type": "progress", "stage": "detect", "order": 3, "total": 9, "state": "start", "elapsed_s": 0.0, "model_calls": 0}
+{"t": 141.44, "direction": "out", "type": "progress", "stage": "detect", "order": 3, "total": 9, "state": "done", "elapsed_s": 50.543, "model_calls": 11}
+{"t": 141.44, "direction": "out", "type": "progress", "stage": "inventory", "order": 4, "total": 9, "state": "start", "elapsed_s": 0.0, "model_calls": 0}
+{"t": 141.85, "direction": "out", "type": "progress", "stage": "inventory", "order": 4, "total": 9, "state": "done", "elapsed_s": 0.411, "model_calls": 0}
+{"t": 141.85, "direction": "out", "type": "progress", "stage": "identify", "order": 5, "total": 9, "state": "start", "elapsed_s": 0.0, "model_calls": 0}
+{"t": 166.56, "direction": "out", "type": "progress", "stage": "identify", "order": 5, "total": 9, "state": "done", "elapsed_s": 24.707, "model_calls": 3}
+{"t": 166.56, "direction": "out", "type": "progress", "stage": "measure", "order": 6, "total": 9, "state": "start", "elapsed_s": 0.0, "model_calls": 0}
+{"t": 166.57, "direction": "out", "type": "progress", "stage": "measure", "order": 6, "total": 9, "state": "done", "elapsed_s": 0.0, "model_calls": 0}
+{"t": 166.57, "direction": "out", "type": "progress", "stage": "price", "order": 7, "total": 9, "state": "start", "elapsed_s": 0.0, "model_calls": 0}
+{"t": 197.1, "direction": "out", "type": "progress", "stage": "price", "order": 7, "total": 9, "state": "done", "elapsed_s": 30.538, "model_calls": 0}
+{"t": 197.11, "direction": "out", "type": "progress", "stage": "room", "order": 8, "total": 9, "state": "start", "elapsed_s": 0.0, "model_calls": 0}
+{"t": 197.11, "direction": "out", "type": "progress", "stage": "room", "order": 8, "total": 9, "state": "done", "elapsed_s": 0.0, "model_calls": 0}
+{"t": 197.23, "direction": "out", "type": "progress", "stage": "packet", "order": 9, "total": 9, "state": "start", "elapsed_s": 0.0, "model_calls": 0}
+{"t": 197.25, "direction": "out", "type": "progress", "stage": "packet", "order": 9, "total": 9, "state": "done", "elapsed_s": 0.019, "model_calls": 0}
+{"t": 197.25, "direction": "out", "type": "status", "status": "ready", "summary": "I counted 15 books on 2 shelves. 11 have a title, 4 could not be read. 4 books are priced, with a replacement cost of ₹3,513. Other items: ₹13,462 to ₹46,473. 70 points need a person to check; they are listed in the report.", "error": null, "report": "/sweeps/live-20261017-212621/report.html"}

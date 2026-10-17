@@ -50,10 +50,21 @@ def test_quality_warnings_are_debounced():
     for t in range(4):
         monitor.check(sharp, now=float(t))           # steady, sharp frames: nothing to say
     blurred = cv2.GaussianBlur(sharp, (31, 31), 0)
-    assert "blur" in [w.kind for w in monitor.check(blurred, now=10.0)]
+    assert monitor.check(blurred, now=10.0) == []                              # one soft frame: not yet a warning
+    assert "blur" in [w.kind for w in monitor.check(blurred, now=10.25)]       # two in a row: blur
     assert "blur" not in [w.kind for w in monitor.check(blurred, now=11.0)]   # repeated within 5 s: silent
     glare = np.full_like(sharp, 255)
     assert "glare" in [w.kind for w in QualityMonitor(LiveConfig()).check(glare, now=0.0)]
+
+
+def test_a_single_soft_frame_is_a_glitch_not_blur():
+    monitor = QualityMonitor(LiveConfig())
+    sharp, soft = textured(), cv2.GaussianBlur(textured(), (31, 31), 0)
+    for t in range(4):
+        monitor.check(sharp, now=float(t))
+    assert monitor.check(soft, now=10.0) == []
+    assert monitor.check(sharp, now=10.25) == []          # sharp again: the run is over
+    assert monitor.check(soft, now=20.0) == []             # a new single soft frame still counts from one
 
 
 def test_fast_pan_is_reported_and_a_slow_one_is_not():
@@ -380,3 +391,25 @@ def test_end_button_with_no_frames_shows_an_error_not_a_status(settings):
         ws.send_text(json.dumps({"type": "end"}))
         message = ws.receive_json()
         assert message["type"] == "error" and "No camera frames" in message["message"]
+
+
+def test_cascaded_agent_cannot_poll_the_same_tool_in_a_loop(ctx, monkeypatch):
+    """The Gemini chat demo called sweep_status about 40 times in a row while the pipeline ran."""
+    poll = Reply(say="", tool="sweep_status", tool_args={})
+    model = ScriptedModel([poll, poll, poll])
+    monkeypatch.setattr(ctx, "vision", lambda stage: model)
+    voice = Cascaded(ctx)
+
+    async def scenario():
+        await voice.send_text("how is it going?")
+        events = [await asyncio.wait_for(voice._events.get(), 5) for _ in range(3)]       # user turn, tool call, turn end
+        await voice.send_tool_result(events[1].call_id, "sweep_status", {"status": "processing"})
+        await asyncio.wait_for(voice._events.get(), 5)                                     # the repeat: no tool call, just a turn end
+        await asyncio.sleep(0.05)
+        await voice.send_text("and now?")                                                  # a new user turn allows it again
+        later = [await asyncio.wait_for(voice._events.get(), 5) for _ in range(3)]
+        return events, later
+
+    events, later = asyncio.run(scenario())
+    assert [e.kind for e in events] == ["transcript", "tool_call", "turn_complete"]
+    assert [e.kind for e in later] == ["transcript", "tool_call", "turn_complete"] and len(model.prompts) == 3

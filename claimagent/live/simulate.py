@@ -57,6 +57,7 @@ class Segment(BaseModel):
     video: str | None = None
     speed: int = Field(1, ge=1)
     repeat: int = Field(1, ge=1)       # each frame shown this many times, with hand shake: a person pausing on each view
+    skip_s: float = Field(0.0, ge=0)   # leave out the first N seconds of the recording (a camera still finding focus)
     pan: str | None = None
     hold: float | None = None
     start: float = Field(0.0, ge=0, le=1, alias="from")
@@ -161,7 +162,7 @@ def segment_frames(seg: Segment, previous: np.ndarray | None, fps: float, width:
     if seg.video:
         from claimagent.ingest import _video_frames
 
-        frames = [fit(img, width, height) for _, img in _video_frames(PROJECT_ROOT / seg.video, fps)]
+        frames = [fit(img, width, height) for t, img in _video_frames(PROJECT_ROOT / seg.video, fps) if t >= seg.skip_s]
         frames = frames[::seg.speed]
         return [shaken(f, k) if k else f for f in frames for k in range(seg.repeat)]
     if seg.pan:

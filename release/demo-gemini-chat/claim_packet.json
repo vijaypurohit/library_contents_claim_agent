@@ -1,0 +1,803 @@
+{
+  "sweep": {
+    "id": "live-20261017-215400",
+    "captured_at": "2026-10-17T16:24:00.423223Z",
+    "device": null,
+    "duration_s": 39.53,
+    "country": "IN",
+    "currency": "INR"
+  },
+  "room": {
+    "length_m": null,
+    "width_m": null,
+    "height_m": null,
+    "floor_area_m2": null,
+    "wall_area_m2": null,
+    "shelved_wall_area_m2": null,
+    "scale_method": null,
+    "confidence": null
+  },
+  "books": [
+    {
+      "id": "A1-1",
+      "unit": "A",
+      "shelf": "1",
+      "position": 1,
+      "frame_ref": "f000114_t028.78.jpg",
+      "bbox": {
+        "x0": 233.1,
+        "y0": 387.2,
+        "x1": 304.20000000000005,
+        "y1": 827.2
+      },
+      "annotated_ref": "evidence/shelf_A1.jpg",
+      "status": "identified",
+      "title": "Refresher Course in Mathematics Part - 1 for Class X",
+      "author": "Manjeet Singh",
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.758,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A1-2",
+      "unit": "A",
+      "shelf": "1",
+      "position": 2,
+      "frame_ref": "f000114_t028.78.jpg",
+      "bbox": {
+        "x0": 291.6,
+        "y0": 427.20000000000005,
+        "x1": 384.3,
+        "y1": 828.8000000000001
+      },
+      "annotated_ref": "evidence/shelf_A1.jpg",
+      "status": "identified",
+      "title": "Mathematics for Class 11",
+      "author": "R.D. Sharma",
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.894,
+      "replacement_cost": {
+        "source": "median of 2 listing(s): flipkart",
+        "url": "https://www.flipkart.com/mathematics-class-11-set-2-vol/p/itm17e3c49b74e31?pid=RBKGHHD6CW5ZZGJS",
+        "retrieved_at": "2026-10-17T12:49:52.740278Z",
+        "snapshot": "evidence/prices/a1fc4eca634f61f7d2de.html",
+        "quotes": [
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/mathematics-class-11-set-2-vol/p/itm17e3c49b74e31?pid=RBKGHHD6CW5ZZGJS",
+            "amount": 464.0,
+            "listed": "464 INR",
+            "converted": false,
+            "available": false,
+            "retrieved_at": "2026-10-17T12:49:52.740278Z",
+            "snapshot": "evidence/prices/a1fc4eca634f61f7d2de.html"
+          },
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/mathematics-class-xi/p/itmdyv65yqqhxzhk?pid=9788189928094",
+            "amount": 351.0,
+            "listed": "351 INR",
+            "converted": false,
+            "available": false,
+            "retrieved_at": "2026-10-16T12:06:35.528647Z",
+            "snapshot": "evidence/prices/780d7897aa507cb24d45.html"
+          }
+        ],
+        "amount": 407.5,
+        "converted": false
+      },
+      "used_value": {
+        "source": "median of 1 listing(s): abebooks",
+        "url": "https://www.abebooks.com/Mathematics-Class-11-R.D-Sharma-Dhanpat/32111693691/bd",
+        "retrieved_at": "2026-10-16T12:01:22.580419Z",
+        "snapshot": "evidence/prices/17e9e77c074e54a84555.html",
+        "quotes": [
+          {
+            "shop": "abebooks",
+            "url": "https://www.abebooks.com/Mathematics-Class-11-R.D-Sharma-Dhanpat/32111693691/bd",
+            "amount": 3102.34,
+            "listed": "32.67 USD",
+            "converted": true,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:22.580419Z",
+            "snapshot": "evidence/prices/17e9e77c074e54a84555.html"
+          }
+        ],
+        "amount": 407.5,
+        "converted": true,
+        "condition_assumed": "as listed (used)"
+      }
+    },
+    {
+      "id": "A1-3",
+      "unit": "A",
+      "shelf": "1",
+      "position": 3,
+      "frame_ref": "f000114_t028.78.jpg",
+      "bbox": {
+        "x0": 375.3,
+        "y0": 430.40000000000003,
+        "x1": 506.69999999999993,
+        "y1": 827.2
+      },
+      "annotated_ref": "evidence/shelf_A1.jpg",
+      "status": "identified",
+      "title": "SOCIAL SCIENCE CLASS X",
+      "author": null,
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.5,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A1-4",
+      "unit": "A",
+      "shelf": "1",
+      "position": 4,
+      "frame_ref": "f000114_t028.78.jpg",
+      "bbox": {
+        "x0": 465.3,
+        "y0": 534.4,
+        "x1": 588.6,
+        "y1": 822.4
+      },
+      "annotated_ref": "evidence/shelf_A1.jpg",
+      "status": "identified",
+      "title": "Word Power Made Easy",
+      "author": "Norman Lewis",
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 1.0,
+      "replacement_cost": {
+        "source": "median of 2 listing(s): flipkart, oxfordbookstore",
+        "url": "https://oxfordbookstore.com/products/word-power-made-easy",
+        "retrieved_at": "2026-10-16T12:01:17.166564Z",
+        "snapshot": "evidence/prices/f271ed09ac9f67bf7a23.html",
+        "quotes": [
+          {
+            "shop": "oxfordbookstore",
+            "url": "https://oxfordbookstore.com/products/word-power-made-easy",
+            "amount": 129.0,
+            "listed": "129 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:17.166564Z",
+            "snapshot": "evidence/prices/f271ed09ac9f67bf7a23.html"
+          },
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/word-power-made-easy/p/itm9499d97e10500?pid=RBKGQEX9F5UKNYJW",
+            "amount": 215.0,
+            "listed": "215 INR",
+            "converted": false,
+            "available": false,
+            "retrieved_at": "2026-10-16T12:01:22.929820Z",
+            "snapshot": "evidence/prices/0885ee1dd33204f10b8b.html"
+          }
+        ],
+        "amount": 172.0,
+        "converted": false
+      },
+      "used_value": {
+        "source": "median of 5 listing(s): abebooks",
+        "url": "https://www.abebooks.com/WORD-POWER-MADE-EASY-VOCABULARY-BUILDER/30938995915/bd",
+        "retrieved_at": "2026-10-16T12:01:23.995424Z",
+        "snapshot": "evidence/prices/e155ff3716c3a18aa6a0.html",
+        "quotes": [
+          {
+            "shop": "abebooks",
+            "url": "https://www.abebooks.com/Word-Power-Made-Easy-Complete-Handbook/32525636258/bd",
+            "amount": 616.29,
+            "listed": "6.49 USD",
+            "converted": true,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:23.995424Z",
+            "snapshot": "evidence/prices/e155ff3716c3a18aa6a0.html"
+          },
+          {
+            "shop": "abebooks",
+            "url": "https://www.abebooks.com/Word-Power-Made-Easy-Complete-Three-Week/31895459935/bd",
+            "amount": 1440.54,
+            "listed": "15.17 USD",
+            "converted": true,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:23.995424Z",
+            "snapshot": "evidence/prices/e155ff3716c3a18aa6a0.html"
+          },
+          {
+            "shop": "abebooks",
+            "url": "https://www.abebooks.com/Word-Power-Made-Easy-Norman-Lewis/31692244811/bd",
+            "amount": 963.84,
+            "listed": "10.15 USD",
+            "converted": true,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:23.995424Z",
+            "snapshot": "evidence/prices/e155ff3716c3a18aa6a0.html"
+          },
+          {
+            "shop": "abebooks",
+            "url": "https://www.abebooks.com/WORD-POWER-MADE-EASY-VOCABULARY-BUILDER/30938995915/bd",
+            "amount": 569.76,
+            "listed": "6 USD",
+            "converted": true,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:23.995424Z",
+            "snapshot": "evidence/prices/e155ff3716c3a18aa6a0.html"
+          },
+          {
+            "shop": "abebooks",
+            "url": "https://www.abebooks.com/WORD-POWER-MADE-EASY-lewis-norman/30938994944/bd",
+            "amount": 569.76,
+            "listed": "6 USD",
+            "converted": true,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:23.995424Z",
+            "snapshot": "evidence/prices/e155ff3716c3a18aa6a0.html"
+          }
+        ],
+        "amount": 172.0,
+        "converted": true,
+        "condition_assumed": "as listed (used)"
+      }
+    },
+    {
+      "id": "A1-5",
+      "unit": "A",
+      "shelf": "1",
+      "position": 5,
+      "frame_ref": "f000094_t023.78.jpg",
+      "bbox": {
+        "x0": 278.1,
+        "y0": 644.8000000000001,
+        "x1": 675.0,
+        "y1": 716.8000000000001
+      },
+      "annotated_ref": "evidence/shelf_A1.jpg",
+      "status": "identified",
+      "title": "ENGLISH LANGUAGE AND LITERATURE CLASS X",
+      "author": null,
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.5,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A1-6",
+      "unit": "A",
+      "shelf": "1",
+      "position": 6,
+      "frame_ref": "f000094_t023.78.jpg",
+      "bbox": {
+        "x0": 270.9,
+        "y0": 712.0,
+        "x1": 664.2,
+        "y1": 841.6
+      },
+      "annotated_ref": "evidence/shelf_A1.jpg",
+      "status": "identified",
+      "title": "FUNDAMENTAL PHYSICS CLASS XII",
+      "author": "K.L. GOMBER / K.L. GOGIA",
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.5,
+      "replacement_cost": {
+        "source": "median of 1 listing(s): flipkart",
+        "url": "https://www.flipkart.com/pradeep-s-fundamental-physics-class-12-vol-ii/p/itmesyehpy58rgha?pid=9789386008268",
+        "retrieved_at": "2026-10-16T12:07:18.796847Z",
+        "snapshot": "evidence/prices/a8ac9face6d15bbab051.html",
+        "quotes": [
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/pradeep-s-fundamental-physics-class-12-vol-ii/p/itmesyehpy58rgha?pid=9789386008268",
+            "amount": 1232.0,
+            "listed": "1232 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:07:18.796847Z",
+            "snapshot": "evidence/prices/a8ac9face6d15bbab051.html"
+          }
+        ],
+        "amount": 1232.0,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A2-1",
+      "unit": "A",
+      "shelf": "2",
+      "position": 1,
+      "frame_ref": "f000114_t028.78.jpg",
+      "bbox": {
+        "x0": 249.3,
+        "y0": 984.0,
+        "x1": 324.0,
+        "y1": 1360.0
+      },
+      "annotated_ref": "evidence/shelf_A2.jpg",
+      "status": "identified",
+      "title": "Secondary School Mathematics for Class 10",
+      "author": "R S Aggarwal • V Aggarwal",
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.5,
+      "replacement_cost": {
+        "source": "median of 2 listing(s): flipkart",
+        "url": "https://www.flipkart.com/secondary-school-mathematics-class-10-cbse-r-s-aggarwal-examination-2025-26/p/itm2889eda49d164?pid=RBKHB6YPGXYM2WYN",
+        "retrieved_at": "2026-10-16T12:01:29.647862Z",
+        "snapshot": "evidence/prices/8b17bfe8f551ca67ca8a.html",
+        "quotes": [
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/secondary-school-mathematics-class-10-cbse-r-s-aggarwal-examination-2025-26/p/itm2889eda49d164?pid=RBKHB6YPGXYM2WYN",
+            "amount": 266.0,
+            "listed": "266 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:29.647862Z",
+            "snapshot": "evidence/prices/8b17bfe8f551ca67ca8a.html"
+          },
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/secondary-school-mathematics-class-10-r-s-aggarwal-bharati-bhawan/p/itm8373af3f58ffc?pid=RBKHHH83YJZN9F5P",
+            "amount": 255.0,
+            "listed": "255 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:04:07.463701Z",
+            "snapshot": "evidence/prices/30fb115d2dfe9dea8e50.html"
+          }
+        ],
+        "amount": 260.5,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A2-2",
+      "unit": "A",
+      "shelf": "2",
+      "position": 2,
+      "frame_ref": "f000114_t028.78.jpg",
+      "bbox": {
+        "x0": 297.90000000000003,
+        "y0": 947.1999999999999,
+        "x1": 402.3,
+        "y1": 1366.3999999999999
+      },
+      "annotated_ref": "evidence/shelf_A2.jpg",
+      "status": "identified",
+      "title": "ENGLISH COURSE Class 10",
+      "author": null,
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.5,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A2-3",
+      "unit": "A",
+      "shelf": "2",
+      "position": 3,
+      "frame_ref": "f000114_t028.78.jpg",
+      "bbox": {
+        "x0": 363.6,
+        "y0": 977.6,
+        "x1": 423.9,
+        "y1": 1348.8
+      },
+      "annotated_ref": "evidence/shelf_A2.jpg",
+      "status": "identified",
+      "title": "सामान्य हिन्दी",
+      "author": null,
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.5,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A2-4",
+      "unit": "A",
+      "shelf": "2",
+      "position": 4,
+      "frame_ref": "f000114_t028.78.jpg",
+      "bbox": {
+        "x0": 404.1,
+        "y0": 948.8,
+        "x1": 494.1,
+        "y1": 1353.6
+      },
+      "annotated_ref": "evidence/shelf_A2.jpg",
+      "status": "identified",
+      "title": "Inorganic Chemistry B. Sc. Part-I",
+      "author": "Lavania / Ojha / Bansal",
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.5,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "I1",
+      "category": "shelving",
+      "description": "wood cabinet",
+      "brand_model": null,
+      "frame_ref": "f000114_t028.78.jpg",
+      "bbox": {
+        "x0": 0.0,
+        "y0": 0.0,
+        "x1": 900.0,
+        "y1": 1596.8
+      },
+      "dimensions_cm": {
+        "w": null,
+        "h": null,
+        "d": null
+      },
+      "status": "range",
+      "replacement_cost": {
+        "source": "range of 3 comparable listing(s)",
+        "url": "https://www.flipkart.com/ayat-wooddesigns-engineered-wood-almirah/p/itm0ca7e2f48d4e4?pid=CUPHPGSYZYSAQHZH",
+        "retrieved_at": "2026-10-16T12:01:38.960920Z",
+        "snapshot": "evidence/prices/15b72102a5fc967200a8.html",
+        "quotes": [
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/ayat-wooddesigns-engineered-wood-almirah/p/itm0ca7e2f48d4e4?pid=CUPHPGSYZYSAQHZH",
+            "amount": 7975.0,
+            "listed": "7975 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:38.960920Z",
+            "snapshot": "evidence/prices/15b72102a5fc967200a8.html"
+          },
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/neuspace-uno-engineered-wood-1-door-wardrobe/p/itma64cff2c96974?pid=WCLHKXRSPSDNVHN6",
+            "amount": 4940.0,
+            "listed": "4940 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:40.541573Z",
+            "snapshot": "evidence/prices/b881d7fc86e78b53ed9e.html"
+          },
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/nilkamal-joyce-engineered-wood-4-door-wardrobe/p/itmb0c76d10e662a?pid=WCLGDM3F66YDK9ZZ",
+            "amount": 18590.0,
+            "listed": "18590 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:42.256878Z",
+            "snapshot": "evidence/prices/bc64f0dd5d95650e9eb4.html"
+          }
+        ],
+        "low": 4940.0,
+        "high": 18590.0
+      },
+      "confidence": 0.0
+    }
+  ],
+  "totals": {
+    "book_count": 10,
+    "books_identified": 10,
+    "books_unidentified": 0,
+    "shelf_run_m": null,
+    "books_replacement_cost": 2072.0,
+    "books_used_value": 579.5,
+    "items_replacement_cost_low": 4940.0,
+    "items_replacement_cost_high": 18590.0,
+    "excluded_from_totals": 6
+  },
+  "review_queue": [
+    {
+      "ref_id": "A1-1",
+      "reason": "catalogue match only 76/100: check the title"
+    },
+    {
+      "ref_id": "A1-1",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A1-1",
+      "reason": "no matching listing in this country's shops: excluded from totals"
+    },
+    {
+      "ref_id": "A1-2",
+      "reason": "catalogue match only 89/100: check the title"
+    },
+    {
+      "ref_id": "A1-2",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A1-2",
+      "reason": "used listings cost more than new ones: used value capped at the replacement cost"
+    },
+    {
+      "ref_id": "A1-3",
+      "reason": "no catalogue match: title taken from the spine"
+    },
+    {
+      "ref_id": "A1-3",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A1-3",
+      "reason": "no matching listing in this country's shops: excluded from totals"
+    },
+    {
+      "ref_id": "A1-4",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A1-4",
+      "reason": "used listings cost more than new ones: used value capped at the replacement cost"
+    },
+    {
+      "ref_id": "A1-5",
+      "reason": "no catalogue match: title taken from the spine"
+    },
+    {
+      "ref_id": "A1-5",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A1-5",
+      "reason": "no matching listing in this country's shops: excluded from totals"
+    },
+    {
+      "ref_id": "A1-6",
+      "reason": "no catalogue match: title taken from the spine"
+    },
+    {
+      "ref_id": "A1-6",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A2-1",
+      "reason": "no catalogue match: title taken from the spine"
+    },
+    {
+      "ref_id": "A2-1",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A2-2",
+      "reason": "no catalogue match: title taken from the spine"
+    },
+    {
+      "ref_id": "A2-2",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A2-2",
+      "reason": "no matching listing in this country's shops: excluded from totals"
+    },
+    {
+      "ref_id": "A2-3",
+      "reason": "no catalogue match: title taken from the spine"
+    },
+    {
+      "ref_id": "A2-3",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A2-3",
+      "reason": "no matching listing in this country's shops: excluded from totals"
+    },
+    {
+      "ref_id": "A2-4",
+      "reason": "no catalogue match: title taken from the spine"
+    },
+    {
+      "ref_id": "A2-4",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A2-4",
+      "reason": "no matching listing in this country's shops: excluded from totals"
+    },
+    {
+      "ref_id": "I1",
+      "reason": "price range from 3 comparable listing(s) for 'wood almirah', not this exact item"
+    },
+    {
+      "ref_id": "I1",
+      "reason": "upper price above the appraisal threshold of 5000 INR"
+    },
+    {
+      "ref_id": "I1",
+      "reason": "no scale"
+    },
+    {
+      "ref_id": "f000078_t019.78.jpg",
+      "reason": "possible book not counted: seen in one frame only, where the reference frame shows no spine"
+    },
+    {
+      "ref_id": "f000078_t019.78.jpg",
+      "reason": "possible book not counted: seen in one frame only, where the reference frame shows no spine"
+    },
+    {
+      "ref_id": "room",
+      "reason": "fewer than two walls measured: room size unknown"
+    },
+    {
+      "ref_id": "room",
+      "reason": "1 shelving unit(s) could not be measured: shelved wall area unknown"
+    },
+    {
+      "ref_id": "bottom shelf",
+      "reason": "user said \"The Hindi book on the bottom shelf is a first edition.\" (first_edition), but it matches no shelf, book or item: apply it by hand"
+    }
+  ]
+}

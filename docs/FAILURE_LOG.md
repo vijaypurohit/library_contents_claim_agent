@@ -48,11 +48,24 @@ A scripted session (`claim simulate`, [Testing §10.1](TESTING.md#101-scripted-l
 *What to check first:* rerun detection on a copy of the live sweep with the `gemini` profile (12 calls) and compare the counts.
 *What to change:* a detector that locates objects well is a requirement, not a choice (the design says so; this measures it). Add a count check that compares the final count with the most spines seen in any single view and sends a doubtful count to the review queue; it needs care, because a real room has many views.
 
-**5b. The same script on Claude Sonnet 5.5 (`dev-sonnet`, also through the local `claude` command).** Count 19 for 10 (down from 40–47), 10 lines with a title, none confidently wrong, packet valid. Sonnet found the problems itself: it refused to close the sweep because the footage showed mostly the green door, and called `request_recapture`; the recorder then pressed End after its 20 s limit. Time from the end of the sweep to the packet was 76 s (80 s to 157 s into the session), against 740–748 s on Haiku: detect 24 s (was 137–209 s) and identify 26 s (was 459–503 s). Part of that is parallel spine reading (4 batches at once; it was one after another) and part is fewer books to read (19 against 47). The count is still wrong, so a detector that locates spines precisely remains a requirement.
+**5b. The same script on stronger models.** The detector decides the count; spine reading is parallel since this run.
+
+| Model (feed) | Count (true 10) | Titles | Time, end of sweep to packet |
+|---|---|---|---|
+| Claude Haiku (stitched feed with faults) | 40–47 | 3–9 lines | 740–748 s |
+| Claude Sonnet 5.5, local `claude` command (same feed) | 19 | 10 lines | 76 s |
+| Claude Opus 5.5, local `claude` command (same feed) | 15 | 11 lines | 117 s |
+| Claude Opus 5.5 (one steady recording) | 12 | 10 lines, 5 of 9 correct | 67 s, 12 s and 229 s in three runs of one script (the 12 s run replayed cached answers; the 229 s run waited out shop timeouts: price 104 s) |
+| **Gemini Flash, typed chat (one steady recording)** | **10** | **8 of 9 correct, none confidently wrong** | 477 s: detect 352 s waiting out API timeouts, identify 80 s, price 40 s |
+
+Sonnet and Opus found the capture problems themselves: they refused to close the sweep because the footage showed mostly the green door, and called `request_recapture`. Parallel spine reading (four batches at once; it was one after another) took identify from 459 s to 26–80 s. So a detector that locates spines precisely is a requirement, and Gemini Flash meets it; Claude models through the CLI are good enough to show the flow, not to count. Prices in the Gemini demo: Mathematics XI ₹407 (hand check ₹396) and Word Power ₹172 (₹182) agree; Fundamental Physics ₹1,232 (₹834) and Secondary School Mathematics ₹261 (₹621) do not, because the shops list different editions at very different prices (error 1).
 
 **6. Smaller findings from the same runs**
 - *Reading from live frames:* live frames used to be capped at 1280 px, too small to cut readable spine crops from. They are now 1920 px (`live.evidence_side`). Haiku still read only 3 to 9 titles; the readings it did give were not wrong.
 - *Warnings were debounced away:* glare, blur and a fast pan arrived within 6 s of each other, so only the first (all three kinds on the first glare frame) was reported; the later blur and rushed-pan stretches were silent. Each kind is debounced on its own, but one bad stretch of footage trips several kinds on its first frame, and the user hears a single warning for it.
+- *Polling:* with typed chat on Gemini the agent called `sweep_status` about 40 times in a row while the pipeline ran, one model call each. Nothing told it processing had finished, so it kept asking. Fixed: the same tool call twice in a row, with nobody speaking in between, is dropped, and the prompt says not to poll (`live/cascaded.py`, unit-tested). The recorded Gemini demo still shows the repeats.
+- *Blur warning on one soft frame:* a clean recording raised "frames are blurry" for a single soft frame (a playback glitch). Blur now needs two soft frames in a row (0.5 s at 4 fps; `live.blur_frames`); the faulted feed still triggers blur, glare and motion.
+- *Replayed answers look like speed:* the recorder shares one answer cache across runs, so an identical second run replays model answers and finishes in seconds. `record_demo.py --fresh-cache` starts empty. Shop lookups also time out at times (all three shops did in one run, leaving no book priced), which a real session would show too.
 - *The agent does not always end the sweep:* Haiku called `end_sweep` in one run of two. The End button (and in the simulator, a fallback press) covers it.
 - *A correction that names no line:* "the Hindi book on the bottom shelf is a first edition" was recorded with the target "bottom shelf". It matches no book id, so the packet put it in the review queue ("matches no shelf, book or item") instead of applying it. Before this run it would have been dropped without a word.
 - *Not tested:* Gemini Live audio (no quota), interruption by voice, a person's real camera and microphone.

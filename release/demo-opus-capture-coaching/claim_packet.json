@@ -1,0 +1,1568 @@
+{
+  "sweep": {
+    "id": "live-20261017-212621",
+    "captured_at": "2026-10-17T15:56:21.810616Z",
+    "device": null,
+    "duration_s": 80.28,
+    "country": "IN",
+    "currency": "INR"
+  },
+  "room": {
+    "length_m": null,
+    "width_m": null,
+    "height_m": null,
+    "floor_area_m2": null,
+    "wall_area_m2": null,
+    "shelved_wall_area_m2": null,
+    "scale_method": null,
+    "confidence": null
+  },
+  "books": [
+    {
+      "id": "A1-1",
+      "unit": "A",
+      "shelf": "1",
+      "position": 1,
+      "frame_ref": "f000127_t032.03.jpg",
+      "bbox": {
+        "x0": 234.9,
+        "y0": 390.4,
+        "x1": 299.7,
+        "y1": 825.6
+      },
+      "annotated_ref": "evidence/shelf_A1.jpg",
+      "status": "identified",
+      "title": "Refresher Course in Mathematics Part - 1 for Class X",
+      "author": "Manjeet Singh",
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.758,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A1-2",
+      "unit": "A",
+      "shelf": "1",
+      "position": 2,
+      "frame_ref": "f000080_t020.27.jpg",
+      "bbox": {
+        "x0": 125.10000000000001,
+        "y0": 390.4,
+        "x1": 234.9,
+        "y1": 785.6
+      },
+      "annotated_ref": "evidence/shelf_A1.jpg",
+      "status": "identified",
+      "title": "Mathematics for Class 11",
+      "author": "R.D. Sharma",
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.894,
+      "replacement_cost": {
+        "source": "median of 1 listing(s): flipkart",
+        "url": "https://www.flipkart.com/mathematics-class-xi/p/itmdyv65yqqhxzhk?pid=9788189928094",
+        "retrieved_at": "2026-10-16T12:06:35.528647Z",
+        "snapshot": "evidence/prices/780d7897aa507cb24d45.html",
+        "quotes": [
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/mathematics-class-xi/p/itmdyv65yqqhxzhk?pid=9788189928094",
+            "amount": 351.0,
+            "listed": "351 INR",
+            "converted": false,
+            "available": false,
+            "retrieved_at": "2026-10-16T12:06:35.528647Z",
+            "snapshot": "evidence/prices/780d7897aa507cb24d45.html"
+          }
+        ],
+        "amount": 351.0,
+        "converted": false
+      },
+      "used_value": {
+        "source": "median of 1 listing(s): abebooks",
+        "url": "https://www.abebooks.com/Mathematics-Class-11-R.D-Sharma-Dhanpat/32111693691/bd",
+        "retrieved_at": "2026-10-16T12:01:22.580419Z",
+        "snapshot": "evidence/prices/17e9e77c074e54a84555.html",
+        "quotes": [
+          {
+            "shop": "abebooks",
+            "url": "https://www.abebooks.com/Mathematics-Class-11-R.D-Sharma-Dhanpat/32111693691/bd",
+            "amount": 3102.34,
+            "listed": "32.67 USD",
+            "converted": true,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:22.580419Z",
+            "snapshot": "evidence/prices/17e9e77c074e54a84555.html"
+          }
+        ],
+        "amount": 351.0,
+        "converted": true,
+        "condition_assumed": "as listed (used)"
+      }
+    },
+    {
+      "id": "A1-3",
+      "unit": "A",
+      "shelf": "1",
+      "position": 3,
+      "frame_ref": "f000216_t054.28.jpg",
+      "bbox": {
+        "x0": 378.0,
+        "y0": 435.20000000000005,
+        "x1": 450.0,
+        "y1": 825.6
+      },
+      "annotated_ref": "evidence/shelf_A1.jpg",
+      "status": "identified",
+      "title": "SOCIAL SCIENCE CLASS X",
+      "author": null,
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.5,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A1-4",
+      "unit": "A",
+      "shelf": "1",
+      "position": 4,
+      "frame_ref": "f000216_t054.28.jpg",
+      "bbox": {
+        "x0": 440.09999999999997,
+        "y0": 440.00000000000006,
+        "x1": 504.90000000000003,
+        "y1": 819.2
+      },
+      "annotated_ref": "evidence/shelf_A1.jpg",
+      "status": "unidentified",
+      "title": null,
+      "author": null,
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.0,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A1-5",
+      "unit": "A",
+      "shelf": "1",
+      "position": 5,
+      "frame_ref": "f000080_t020.27.jpg",
+      "bbox": {
+        "x0": 307.8,
+        "y0": 494.4,
+        "x1": 387.9,
+        "y1": 772.8
+      },
+      "annotated_ref": "evidence/shelf_A1.jpg",
+      "status": "identified",
+      "title": "Word Power Made Easy",
+      "author": "Norman Lewis",
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 1.0,
+      "replacement_cost": {
+        "source": "median of 2 listing(s): flipkart, oxfordbookstore",
+        "url": "https://oxfordbookstore.com/products/word-power-made-easy",
+        "retrieved_at": "2026-10-16T12:01:17.166564Z",
+        "snapshot": "evidence/prices/f271ed09ac9f67bf7a23.html",
+        "quotes": [
+          {
+            "shop": "oxfordbookstore",
+            "url": "https://oxfordbookstore.com/products/word-power-made-easy",
+            "amount": 129.0,
+            "listed": "129 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:17.166564Z",
+            "snapshot": "evidence/prices/f271ed09ac9f67bf7a23.html"
+          },
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/word-power-made-easy/p/itm9499d97e10500?pid=RBKGQEX9F5UKNYJW",
+            "amount": 215.0,
+            "listed": "215 INR",
+            "converted": false,
+            "available": false,
+            "retrieved_at": "2026-10-16T12:01:22.929820Z",
+            "snapshot": "evidence/prices/0885ee1dd33204f10b8b.html"
+          }
+        ],
+        "amount": 172.0,
+        "converted": false
+      },
+      "used_value": {
+        "source": "median of 5 listing(s): abebooks",
+        "url": "https://www.abebooks.com/WORD-POWER-MADE-EASY-VOCABULARY-BUILDER/30938995915/bd",
+        "retrieved_at": "2026-10-16T12:01:23.995424Z",
+        "snapshot": "evidence/prices/e155ff3716c3a18aa6a0.html",
+        "quotes": [
+          {
+            "shop": "abebooks",
+            "url": "https://www.abebooks.com/Word-Power-Made-Easy-Complete-Handbook/32525636258/bd",
+            "amount": 616.29,
+            "listed": "6.49 USD",
+            "converted": true,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:23.995424Z",
+            "snapshot": "evidence/prices/e155ff3716c3a18aa6a0.html"
+          },
+          {
+            "shop": "abebooks",
+            "url": "https://www.abebooks.com/Word-Power-Made-Easy-Complete-Three-Week/31895459935/bd",
+            "amount": 1440.54,
+            "listed": "15.17 USD",
+            "converted": true,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:23.995424Z",
+            "snapshot": "evidence/prices/e155ff3716c3a18aa6a0.html"
+          },
+          {
+            "shop": "abebooks",
+            "url": "https://www.abebooks.com/Word-Power-Made-Easy-Norman-Lewis/31692244811/bd",
+            "amount": 963.84,
+            "listed": "10.15 USD",
+            "converted": true,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:23.995424Z",
+            "snapshot": "evidence/prices/e155ff3716c3a18aa6a0.html"
+          },
+          {
+            "shop": "abebooks",
+            "url": "https://www.abebooks.com/WORD-POWER-MADE-EASY-VOCABULARY-BUILDER/30938995915/bd",
+            "amount": 569.76,
+            "listed": "6 USD",
+            "converted": true,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:23.995424Z",
+            "snapshot": "evidence/prices/e155ff3716c3a18aa6a0.html"
+          },
+          {
+            "shop": "abebooks",
+            "url": "https://www.abebooks.com/WORD-POWER-MADE-EASY-lewis-norman/30938994944/bd",
+            "amount": 569.76,
+            "listed": "6 USD",
+            "converted": true,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:23.995424Z",
+            "snapshot": "evidence/prices/e155ff3716c3a18aa6a0.html"
+          }
+        ],
+        "amount": 172.0,
+        "converted": true,
+        "condition_assumed": "as listed (used)"
+      }
+    },
+    {
+      "id": "A1-6",
+      "unit": "A",
+      "shelf": "1",
+      "position": 6,
+      "frame_ref": "f000169_t042.53.jpg",
+      "bbox": {
+        "x0": 459.90000000000003,
+        "y0": 483.2,
+        "x1": 521.0999999999999,
+        "y1": 620.8000000000001
+      },
+      "annotated_ref": "evidence/shelf_A1.jpg",
+      "status": "unidentified",
+      "title": null,
+      "author": null,
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.0,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A1-7",
+      "unit": "A",
+      "shelf": "1",
+      "position": 7,
+      "frame_ref": "f000080_t020.27.jpg",
+      "bbox": {
+        "x0": 396.9,
+        "y0": 590.4,
+        "x1": 800.1,
+        "y1": 662.4
+      },
+      "annotated_ref": "evidence/shelf_A1.jpg",
+      "status": "identified",
+      "title": "ENGLISH LANGUAGE AND LITERATURE CLASS X",
+      "author": null,
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.5,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A1-8",
+      "unit": "A",
+      "shelf": "1",
+      "position": 8,
+      "frame_ref": "f000080_t020.27.jpg",
+      "bbox": {
+        "x0": 389.7,
+        "y0": 649.6,
+        "x1": 790.2,
+        "y1": 777.6
+      },
+      "annotated_ref": "evidence/shelf_A1.jpg",
+      "status": "identified",
+      "title": "FUNDAMENTAL PHYSICS CLASS XII",
+      "author": "K.L. GOMBER, K.L. GOGA",
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.5,
+      "replacement_cost": {
+        "source": "median of 1 listing(s): flipkart",
+        "url": "https://www.flipkart.com/pradeep-s-fundamental-physics-class-12-vol-1-2-examination-2026-27/p/itme129f9ebf7328?pid=RBKHZ4WYVZPEGHYP",
+        "retrieved_at": "2026-10-16T12:04:08.478665Z",
+        "snapshot": "evidence/prices/cac532e1eda4d917c7cb.html",
+        "quotes": [
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/pradeep-s-fundamental-physics-class-12-vol-1-2-examination-2026-27/p/itme129f9ebf7328?pid=RBKHZ4WYVZPEGHYP",
+            "amount": 2618.0,
+            "listed": "2618 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:04:08.478665Z",
+            "snapshot": "evidence/prices/cac532e1eda4d917c7cb.html"
+          }
+        ],
+        "amount": 2618.0,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A2-1",
+      "unit": "A",
+      "shelf": "2",
+      "position": 1,
+      "frame_ref": "f000112_t028.27.jpg",
+      "bbox": {
+        "x0": 0.0,
+        "y0": 1056.0,
+        "x1": 14.4,
+        "y1": 1372.8
+      },
+      "annotated_ref": "evidence/shelf_A2.jpg",
+      "status": "unidentified",
+      "title": null,
+      "author": null,
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.0,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A2-2",
+      "unit": "A",
+      "shelf": "2",
+      "position": 2,
+      "frame_ref": "f000216_t054.28.jpg",
+      "bbox": {
+        "x0": 252.00000000000003,
+        "y0": 995.2,
+        "x1": 309.59999999999997,
+        "y1": 1360.0
+      },
+      "annotated_ref": "evidence/shelf_A2.jpg",
+      "status": "identified",
+      "title": "Secondary School Mathematics for Class IX",
+      "author": "R S Aggarwal, V Aggarwal",
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.5,
+      "replacement_cost": {
+        "source": "median of 1 listing(s): flipkart",
+        "url": "https://www.flipkart.com/secondary-school-mathematics-class-9-1-disc/p/itmaf85f872d039a?pid=9783105275634",
+        "retrieved_at": "2026-10-17T15:59:12.029497Z",
+        "snapshot": "evidence/prices/da12d52184bb8986f768.html",
+        "quotes": [
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/secondary-school-mathematics-class-9-1-disc/p/itmaf85f872d039a?pid=9783105275634",
+            "amount": 372.0,
+            "listed": "372 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-17T15:59:12.029497Z",
+            "snapshot": "evidence/prices/da12d52184bb8986f768.html"
+          }
+        ],
+        "amount": 372.0,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A2-3",
+      "unit": "A",
+      "shelf": "2",
+      "position": 3,
+      "frame_ref": "f000216_t054.28.jpg",
+      "bbox": {
+        "x0": 299.7,
+        "y0": 948.8,
+        "x1": 399.6,
+        "y1": 1364.8
+      },
+      "annotated_ref": "evidence/shelf_A2.jpg",
+      "status": "identified",
+      "title": "ENGLISH COURSE Class 10",
+      "author": null,
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.5,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A2-4",
+      "unit": "A",
+      "shelf": "2",
+      "position": 4,
+      "frame_ref": "f000216_t054.28.jpg",
+      "bbox": {
+        "x0": 367.2,
+        "y0": 985.6,
+        "x1": 410.40000000000003,
+        "y1": 1348.8
+      },
+      "annotated_ref": "evidence/shelf_A2.jpg",
+      "status": "identified",
+      "title": "सामान्य हिन्दी",
+      "author": null,
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.5,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A2-5",
+      "unit": "A",
+      "shelf": "2",
+      "position": 5,
+      "frame_ref": "f000058_t014.78.jpg",
+      "bbox": {
+        "x0": 333.0,
+        "y0": 806.4,
+        "x1": 371.7,
+        "y1": 1044.8
+      },
+      "annotated_ref": "evidence/shelf_A2.jpg",
+      "status": "identified",
+      "title": "B. Sc. Part-I Inorganic Chemistry",
+      "author": null,
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.5,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A2-6",
+      "unit": "A",
+      "shelf": "2",
+      "position": 6,
+      "frame_ref": "f000169_t042.53.jpg",
+      "bbox": {
+        "x0": 379.8,
+        "y0": 910.3999999999999,
+        "x1": 440.09999999999997,
+        "y1": 1289.6000000000001
+      },
+      "annotated_ref": "evidence/shelf_A2.jpg",
+      "status": "unidentified",
+      "title": null,
+      "author": null,
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.0,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A2-7",
+      "unit": "A",
+      "shelf": "2",
+      "position": 7,
+      "frame_ref": "f000112_t028.27.jpg",
+      "bbox": {
+        "x0": 152.10000000000002,
+        "y0": 955.1999999999999,
+        "x1": 261.9,
+        "y1": 1360.0
+      },
+      "annotated_ref": "evidence/shelf_A2.jpg",
+      "status": "identified",
+      "title": "B. Sc. Part-I Inorganic Chemistry",
+      "author": "Lavania, Ojha, Bansal",
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.5,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "I1",
+      "category": "shelving",
+      "description": "wood wall-mounted shelf cabinet with green frame",
+      "brand_model": null,
+      "frame_ref": "f000080_t020.27.jpg",
+      "bbox": {
+        "x0": 0.0,
+        "y0": 0.0,
+        "x1": 900.0,
+        "y1": 1600.0
+      },
+      "dimensions_cm": {
+        "w": null,
+        "h": null,
+        "d": null
+      },
+      "status": "range",
+      "replacement_cost": {
+        "source": "range of 3 comparable listing(s)",
+        "url": "https://www.flipkart.com/ayat-wooddesigns-engineered-wood-almirah/p/itm0ca7e2f48d4e4?pid=CUPHPGSYZYSAQHZH",
+        "retrieved_at": "2026-10-16T12:01:38.960920Z",
+        "snapshot": "evidence/prices/15b72102a5fc967200a8.html",
+        "quotes": [
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/ayat-wooddesigns-engineered-wood-almirah/p/itm0ca7e2f48d4e4?pid=CUPHPGSYZYSAQHZH",
+            "amount": 7975.0,
+            "listed": "7975 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:38.960920Z",
+            "snapshot": "evidence/prices/15b72102a5fc967200a8.html"
+          },
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/neuspace-uno-engineered-wood-1-door-wardrobe/p/itma64cff2c96974?pid=WCLHKXRSPSDNVHN6",
+            "amount": 4940.0,
+            "listed": "4940 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:40.541573Z",
+            "snapshot": "evidence/prices/b881d7fc86e78b53ed9e.html"
+          },
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/nilkamal-joyce-engineered-wood-4-door-wardrobe/p/itmb0c76d10e662a?pid=WCLGDM3F66YDK9ZZ",
+            "amount": 18590.0,
+            "listed": "18590 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:42.256878Z",
+            "snapshot": "evidence/prices/bc64f0dd5d95650e9eb4.html"
+          }
+        ],
+        "low": 4940.0,
+        "high": 18590.0
+      },
+      "confidence": 0.0
+    },
+    {
+      "id": "I2",
+      "category": "decor",
+      "description": "clay pot",
+      "brand_model": null,
+      "frame_ref": "f000058_t014.78.jpg",
+      "bbox": {
+        "x0": 222.3,
+        "y0": 0.0,
+        "x1": 358.20000000000005,
+        "y1": 28.799999999999997
+      },
+      "dimensions_cm": {
+        "w": null,
+        "h": null,
+        "d": null
+      },
+      "status": "range",
+      "replacement_cost": {
+        "source": "range of 3 comparable listing(s)",
+        "url": "https://www.flipkart.com/craftsman-clay-handi-pot-cooking-serving-combo-1-2-3-liter-pot-26-cm-30-cm-diameter-6-l-capacity/p/itm9a287794a5ec9?pid=PTPHR7HWJDZNF9HF",
+        "retrieved_at": "2026-10-17T15:59:19.569700Z",
+        "snapshot": "evidence/prices/a0cb0929eb7af495993b.html",
+        "quotes": [
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/craftsman-clay-handi-pot-cooking-serving-combo-1-2-3-liter-pot-26-cm-30-cm-diameter-6-l-capacity/p/itm9a287794a5ec9?pid=PTPHR7HWJDZNF9HF",
+            "amount": 1249.0,
+            "listed": "1249 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-17T15:59:19.569700Z",
+            "snapshot": "evidence/prices/a0cb0929eb7af495993b.html"
+          },
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/cpv-crafts-hand-made-earthen-biryani-pottery-kadai-meen-chatti-natural-clay-black-pot-handi-1-l/p/itm0326dd8d70c8e?pid=PTPGWJFKJXZQ3K4V",
+            "amount": 378.0,
+            "listed": "378 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-17T15:59:20.695935Z",
+            "snapshot": "evidence/prices/d72c6b4ce51872cc9348.html"
+          },
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/thangam-traditional-black-cooking-pot-mud-handi-earthenware-handi-1-l-pot-16-5-cm-diameter-2-capacity-lid/p/itma47efdee43f0c?pid=PTPHRQEFSKYDRRQ3",
+            "amount": 498.0,
+            "listed": "498 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-17T15:59:22.038417Z",
+            "snapshot": "evidence/prices/a9966b283e8029867783.html"
+          }
+        ],
+        "low": 378.0,
+        "high": 1249.0
+      },
+      "confidence": 0.0
+    },
+    {
+      "id": "I3",
+      "category": "decor",
+      "description": "clay pot",
+      "brand_model": null,
+      "frame_ref": "f000058_t014.78.jpg",
+      "bbox": {
+        "x0": 503.1,
+        "y0": 0.0,
+        "x1": 639.9,
+        "y1": 28.799999999999997
+      },
+      "dimensions_cm": {
+        "w": null,
+        "h": null,
+        "d": null
+      },
+      "status": "range",
+      "replacement_cost": {
+        "source": "range of 3 comparable listing(s)",
+        "url": "https://www.flipkart.com/craftsman-clay-handi-pot-cooking-serving-combo-1-2-3-liter-pot-26-cm-30-cm-diameter-6-l-capacity/p/itm9a287794a5ec9?pid=PTPHR7HWJDZNF9HF",
+        "retrieved_at": "2026-10-17T15:59:19.569700Z",
+        "snapshot": "evidence/prices/a0cb0929eb7af495993b.html",
+        "quotes": [
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/craftsman-clay-handi-pot-cooking-serving-combo-1-2-3-liter-pot-26-cm-30-cm-diameter-6-l-capacity/p/itm9a287794a5ec9?pid=PTPHR7HWJDZNF9HF",
+            "amount": 1249.0,
+            "listed": "1249 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-17T15:59:19.569700Z",
+            "snapshot": "evidence/prices/a0cb0929eb7af495993b.html"
+          },
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/cpv-crafts-hand-made-earthen-biryani-pottery-kadai-meen-chatti-natural-clay-black-pot-handi-1-l/p/itm0326dd8d70c8e?pid=PTPGWJFKJXZQ3K4V",
+            "amount": 378.0,
+            "listed": "378 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-17T15:59:20.695935Z",
+            "snapshot": "evidence/prices/d72c6b4ce51872cc9348.html"
+          },
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/thangam-traditional-black-cooking-pot-mud-handi-earthenware-handi-1-l-pot-16-5-cm-diameter-2-capacity-lid/p/itma47efdee43f0c?pid=PTPHRQEFSKYDRRQ3",
+            "amount": 498.0,
+            "listed": "498 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-17T15:59:22.038417Z",
+            "snapshot": "evidence/prices/a9966b283e8029867783.html"
+          }
+        ],
+        "low": 378.0,
+        "high": 1249.0
+      },
+      "confidence": 0.0
+    },
+    {
+      "id": "I4",
+      "category": "other",
+      "description": "metal utensil",
+      "brand_model": null,
+      "frame_ref": "f000058_t014.78.jpg",
+      "bbox": {
+        "x0": 0.0,
+        "y0": 0.0,
+        "x1": 121.50000000000001,
+        "y1": 32.0
+      },
+      "dimensions_cm": {
+        "w": null,
+        "h": null,
+        "d": null
+      },
+      "status": "range",
+      "replacement_cost": {
+        "source": "range of 3 comparable listing(s)",
+        "url": "https://www.flipkart.com/indian-decor-utensil-kitchen-rack-iron-wood-ss2183-metal-multifunctional-storage-12-x-24-stainless-steel/p/itmbca5767a1f637?pid=KRKHA6ARA6JBDHRQ",
+        "retrieved_at": "2026-10-17T15:59:24.776817Z",
+        "snapshot": "evidence/prices/8279021caec5947017e0.html",
+        "quotes": [
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/indian-decor-utensil-kitchen-rack-iron-wood-ss2183-metal-multifunctional-storage-12-x-24-stainless-steel/p/itmbca5767a1f637?pid=KRKHA6ARA6JBDHRQ",
+            "amount": 3700.0,
+            "listed": "3700 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-17T15:59:24.776817Z",
+            "snapshot": "evidence/prices/8279021caec5947017e0.html"
+          },
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/metalcrafted-utensil-kitchen-rack-iron-2-tire-shelf-bathroom/p/itm5cb277f836c4e?pid=KRKHKYN5ES4EPYPU",
+            "amount": 278.0,
+            "listed": "278 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-17T15:59:26.247372Z",
+            "snapshot": "evidence/prices/813ae3a66bdb8cad85dc.html"
+          },
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/zenzone-cutlery-kitchen-rack-iron-holder-towel-bar-hooks-premium-metal-utensil/p/itmde31177dffe48?pid=KRKHZCBSAS9VXS4S",
+            "amount": 280.0,
+            "listed": "280 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-17T15:59:27.606098Z",
+            "snapshot": "evidence/prices/d7f1facde2c0d6e4f2ef.html"
+          }
+        ],
+        "low": 278.0,
+        "high": 3700.0
+      },
+      "confidence": 0.0
+    },
+    {
+      "id": "I5",
+      "category": "other",
+      "description": "metal utensils",
+      "brand_model": null,
+      "frame_ref": "f000058_t014.78.jpg",
+      "bbox": {
+        "x0": 704.7,
+        "y0": 0.0,
+        "x1": 900.0,
+        "y1": 24.0
+      },
+      "dimensions_cm": {
+        "w": null,
+        "h": null,
+        "d": null
+      },
+      "status": "range",
+      "replacement_cost": {
+        "source": "range of 2 comparable listing(s)",
+        "url": "https://www.flipkart.com/craftpoint-utensil-kitchen-rack-iron-beautiful-metal-foldable-design-easy-carry-the-material-brass-plated/p/itm5a455992bdde9?pid=KRKFY42NHYJMHUQ5",
+        "retrieved_at": "2026-10-17T15:59:30.105542Z",
+        "snapshot": "evidence/prices/00a08bfea6dbd7e1169b.html",
+        "quotes": [
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/craftpoint-utensil-kitchen-rack-iron-beautiful-metal-foldable-design-easy-carry-the-material-brass-plated/p/itm5a455992bdde9?pid=KRKFY42NHYJMHUQ5",
+            "amount": 234.0,
+            "listed": "234 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-17T15:59:30.105542Z",
+            "snapshot": "evidence/prices/00a08bfea6dbd7e1169b.html"
+          },
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/best-utensils-india-pack-6-02-glass-set-water-juice/p/itmezftxcuxrdbu9?pid=GLSEZFTXYYYJXGFE",
+            "amount": 753.0,
+            "listed": "753 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-17T15:59:31.295166Z",
+            "snapshot": "evidence/prices/66a7f4221408a6ed47a4.html"
+          }
+        ],
+        "low": 234.0,
+        "high": 753.0
+      },
+      "confidence": 0.0
+    },
+    {
+      "id": "I6",
+      "category": "furniture",
+      "description": "chair",
+      "brand_model": null,
+      "frame_ref": "f000148_t037.28.jpg",
+      "bbox": {
+        "x0": 0.0,
+        "y0": 1529.6,
+        "x1": 39.599999999999994,
+        "y1": 1600.0
+      },
+      "dimensions_cm": {
+        "w": null,
+        "h": null,
+        "d": null
+      },
+      "status": "range",
+      "replacement_cost": {
+        "source": "range of 1 comparable listing(s)",
+        "url": "https://www.flipkart.com/ne-furniture-engineered-wood-side-table/p/itmc4059071f5cc5?pid=SITHEJVVRUG4KM43",
+        "retrieved_at": "2026-10-17T15:59:33.841124Z",
+        "snapshot": "evidence/prices/f3f5b6f145e1d0d0a970.html",
+        "quotes": [
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/ne-furniture-engineered-wood-side-table/p/itmc4059071f5cc5?pid=SITHEJVVRUG4KM43",
+            "amount": 970.0,
+            "listed": "970 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-17T15:59:33.841124Z",
+            "snapshot": "evidence/prices/f3f5b6f145e1d0d0a970.html"
+          }
+        ],
+        "low": 970.0,
+        "high": 970.0
+      },
+      "confidence": 0.0
+    },
+    {
+      "id": "I7",
+      "category": "rug",
+      "description": "patterned floor mat",
+      "brand_model": null,
+      "frame_ref": "f000148_t037.28.jpg",
+      "bbox": {
+        "x0": 36.0,
+        "y0": 1536.0,
+        "x1": 504.00000000000006,
+        "y1": 1600.0
+      },
+      "dimensions_cm": {
+        "w": null,
+        "h": null,
+        "d": null
+      },
+      "status": "range",
+      "replacement_cost": {
+        "source": "range of 3 comparable listing(s)",
+        "url": "https://www.flipkart.com/mahdev-enterprises-3-ft-x-jute-area-rug/p/itm56ccf80b02257?pid=CPGFY5C9ZEUGQTDF",
+        "retrieved_at": "2026-10-17T15:59:36.322287Z",
+        "snapshot": "evidence/prices/5642baabe9b60c0a2bb8.html",
+        "quotes": [
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/mahdev-enterprises-3-ft-x-jute-area-rug/p/itm56ccf80b02257?pid=CPGFY5C9ZEUGQTDF",
+            "amount": 402.0,
+            "listed": "402 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-17T15:59:36.322287Z",
+            "snapshot": "evidence/prices/5642baabe9b60c0a2bb8.html"
+          },
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/homewaytex-60-cm-x-90-cotton-area-rug/p/itmbd4d8fcc8e2ef?pid=CPGH6XCQW57GZUT4",
+            "amount": 374.0,
+            "listed": "374 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-17T15:59:37.607557Z",
+            "snapshot": "evidence/prices/80dca9b3b23c9824fd73.html"
+          },
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/homewaytex-60-cm-x-90-cotton-area-rug/p/itm9bd462c29e2ee?pid=CPGH6XCQTXBDF9FC",
+            "amount": 374.0,
+            "listed": "374 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-17T15:59:38.864611Z",
+            "snapshot": "evidence/prices/5484ffc7cd4f77266869.html"
+          }
+        ],
+        "low": 374.0,
+        "high": 402.0
+      },
+      "confidence": 0.0
+    },
+    {
+      "id": "I8",
+      "category": "shelving",
+      "description": "wood open green wooden cabinet door",
+      "brand_model": null,
+      "frame_ref": "f000237_t059.53.jpg",
+      "bbox": {
+        "x0": 0.0,
+        "y0": 94.39999999999999,
+        "x1": 590.4,
+        "y1": 1550.3999999999999
+      },
+      "dimensions_cm": {
+        "w": null,
+        "h": null,
+        "d": null
+      },
+      "status": "range",
+      "replacement_cost": {
+        "source": "range of 3 comparable listing(s)",
+        "url": "https://www.flipkart.com/ayat-wooddesigns-engineered-wood-almirah/p/itm0ca7e2f48d4e4?pid=CUPHPGSYZYSAQHZH",
+        "retrieved_at": "2026-10-16T12:01:38.960920Z",
+        "snapshot": "evidence/prices/15b72102a5fc967200a8.html",
+        "quotes": [
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/ayat-wooddesigns-engineered-wood-almirah/p/itm0ca7e2f48d4e4?pid=CUPHPGSYZYSAQHZH",
+            "amount": 7975.0,
+            "listed": "7975 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:38.960920Z",
+            "snapshot": "evidence/prices/15b72102a5fc967200a8.html"
+          },
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/neuspace-uno-engineered-wood-1-door-wardrobe/p/itma64cff2c96974?pid=WCLHKXRSPSDNVHN6",
+            "amount": 4940.0,
+            "listed": "4940 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:40.541573Z",
+            "snapshot": "evidence/prices/b881d7fc86e78b53ed9e.html"
+          },
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/nilkamal-joyce-engineered-wood-4-door-wardrobe/p/itmb0c76d10e662a?pid=WCLGDM3F66YDK9ZZ",
+            "amount": 18590.0,
+            "listed": "18590 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:42.256878Z",
+            "snapshot": "evidence/prices/bc64f0dd5d95650e9eb4.html"
+          }
+        ],
+        "low": 4940.0,
+        "high": 18590.0
+      },
+      "confidence": 0.0
+    },
+    {
+      "id": "I9",
+      "category": "furniture",
+      "description": "chair edge",
+      "brand_model": null,
+      "frame_ref": "f000237_t059.53.jpg",
+      "bbox": {
+        "x0": 0.0,
+        "y0": 1528.0,
+        "x1": 40.5,
+        "y1": 1600.0
+      },
+      "dimensions_cm": {
+        "w": null,
+        "h": null,
+        "d": null
+      },
+      "status": "range",
+      "replacement_cost": {
+        "source": "range of 1 comparable listing(s)",
+        "url": "https://www.flipkart.com/ne-furniture-engineered-wood-side-table/p/itmc4059071f5cc5?pid=SITHEJVVRUG4KM43",
+        "retrieved_at": "2026-10-17T15:59:33.841124Z",
+        "snapshot": "evidence/prices/f3f5b6f145e1d0d0a970.html",
+        "quotes": [
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/ne-furniture-engineered-wood-side-table/p/itmc4059071f5cc5?pid=SITHEJVVRUG4KM43",
+            "amount": 970.0,
+            "listed": "970 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-17T15:59:33.841124Z",
+            "snapshot": "evidence/prices/f3f5b6f145e1d0d0a970.html"
+          }
+        ],
+        "low": 970.0,
+        "high": 970.0
+      },
+      "confidence": 0.0
+    }
+  ],
+  "totals": {
+    "book_count": 15,
+    "books_identified": 11,
+    "books_unidentified": 4,
+    "shelf_run_m": null,
+    "books_replacement_cost": 3513.0,
+    "books_used_value": 523.0,
+    "items_replacement_cost_low": 13462.0,
+    "items_replacement_cost_high": 46473.0,
+    "excluded_from_totals": 11
+  },
+  "review_queue": [
+    {
+      "ref_id": "A1-1",
+      "reason": "catalogue match only 76/100: check the title"
+    },
+    {
+      "ref_id": "A1-1",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A1-1",
+      "reason": "no matching listing in this country's shops: excluded from totals"
+    },
+    {
+      "ref_id": "A1-2",
+      "reason": "catalogue match only 89/100: check the title"
+    },
+    {
+      "ref_id": "A1-2",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A1-2",
+      "reason": "used listings cost more than new ones: used value capped at the replacement cost"
+    },
+    {
+      "ref_id": "A1-3",
+      "reason": "no catalogue match: title taken from the spine"
+    },
+    {
+      "ref_id": "A1-3",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A1-3",
+      "reason": "no matching listing in this country's shops: excluded from totals"
+    },
+    {
+      "ref_id": "A1-4",
+      "reason": "spine not legible"
+    },
+    {
+      "ref_id": "A1-4",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A1-4",
+      "reason": "not priced: the book could not be read"
+    },
+    {
+      "ref_id": "A1-5",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A1-5",
+      "reason": "used listings cost more than new ones: used value capped at the replacement cost"
+    },
+    {
+      "ref_id": "A1-6",
+      "reason": "spine not legible"
+    },
+    {
+      "ref_id": "A1-6",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A1-6",
+      "reason": "not priced: the book could not be read"
+    },
+    {
+      "ref_id": "A1-7",
+      "reason": "no catalogue match: title taken from the spine"
+    },
+    {
+      "ref_id": "A1-7",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A1-7",
+      "reason": "no matching listing in this country's shops: excluded from totals"
+    },
+    {
+      "ref_id": "A1-8",
+      "reason": "no catalogue match: title taken from the spine"
+    },
+    {
+      "ref_id": "A1-8",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A2-1",
+      "reason": "only seen cut off at a frame edge"
+    },
+    {
+      "ref_id": "A2-1",
+      "reason": "detector was unsure this is a book"
+    },
+    {
+      "ref_id": "A2-1",
+      "reason": "not visible in the reference frame"
+    },
+    {
+      "ref_id": "A2-1",
+      "reason": "spine not legible"
+    },
+    {
+      "ref_id": "A2-1",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A2-1",
+      "reason": "not priced: the book could not be read"
+    },
+    {
+      "ref_id": "A2-2",
+      "reason": "no catalogue match: title taken from the spine"
+    },
+    {
+      "ref_id": "A2-2",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A2-3",
+      "reason": "no catalogue match: title taken from the spine"
+    },
+    {
+      "ref_id": "A2-3",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A2-3",
+      "reason": "no matching listing in this country's shops: excluded from totals"
+    },
+    {
+      "ref_id": "A2-4",
+      "reason": "no catalogue match: title taken from the spine"
+    },
+    {
+      "ref_id": "A2-4",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A2-4",
+      "reason": "no matching listing in this country's shops: excluded from totals"
+    },
+    {
+      "ref_id": "A2-5",
+      "reason": "no catalogue match: title taken from the spine"
+    },
+    {
+      "ref_id": "A2-5",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A2-5",
+      "reason": "no matching listing in this country's shops: excluded from totals"
+    },
+    {
+      "ref_id": "A2-6",
+      "reason": "spine not legible"
+    },
+    {
+      "ref_id": "A2-6",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A2-6",
+      "reason": "not priced: the book could not be read"
+    },
+    {
+      "ref_id": "A2-7",
+      "reason": "not visible in the reference frame"
+    },
+    {
+      "ref_id": "A2-7",
+      "reason": "no catalogue match: title taken from the spine"
+    },
+    {
+      "ref_id": "A2-7",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A2-7",
+      "reason": "no matching listing in this country's shops: excluded from totals"
+    },
+    {
+      "ref_id": "I1",
+      "reason": "price range from 3 comparable listing(s) for 'wood almirah', not this exact item"
+    },
+    {
+      "ref_id": "I1",
+      "reason": "upper price above the appraisal threshold of 5000 INR"
+    },
+    {
+      "ref_id": "I1",
+      "reason": "no scale"
+    },
+    {
+      "ref_id": "I2",
+      "reason": "price range from 3 comparable listing(s) for 'clay pot', not this exact item"
+    },
+    {
+      "ref_id": "I2",
+      "reason": "no scale"
+    },
+    {
+      "ref_id": "I3",
+      "reason": "price range from 3 comparable listing(s) for 'clay pot', not this exact item"
+    },
+    {
+      "ref_id": "I3",
+      "reason": "no scale"
+    },
+    {
+      "ref_id": "I4",
+      "reason": "price range from 3 comparable listing(s) for 'metal utensil', not this exact item"
+    },
+    {
+      "ref_id": "I4",
+      "reason": "no scale"
+    },
+    {
+      "ref_id": "I5",
+      "reason": "price range from 2 comparable listing(s) for 'metal utensils', not this exact item"
+    },
+    {
+      "ref_id": "I5",
+      "reason": "no scale"
+    },
+    {
+      "ref_id": "I6",
+      "reason": "price range from 1 comparable listing(s) for 'furniture', not this exact item"
+    },
+    {
+      "ref_id": "I6",
+      "reason": "no scale"
+    },
+    {
+      "ref_id": "I7",
+      "reason": "price range from 3 comparable listing(s) for 'rug', not this exact item"
+    },
+    {
+      "ref_id": "I7",
+      "reason": "no scale"
+    },
+    {
+      "ref_id": "I8",
+      "reason": "price range from 3 comparable listing(s) for 'wood almirah', not this exact item"
+    },
+    {
+      "ref_id": "I8",
+      "reason": "upper price above the appraisal threshold of 5000 INR"
+    },
+    {
+      "ref_id": "I8",
+      "reason": "no scale"
+    },
+    {
+      "ref_id": "I9",
+      "reason": "price range from 1 comparable listing(s) for 'furniture', not this exact item"
+    },
+    {
+      "ref_id": "I9",
+      "reason": "no scale"
+    },
+    {
+      "ref_id": "room",
+      "reason": "11 wall/door/window box(es) seen in frames without a scale: not measured"
+    },
+    {
+      "ref_id": "room",
+      "reason": "fewer than two walls measured: room size unknown"
+    },
+    {
+      "ref_id": "room",
+      "reason": "2 shelving unit(s) could not be measured: shelved wall area unknown"
+    },
+    {
+      "ref_id": "A2",
+      "reason": "user said \"The Hindi book on the bottom shelf is a first edition.\" (first_edition), but it matches no shelf, book or item: apply it by hand"
+    }
+  ]
+}

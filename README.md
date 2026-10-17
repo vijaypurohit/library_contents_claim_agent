@@ -27,6 +27,7 @@ uv run pytest             # about 200 tests, no network and no keys needed
 | `gemini` (default) | `GEMINI_API_KEY` in `.env` | normal use, live voice included |
 | `openai`, `anthropic`, `groq` | that provider's key | the same stages on another provider |
 | `dev-sonnet` | the same `claude` tool | like `dev` with Claude Sonnet 5.5: slower per call, better at locating and reading |
+| `dev-opus` | the same `claude` tool | like `dev` with Claude Opus 5.5: the strongest, and the heaviest on your allowance |
 | `local` | Ollama running | no network |
 | `dev` | the `claude` command-line tool, logged in | trying everything with no API key (Claude Haiku: slow, about 10 minutes per sweep, and chat or browser-speech only) |
 
@@ -105,6 +106,18 @@ uv run claim --allow-calls --profile dev simulate      # a scripted live session
 - **`config/settings.yaml`**: everything else: `locale` (country and currency; shops, item search words and the appraisal threshold are per country in `config/locales/<country>.yaml`), `models` (profiles and per-stage overrides), `live` (voice, frame rate, capture-warning thresholds), `gateway.cache_only`.
 - **`config/targets.yaml`**: accuracy targets the evaluation reports against.
 
+## Demos
+
+Everything under `release/` was made with `claim export` and holds the claim packet, the report (`report.html`), the frames and price-page snapshots they cite, and, for the two demos, the video and the conversation.
+
+| Folder | What it is | Result |
+|---|---|---|
+| [`release/demo-gemini-chat/`](release/demo-gemini-chat/demo/demo.mp4) | **Gemini, typed chat** (no voice), steady footage, no faults added | Count 10 of 10, 8 of 9 titles correct, none confidently wrong, no capture warnings; 2 of 4 prices within 25% of the hand check. 9 minutes, of which 352 s was detect waiting out API timeouts. |
+| [`release/demo-opus-capture-coaching/`](release/demo-opus-capture-coaching/demo/demo.mp4) | **Claude Opus 5.5** (through the local `claude` command), voice stand-ins, footage with added glare, blur and a fast pan | The agent catches the faults, asks for a re-record and records the first-edition correction; count 15 for 10. 3 minutes 41 seconds. |
+| [`release/slow-recorded/`](release/slow-recorded/report.html) | The recorded `slow` video through the pipeline on Gemini Flash (no live session) | Count 10 of 10, 7 of 9 titles, none confidently wrong; see the [evaluation](eval/results_slow.md). |
+
+**What the demo videos are, honestly:** simulated sessions, not a person at a phone. The camera is recordings of the test space, the user's lines are scripted (typed on screen in the chat demo, spoken by a computer voice in the other), and a banner across the page says so. The agent, its warnings and tool calls, the pipeline, the packet and the report are all live. They were recorded with `scripts/record_demo.py` (see [Testing](docs/TESTING.md)). A take with a real camera, microphone and Gemini Live voice still needs a person.
+
 ## Results on the test captures
 
 Count 10 of 10 on all four sweeps; titles correct 78–89% on the steady sweeps (33% on the rushed one); no confidently wrong titles anywhere; every price sourced, dated and snapshotted, with 4 regional books that have no listing anywhere left unpriced. Prices agree with the hand check on only 1–2 of 6 books, and dimensions and room are empty because the captures have no scale: see [the failure log](docs/FAILURE_LOG.md) for root causes and a measured fix.
@@ -145,7 +158,7 @@ The system is built to the full specification. The test data it was checked on i
 | One continuous sweep of the whole room | Videos of 2–6 seconds of the shelves | Room dimensions and areas come out empty, with review reasons |
 | Metric scale from a reference object in view | No scale card or A4 sheet in any capture; no catalogue heights for these editions | Dimensions come out empty, with review reasons; the scale rungs are tested on synthetic images |
 | 20 hand-measured spines and a tape-measured room | Not available | Dimension and room accuracy are reported as "not measured" |
-| Live sweep on a phone | Laptop camera on `localhost`; phone access through a `cloudflared` tunnel is supported | Live agent tested mainly at a desk |
+| Live sweep on a phone, with a real voice | Scripted sessions (simulated camera and user) through the real server and web page; unit tests; the Gemini Live bridge against the SDK's own message types | Gemini Live audio, interruption by voice and a person's own camera were not tested |
 
 Other limitations: shops that refuse plain page requests (Amazon, ThriftBooks, Bookswagon, Sapna Online) are skipped and listed; the depth scale rung and local detectors are not included; Google Books needs its own key once the shared anonymous quota is used up.
 

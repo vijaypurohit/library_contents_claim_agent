@@ -98,6 +98,23 @@ def test_export_copies_the_packet_and_everything_it_references(ctx: RunContext, 
     assert missing == [] and (out / "claim_packet.json").exists() and (out / "report.html").exists()
     assert (out / "evidence/prices/p.html").exists()
     assert len(list((out / "frames").glob("*.jpg"))) == 1     # only the referenced frame, not all of them
+    assert not (out / "demo").exists()                        # no demo was recorded for this sweep
+
+
+def test_export_includes_the_demo_video_and_transcript_but_not_the_working_files(ctx: RunContext, tmp_path):
+    from claimagent.report.export import export_sweep
+
+    run(ctx)
+    for name, size in (("demo/demo.mp4", 10), ("demo/page.webm", 99), ("demo/audio.wav", 99), ("demo/timeline.json", 2),
+                       ("simulation/transcript.md", 5), ("simulation/events.jsonl", 99)):
+        path = ctx.sweep.root / name
+        path.parent.mkdir(exist_ok=True)
+        path.write_bytes(b"x" * size)
+    export_sweep(ctx.sweep, tmp_path / "release")
+    out = tmp_path / "release"
+    assert (out / "demo/demo.mp4").exists() and (out / "simulation/transcript.md").exists()
+    assert not (out / "demo/page.webm").exists() and not (out / "demo/audio.wav").exists()
+    assert not (out / "simulation/events.jsonl").exists()
 
 
 def test_a_fact_that_matches_no_line_goes_to_review(ctx: RunContext):

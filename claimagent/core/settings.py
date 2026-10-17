@@ -101,6 +101,7 @@ class LiveConfig(BaseModel):
     evidence_side: int = Field(1920, ge=640)         # long side of recorded frames; spine crops are cut from these, so bigger reads better
     model_frame_side: int = 768                      # forwarded frames are shrunk to this long side
     blurry_ratio: float = Field(0.5, gt=0, lt=1)     # sharpness below this share of the recent median is blurry
+    blur_frames: int = Field(2, ge=1)                # this many blurry frames in a row (0.5 s at 4 fps) make a warning: one soft frame is a glitch
     glare_max: float = Field(0.06, gt=0, lt=1)       # share of blown-out pixels above which glare is reported
     motion_max: float = Field(0.11, gt=0, lt=1)      # change between frames 1/4 s apart: slow pan <= 0.10, rushed ~0.12
     warn_every_s: float = Field(6.0, ge=1)           # the same warning is repeated at most this often
@@ -144,6 +145,7 @@ class Settings(BaseModel):
 
     locale: LocaleConfig = Field(default_factory=LocaleConfig)
     runs_dir: Path = Path("runs")  # where sweeps are stored; relative paths are under the project root
+    cache_file: Path | None = None  # use this cache file instead of runs/.cache.sqlite (set by code, not settings.yaml)
     ingest: IngestConfig = Field(default_factory=IngestConfig)
     keyframes: KeyframesConfig = Field(default_factory=KeyframesConfig)
     camera: CameraConfig = Field(default_factory=CameraConfig)
@@ -167,5 +169,6 @@ class Settings(BaseModel):
 
     @property
     def cache_path(self) -> Path:
-        """One shared cache for all sweeps, so the same model question is never paid for twice."""
-        return self.runs_dir / ".cache.sqlite"
+        """One shared cache for all sweeps, so the same model question is never paid for twice.
+        `cache_file` replaces it (a demo uses an empty one, so its timings are real, not replayed)."""
+        return self.cache_file or self.runs_dir / ".cache.sqlite"

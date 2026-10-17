@@ -1,0 +1,765 @@
+{
+  "sweep": {
+    "id": "slow",
+    "captured_at": "2026-10-15T18:48:58.970224Z",
+    "device": null,
+    "duration_s": 5.51,
+    "country": "IN",
+    "currency": "INR"
+  },
+  "room": {
+    "length_m": null,
+    "width_m": null,
+    "height_m": null,
+    "floor_area_m2": null,
+    "wall_area_m2": null,
+    "shelved_wall_area_m2": null,
+    "scale_method": null,
+    "confidence": null
+  },
+  "books": [
+    {
+      "id": "A1-1",
+      "unit": "A",
+      "shelf": "1",
+      "position": 1,
+      "frame_ref": "f000015_t003.77.jpg",
+      "bbox": {
+        "x0": 561.6,
+        "y0": 929.28,
+        "x1": 723.6,
+        "y1": 1985.28
+      },
+      "annotated_ref": "evidence/shelf_A1.jpg",
+      "status": "identified",
+      "title": "MATHEMATICS",
+      "author": "MANJEET SINGH",
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.5,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A1-2",
+      "unit": "A",
+      "shelf": "1",
+      "position": 2,
+      "frame_ref": "f000015_t003.77.jpg",
+      "bbox": {
+        "x0": 704.1600000000001,
+        "y0": 1036.8000000000002,
+        "x1": 924.48,
+        "y1": 1985.28
+      },
+      "annotated_ref": "evidence/shelf_A1.jpg",
+      "status": "identified",
+      "title": "Mathematics for Class 11",
+      "author": "R.D. Sharma",
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.826,
+      "replacement_cost": {
+        "source": "median of 1 listing(s): flipkart",
+        "url": "https://www.flipkart.com/mathematics-class-xi/p/itmdyv65yqqhxzhk?pid=9788189928094",
+        "retrieved_at": "2026-10-16T12:06:35.528647Z",
+        "snapshot": "evidence/prices/780d7897aa507cb24d45.html",
+        "quotes": [
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/mathematics-class-xi/p/itmdyv65yqqhxzhk?pid=9788189928094",
+            "amount": 351.0,
+            "listed": "351 INR",
+            "converted": false,
+            "available": false,
+            "retrieved_at": "2026-10-16T12:06:35.528647Z",
+            "snapshot": "evidence/prices/780d7897aa507cb24d45.html"
+          }
+        ],
+        "amount": 351.0,
+        "converted": false
+      },
+      "used_value": {
+        "source": "median of 1 listing(s): abebooks",
+        "url": "https://www.abebooks.com/Mathematics-Class-11-R.D-Sharma-Dhanpat/32111693691/bd",
+        "retrieved_at": "2026-10-16T12:01:22.580419Z",
+        "snapshot": "evidence/prices/17e9e77c074e54a84555.html",
+        "quotes": [
+          {
+            "shop": "abebooks",
+            "url": "https://www.abebooks.com/Mathematics-Class-11-R.D-Sharma-Dhanpat/32111693691/bd",
+            "amount": 3105.61,
+            "listed": "32.67 USD",
+            "converted": true,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:22.580419Z",
+            "snapshot": "evidence/prices/17e9e77c074e54a84555.html"
+          }
+        ],
+        "amount": 351.0,
+        "converted": true,
+        "condition_assumed": "as listed (used)"
+      }
+    },
+    {
+      "id": "A1-3",
+      "unit": "A",
+      "shelf": "1",
+      "position": 3,
+      "frame_ref": "f000015_t003.77.jpg",
+      "bbox": {
+        "x0": 900.7199999999999,
+        "y0": 1048.3200000000002,
+        "x1": 1216.08,
+        "y1": 1989.1200000000001
+      },
+      "annotated_ref": "evidence/shelf_A1.jpg",
+      "status": "identified",
+      "title": "SOCIAL SCIENCE",
+      "author": null,
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.5,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A1-4",
+      "unit": "A",
+      "shelf": "1",
+      "position": 4,
+      "frame_ref": "f000015_t003.77.jpg",
+      "bbox": {
+        "x0": 1114.56,
+        "y0": 1282.5600000000002,
+        "x1": 1404.0,
+        "y1": 1966.08
+      },
+      "annotated_ref": "evidence/shelf_A1.jpg",
+      "status": "identified",
+      "title": "Word Power Made Easy",
+      "author": "Norman Lewis",
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 1.0,
+      "replacement_cost": {
+        "source": "median of 2 listing(s): flipkart, oxfordbookstore",
+        "url": "https://oxfordbookstore.com/products/word-power-made-easy",
+        "retrieved_at": "2026-10-16T12:01:17.166564Z",
+        "snapshot": "evidence/prices/f271ed09ac9f67bf7a23.html",
+        "quotes": [
+          {
+            "shop": "oxfordbookstore",
+            "url": "https://oxfordbookstore.com/products/word-power-made-easy",
+            "amount": 129.0,
+            "listed": "129 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:17.166564Z",
+            "snapshot": "evidence/prices/f271ed09ac9f67bf7a23.html"
+          },
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/word-power-made-easy/p/itm9499d97e10500?pid=RBKGQEX9F5UKNYJW",
+            "amount": 215.0,
+            "listed": "215 INR",
+            "converted": false,
+            "available": false,
+            "retrieved_at": "2026-10-16T12:01:22.929820Z",
+            "snapshot": "evidence/prices/0885ee1dd33204f10b8b.html"
+          }
+        ],
+        "amount": 172.0,
+        "converted": false
+      },
+      "used_value": {
+        "source": "median of 5 listing(s): abebooks",
+        "url": "https://www.abebooks.com/WORD-POWER-MADE-EASY-VOCABULARY-BUILDER/30938995915/bd",
+        "retrieved_at": "2026-10-16T12:01:23.995424Z",
+        "snapshot": "evidence/prices/e155ff3716c3a18aa6a0.html",
+        "quotes": [
+          {
+            "shop": "abebooks",
+            "url": "https://www.abebooks.com/Word-Power-Made-Easy-Complete-Handbook/32525636258/bd",
+            "amount": 616.94,
+            "listed": "6.49 USD",
+            "converted": true,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:23.995424Z",
+            "snapshot": "evidence/prices/e155ff3716c3a18aa6a0.html"
+          },
+          {
+            "shop": "abebooks",
+            "url": "https://www.abebooks.com/Word-Power-Made-Easy-Complete-Three-Week/31895459935/bd",
+            "amount": 1442.06,
+            "listed": "15.17 USD",
+            "converted": true,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:23.995424Z",
+            "snapshot": "evidence/prices/e155ff3716c3a18aa6a0.html"
+          },
+          {
+            "shop": "abebooks",
+            "url": "https://www.abebooks.com/Word-Power-Made-Easy-Norman-Lewis/31692244811/bd",
+            "amount": 964.86,
+            "listed": "10.15 USD",
+            "converted": true,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:23.995424Z",
+            "snapshot": "evidence/prices/e155ff3716c3a18aa6a0.html"
+          },
+          {
+            "shop": "abebooks",
+            "url": "https://www.abebooks.com/WORD-POWER-MADE-EASY-VOCABULARY-BUILDER/30938995915/bd",
+            "amount": 570.36,
+            "listed": "6 USD",
+            "converted": true,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:23.995424Z",
+            "snapshot": "evidence/prices/e155ff3716c3a18aa6a0.html"
+          },
+          {
+            "shop": "abebooks",
+            "url": "https://www.abebooks.com/WORD-POWER-MADE-EASY-lewis-norman/30938994944/bd",
+            "amount": 570.36,
+            "listed": "6 USD",
+            "converted": true,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:01:23.995424Z",
+            "snapshot": "evidence/prices/e155ff3716c3a18aa6a0.html"
+          }
+        ],
+        "amount": 172.0,
+        "converted": true,
+        "condition_assumed": "as listed (used)"
+      }
+    },
+    {
+      "id": "A1-5",
+      "unit": "A",
+      "shelf": "1",
+      "position": 5,
+      "frame_ref": "f000006_t001.52.jpg",
+      "bbox": {
+        "x0": 60.480000000000004,
+        "y0": 1578.24,
+        "x1": 1017.3599999999999,
+        "y1": 1758.72
+      },
+      "annotated_ref": "evidence/shelf_A1.jpg",
+      "status": "identified",
+      "title": "ENGLISH",
+      "author": null,
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.5,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A1-6",
+      "unit": "A",
+      "shelf": "1",
+      "position": 6,
+      "frame_ref": "f000010_t002.52.jpg",
+      "bbox": {
+        "x0": 652.3199999999999,
+        "y0": 1708.8,
+        "x1": 1596.24,
+        "y1": 2016.0
+      },
+      "annotated_ref": "evidence/shelf_A1.jpg",
+      "status": "identified",
+      "title": "Fundamental Physics",
+      "author": "K.L. Gomber, K.L. Goel",
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.5,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A2-1",
+      "unit": "A",
+      "shelf": "2",
+      "position": 1,
+      "frame_ref": "f000015_t003.77.jpg",
+      "bbox": {
+        "x0": 598.32,
+        "y0": 2327.04,
+        "x1": 777.6,
+        "y1": 3264.0
+      },
+      "annotated_ref": "evidence/shelf_A2.jpg",
+      "status": "identified",
+      "title": "Secondary School Mathematics for Class III",
+      "author": null,
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.5,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A2-2",
+      "unit": "A",
+      "shelf": "2",
+      "position": 2,
+      "frame_ref": "f000015_t003.77.jpg",
+      "bbox": {
+        "x0": 717.12,
+        "y0": 2269.44,
+        "x1": 954.72,
+        "y1": 3287.04
+      },
+      "annotated_ref": "evidence/shelf_A2.jpg",
+      "status": "identified",
+      "title": "Sanjiv English Course",
+      "author": null,
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.5,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A2-3",
+      "unit": "A",
+      "shelf": "2",
+      "position": 3,
+      "frame_ref": "f000015_t003.77.jpg",
+      "bbox": {
+        "x0": 872.6400000000001,
+        "y0": 2323.2,
+        "x1": 1013.04,
+        "y1": 3252.48
+      },
+      "annotated_ref": "evidence/shelf_A2.jpg",
+      "status": "identified",
+      "title": "सामान्य हिंदी",
+      "author": null,
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.5,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    },
+    {
+      "id": "A2-4",
+      "unit": "A",
+      "shelf": "2",
+      "position": 4,
+      "frame_ref": "f000015_t003.77.jpg",
+      "bbox": {
+        "x0": 974.1600000000001,
+        "y0": 2277.12,
+        "x1": 1192.3200000000002,
+        "y1": 3252.48
+      },
+      "annotated_ref": "evidence/shelf_A2.jpg",
+      "status": "identified",
+      "title": "Inorganic Chemistry",
+      "author": null,
+      "edition": null,
+      "isbn": null,
+      "spine_height_cm": null,
+      "spine_thickness_cm": null,
+      "dimension_confidence": null,
+      "scale_method": null,
+      "id_confidence": 0.5,
+      "replacement_cost": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false
+      },
+      "used_value": {
+        "source": null,
+        "url": null,
+        "retrieved_at": null,
+        "snapshot": null,
+        "quotes": [],
+        "amount": null,
+        "converted": false,
+        "condition_assumed": null
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "I1",
+      "category": "shelving",
+      "description": "steel almirah",
+      "brand_model": null,
+      "frame_ref": "f000015_t003.77.jpg",
+      "bbox": {
+        "x0": 0.0,
+        "y0": 0.0,
+        "x1": 2160.0,
+        "y1": 3840.0
+      },
+      "dimensions_cm": {
+        "w": null,
+        "h": null,
+        "d": null
+      },
+      "status": "range",
+      "replacement_cost": {
+        "source": "range of 3 comparable listing(s)",
+        "url": "https://www.flipkart.com/interio-godrej-etna-3-door-locker-metal-almirah/p/itm7ecd2ade9d3ad?pid=CUPHHZ7BAHAN8D2S",
+        "retrieved_at": "2026-10-16T12:04:28.030506Z",
+        "snapshot": "evidence/prices/cb0b5f57d7265b45fa09.html",
+        "quotes": [
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/interio-godrej-etna-3-door-locker-metal-almirah/p/itm7ecd2ade9d3ad?pid=CUPHHZ7BAHAN8D2S",
+            "amount": 32990.0,
+            "listed": "32990 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:04:28.030506Z",
+            "snapshot": "evidence/prices/cb0b5f57d7265b45fa09.html"
+          },
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/zahra-almari-kitchen-almirah-storage-metal/p/itmfac31ed7993b1?pid=CUPHK55FJJZFDGEP",
+            "amount": 2244.0,
+            "listed": "2244 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:04:29.381665Z",
+            "snapshot": "evidence/prices/544390766fdd596f5e34.html"
+          },
+          {
+            "shop": "flipkart",
+            "url": "https://www.flipkart.com/zahra-kitchen-almari-metal-almirah/p/itme50e4906af931?pid=CUPHK46MWDCNTMMP",
+            "amount": 2205.0,
+            "listed": "2205 INR",
+            "converted": false,
+            "available": true,
+            "retrieved_at": "2026-10-16T12:04:30.309041Z",
+            "snapshot": "evidence/prices/9306f51d6eacbd7bc688.html"
+          }
+        ],
+        "low": 2205.0,
+        "high": 32990.0
+      },
+      "confidence": 0.0
+    }
+  ],
+  "totals": {
+    "book_count": 10,
+    "books_identified": 10,
+    "books_unidentified": 0,
+    "shelf_run_m": null,
+    "books_replacement_cost": 523.0,
+    "books_used_value": 523.0,
+    "items_replacement_cost_low": 2205.0,
+    "items_replacement_cost_high": 32990.0,
+    "excluded_from_totals": 8
+  },
+  "review_queue": [
+    {
+      "ref_id": "A1-1",
+      "reason": "no catalogue match: title taken from the spine"
+    },
+    {
+      "ref_id": "A1-1",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A1-1",
+      "reason": "no matching listing in this country's shops: excluded from totals"
+    },
+    {
+      "ref_id": "A1-2",
+      "reason": "catalogue match only 83/100: check the title"
+    },
+    {
+      "ref_id": "A1-2",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A1-2",
+      "reason": "used listings cost more than new ones: used value capped at the replacement cost"
+    },
+    {
+      "ref_id": "A1-3",
+      "reason": "no catalogue match: title taken from the spine"
+    },
+    {
+      "ref_id": "A1-3",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A1-3",
+      "reason": "no matching listing in this country's shops: excluded from totals"
+    },
+    {
+      "ref_id": "A1-4",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A1-4",
+      "reason": "used listings cost more than new ones: used value capped at the replacement cost"
+    },
+    {
+      "ref_id": "A1-5",
+      "reason": "no catalogue match: title taken from the spine"
+    },
+    {
+      "ref_id": "A1-5",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A1-5",
+      "reason": "no matching listing in this country's shops: excluded from totals"
+    },
+    {
+      "ref_id": "A1-6",
+      "reason": "no catalogue match: title taken from the spine"
+    },
+    {
+      "ref_id": "A1-6",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A1-6",
+      "reason": "no matching listing in this country's shops: excluded from totals"
+    },
+    {
+      "ref_id": "A2-1",
+      "reason": "no catalogue match: title taken from the spine"
+    },
+    {
+      "ref_id": "A2-1",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A2-1",
+      "reason": "no matching listing in this country's shops: excluded from totals"
+    },
+    {
+      "ref_id": "A2-2",
+      "reason": "no catalogue match: title taken from the spine"
+    },
+    {
+      "ref_id": "A2-2",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A2-2",
+      "reason": "no matching listing in this country's shops: excluded from totals"
+    },
+    {
+      "ref_id": "A2-3",
+      "reason": "no catalogue match: title taken from the spine"
+    },
+    {
+      "ref_id": "A2-3",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A2-3",
+      "reason": "no matching listing in this country's shops: excluded from totals"
+    },
+    {
+      "ref_id": "A2-4",
+      "reason": "no catalogue match: title taken from the spine"
+    },
+    {
+      "ref_id": "A2-4",
+      "reason": "no scale for this shelf"
+    },
+    {
+      "ref_id": "A2-4",
+      "reason": "no matching listing in this country's shops: excluded from totals"
+    },
+    {
+      "ref_id": "I1",
+      "reason": "price range from 3 comparable listing(s) for 'steel almirah', not this exact item"
+    },
+    {
+      "ref_id": "I1",
+      "reason": "upper price above the appraisal threshold of 5000 INR"
+    },
+    {
+      "ref_id": "I1",
+      "reason": "no scale"
+    },
+    {
+      "ref_id": "f000006_t001.52.jpg",
+      "reason": "possible book not counted: seen in one frame only, where the reference frame shows no spine"
+    },
+    {
+      "ref_id": "f000006_t001.52.jpg",
+      "reason": "possible book not counted: seen in one frame only, where the reference frame shows no spine"
+    },
+    {
+      "ref_id": "room",
+      "reason": "fewer than two walls measured: room size unknown"
+    },
+    {
+      "ref_id": "room",
+      "reason": "1 shelving unit(s) could not be measured: shelved wall area unknown"
+    }
+  ]
+}

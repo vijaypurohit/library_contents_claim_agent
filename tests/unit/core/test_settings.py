@@ -33,3 +33,10 @@ def test_override_wins_over_profile():
 def test_unknown_profile_is_an_error():
     with pytest.raises(KeyError, match="unknown model profile"):
         ModelsConfig(profile="nope").chain("read")
+
+
+def test_cache_file_overrides_the_shared_cache(tmp_path):
+    settings = Settings(runs_dir=tmp_path / "runs")
+    assert settings.cache_path == tmp_path / "runs" / ".cache.sqlite"
+    settings.cache_file = tmp_path / "other.sqlite"
+    assert settings.cache_path == tmp_path / "other.sqlite"

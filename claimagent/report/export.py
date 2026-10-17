@@ -2,6 +2,11 @@
 
 The folder layout of the sweep is kept (frames/, evidence/, debug/), so the report's relative links
 still work in the copy. Only referenced files are copied, not every recorded frame.
+
+If the sweep has a demo recording (scripts/record_demo.py) or a simulation record (`claim simulate`),
+the finished video and the conversation transcript are copied too, so the folder holds the whole
+story of the sweep: what was filmed and said, the packet, and the report. The large working files
+(the raw page recording, the soundtrack, every event) stay in runs/.
 """
 
 from __future__ import annotations
@@ -12,6 +17,10 @@ from pathlib import Path
 
 from claimagent.core.sweep import SweepDir
 from claimagent.domain.packet import ClaimPacket
+
+# Files from a demo or simulated session that are worth sharing, relative to the sweep.
+SHARED_EXTRAS = ("demo/demo.mp4", "demo/timeline.json", "simulation/transcript.md", "simulation/simulation.json",
+                 "session.json", "live_log.jsonl")
 
 _LOCAL_LINK = re.compile(r'(?:src|href)="((?:frames|evidence|debug)/[^"#?]+)"')
 
@@ -41,6 +50,11 @@ def export_sweep(sweep: SweepDir, out: Path) -> tuple[int, list[str]]:
     for name in ("claim_packet.json", "report.html", "metrics.json", "facts.json"):
         if (sweep.root / name).exists():
             shutil.copy2(sweep.root / name, out / name)
+            copied += 1
+    for extra in SHARED_EXTRAS:
+        if (sweep.root / extra).exists():
+            (out / extra).parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(sweep.root / extra, out / extra)
             copied += 1
     for ref in sorted(referenced_files(packet, report)):
         source = sweep.root / ref

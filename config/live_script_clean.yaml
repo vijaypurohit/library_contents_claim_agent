@@ -1,0 +1,24 @@
+# A clean scripted session: one continuous, steady recording and no added faults, so no capture
+# warning is expected. Same format as live_script.yaml (read its header for the fields).
+#
+# The recording is video_slow.mp4, the steady pan down both shelves, used whole and untrimmed
+# (checked: the capture monitor raises no warning on any of its frames). Each frame is shown four
+# times with slight hand shake, as a person pausing on each view.
+
+camera:
+  width: 900
+  height: 1600
+  crossfade_frames: 2
+  segments:
+    - {video: tests-local-data/video_slow.mp4, repeat: 4, note: "a steady pan down both shelves, close enough to read the spines"}
+
+user:
+  - {after_agent: true, start_camera: true,
+     say: "Yes, India and rupees is right. I'm starting with the top shelf, then the bottom one."}
+  - {after_agent: true, camera_t: 8,
+     say: "One thing: the Hindi book on the bottom shelf is a first edition."}
+  - {camera_done: true, end: true,          # sent as soon as the footage ends, not after the agent's next reply
+     say: "That's both shelves. I'm done."}
+
+end_grace_s: 20
+packet_timeout_s: 3600

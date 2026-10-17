@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claim report · live-20261017-215400</title>
+<style>
+  :root { --ink:#1d2433; --muted:#5f6b7a; --line:#dfe3ea; --bg:#f7f8fa; --card:#fff; --ok:#1f7a4d; --warn:#a15c00; --bad:#b42318; }
+  @media (prefers-color-scheme: dark) { :root { --ink:#e6e9ef; --muted:#9aa4b2; --line:#2c3340; --bg:#12161d; --card:#1a1f28; --ok:#5fd39a; --warn:#f0b35a; --bad:#ff8a80; } }
+  * { box-sizing:border-box; }
+  body { margin:0; font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif; color:var(--ink); background:var(--bg); }
+  main { max-width:1100px; margin:0 auto; padding:24px 16px 64px; }
+  h1 { font-size:24px; margin:0 0 4px; } h2 { font-size:18px; margin:32px 0 12px; }
+  .muted { color:var(--muted); }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; }
+  .tile { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:12px 14px; }
+  .tile .v { font-size:22px; font-weight:600; } .tile .k { color:var(--muted); font-size:13px; }
+  table { width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+  th, td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; font-size:14px; }
+  th { font-weight:600; color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.03em; }
+  .scroll { overflow-x:auto; }
+  .tag { display:inline-block; padding:1px 7px; border-radius:10px; font-size:12px; border:1px solid currentColor; }
+  .identified { color:var(--ok); } .unidentified { color:var(--bad); } .needs_appraisal, .range, .unpriced { color:var(--warn); } .priced { color:var(--ok); }
+  .shelves { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:12px; }
+  .shelves img { width:100%; border-radius:6px; border:1px solid var(--line); }
+  .spine { max-height:60px; max-width:120px; border-radius:3px; }
+  a { color:inherit; }
+  ul.review li { margin-bottom:4px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Library contents claim</h1>
+  <div class="muted">Sweep live-20261017-215400 · captured 2026-10-17 16:24 UTC · priced in IN (INR)</div>
+
+  <h2>Totals</h2>
+  <div class="grid">
+    <div class="tile"><div class="v">10</div><div class="k">books counted</div></div>
+    <div class="tile"><div class="v">10</div><div class="k">identified · 0 unreadable</div></div>
+    <div class="tile"><div class="v">₹2,072</div><div class="k">books, replacement cost</div></div>
+    <div class="tile"><div class="v">₹580</div><div class="k">books, used value</div></div>
+    <div class="tile"><div class="v">₹4,940 – ₹18,590</div><div class="k">items, replacement range</div></div>
+    <div class="tile"><div class="v">6</div><div class="k">lines left out of totals (no price, or appraisal)</div></div>
+  </div>
+  <p class="muted">Totals are sums of the priced lines below, computed in code. Lines without a sourced price are left out and listed in the review queue.</p>
+
+  
+  <h2>Shelves</h2>
+  <div class="shelves">
+    <figure style="margin:0"><a href="evidence/shelf_A1.jpg"><img src="evidence/shelf_A1.jpg" alt="Shelf A1 with numbered books"></a>
+      <figcaption class="muted">Shelf A1 · 6 books</figcaption></figure><figure style="margin:0"><a href="evidence/shelf_A2.jpg"><img src="evidence/shelf_A2.jpg" alt="Shelf A2 with numbered books"></a>
+      <figcaption class="muted">Shelf A2 · 4 books</figcaption></figure>
+  </div>
+  
+
+  <h2>Books</h2>
+  <div class="scroll"><table>
+    <tr><th>#</th><th>Spine</th><th>Title / author</th><th>Status</th><th>Size (cm)</th><th>Replacement</th><th>Used</th><th>Evidence</th></tr>
+    
+    <tr>
+      <td>A1-1</td>
+      <td><a href="debug/spine_A1-1.jpg"><img class="spine" src="debug/spine_A1-1.jpg" alt="spine of A1-1"></a></td>
+      <td><strong>Refresher Course in Mathematics Part - 1 for Class X</strong>
+          <br><span class="muted">Manjeet Singh</span>
+          </td>
+      <td><span class="tag identified">identified</span>
+          <br><span class="muted">id 76%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>–</td>
+      <td>–</td>
+      <td><a href="frames/f000114_t028.78.jpg">frame</a>
+          </td>
+    </tr>
+    
+    <tr>
+      <td>A1-2</td>
+      <td><a href="debug/spine_A1-2.jpg"><img class="spine" src="debug/spine_A1-2.jpg" alt="spine of A1-2"></a></td>
+      <td><strong>Mathematics for Class 11</strong>
+          <br><span class="muted">R.D. Sharma</span>
+          </td>
+      <td><span class="tag identified">identified</span>
+          <br><span class="muted">id 89%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>₹408</td>
+      <td>₹408</td>
+      <td><a href="frames/f000114_t028.78.jpg">frame</a>
+          <br><a href="evidence/prices/a1fc4eca634f61f7d2de.html">flipkart 464 INR</a> <a class="muted" href="https://www.flipkart.com/mathematics-class-11-set-2-vol/p/itm17e3c49b74e31?pid=RBKGHHD6CW5ZZGJS">↗</a><br><a href="evidence/prices/780d7897aa507cb24d45.html">flipkart 351 INR</a> <a class="muted" href="https://www.flipkart.com/mathematics-class-xi/p/itmdyv65yqqhxzhk?pid=9788189928094">↗</a><br><a href="evidence/prices/17e9e77c074e54a84555.html">abebooks 32.67 USD</a> <a class="muted" href="https://www.abebooks.com/Mathematics-Class-11-R.D-Sharma-Dhanpat/32111693691/bd">↗</a></td>
+    </tr>
+    
+    <tr>
+      <td>A1-3</td>
+      <td><a href="debug/spine_A1-3.jpg"><img class="spine" src="debug/spine_A1-3.jpg" alt="spine of A1-3"></a></td>
+      <td><strong>SOCIAL SCIENCE CLASS X</strong>
+          
+          </td>
+      <td><span class="tag identified">identified</span>
+          <br><span class="muted">id 50%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>–</td>
+      <td>–</td>
+      <td><a href="frames/f000114_t028.78.jpg">frame</a>
+          </td>
+    </tr>
+    
+    <tr>
+      <td>A1-4</td>
+      <td><a href="debug/spine_A1-4.jpg"><img class="spine" src="debug/spine_A1-4.jpg" alt="spine of A1-4"></a></td>
+      <td><strong>Word Power Made Easy</strong>
+          <br><span class="muted">Norman Lewis</span>
+          </td>
+      <td><span class="tag identified">identified</span>
+          <br><span class="muted">id 100%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>₹172</td>
+      <td>₹172</td>
+      <td><a href="frames/f000114_t028.78.jpg">frame</a>
+          <br><a href="evidence/prices/f271ed09ac9f67bf7a23.html">oxfordbookstore 129 INR</a> <a class="muted" href="https://oxfordbookstore.com/products/word-power-made-easy">↗</a><br><a href="evidence/prices/0885ee1dd33204f10b8b.html">flipkart 215 INR</a> <a class="muted" href="https://www.flipkart.com/word-power-made-easy/p/itm9499d97e10500?pid=RBKGQEX9F5UKNYJW">↗</a><br><a href="evidence/prices/e155ff3716c3a18aa6a0.html">abebooks 6.49 USD</a> <a class="muted" href="https://www.abebooks.com/Word-Power-Made-Easy-Complete-Handbook/32525636258/bd">↗</a><br><a href="evidence/prices/e155ff3716c3a18aa6a0.html">abebooks 15.17 USD</a> <a class="muted" href="https://www.abebooks.com/Word-Power-Made-Easy-Complete-Three-Week/31895459935/bd">↗</a><br><a href="evidence/prices/e155ff3716c3a18aa6a0.html">abebooks 10.15 USD</a> <a class="muted" href="https://www.abebooks.com/Word-Power-Made-Easy-Norman-Lewis/31692244811/bd">↗</a><br><a href="evidence/prices/e155ff3716c3a18aa6a0.html">abebooks 6 USD</a> <a class="muted" href="https://www.abebooks.com/WORD-POWER-MADE-EASY-VOCABULARY-BUILDER/30938995915/bd">↗</a><br><a href="evidence/prices/e155ff3716c3a18aa6a0.html">abebooks 6 USD</a> <a class="muted" href="https://www.abebooks.com/WORD-POWER-MADE-EASY-lewis-norman/30938994944/bd">↗</a></td>
+    </tr>
+    
+    <tr>
+      <td>A1-5</td>
+      <td><a href="debug/spine_A1-5.jpg"><img class="spine" src="debug/spine_A1-5.jpg" alt="spine of A1-5"></a></td>
+      <td><strong>ENGLISH LANGUAGE AND LITERATURE CLASS X</strong>
+          
+          </td>
+      <td><span class="tag identified">identified</span>
+          <br><span class="muted">id 50%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>–</td>
+      <td>–</td>
+      <td><a href="frames/f000094_t023.78.jpg">frame</a>
+          </td>
+    </tr>
+    
+    <tr>
+      <td>A1-6</td>
+      <td><a href="debug/spine_A1-6.jpg"><img class="spine" src="debug/spine_A1-6.jpg" alt="spine of A1-6"></a></td>
+      <td><strong>FUNDAMENTAL PHYSICS CLASS XII</strong>
+          <br><span class="muted">K.L. GOMBER / K.L. GOGIA</span>
+          </td>
+      <td><span class="tag identified">identified</span>
+          <br><span class="muted">id 50%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>₹1,232</td>
+      <td>–</td>
+      <td><a href="frames/f000094_t023.78.jpg">frame</a>
+          <br><a href="evidence/prices/a8ac9face6d15bbab051.html">flipkart 1232 INR</a> <a class="muted" href="https://www.flipkart.com/pradeep-s-fundamental-physics-class-12-vol-ii/p/itmesyehpy58rgha?pid=9789386008268">↗</a></td>
+    </tr>
+    
+    <tr>
+      <td>A2-1</td>
+      <td><a href="debug/spine_A2-1.jpg"><img class="spine" src="debug/spine_A2-1.jpg" alt="spine of A2-1"></a></td>
+      <td><strong>Secondary School Mathematics for Class 10</strong>
+          <br><span class="muted">R S Aggarwal • V Aggarwal</span>
+          </td>
+      <td><span class="tag identified">identified</span>
+          <br><span class="muted">id 50%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>₹260</td>
+      <td>–</td>
+      <td><a href="frames/f000114_t028.78.jpg">frame</a>
+          <br><a href="evidence/prices/8b17bfe8f551ca67ca8a.html">flipkart 266 INR</a> <a class="muted" href="https://www.flipkart.com/secondary-school-mathematics-class-10-cbse-r-s-aggarwal-examination-2025-26/p/itm2889eda49d164?pid=RBKHB6YPGXYM2WYN">↗</a><br><a href="evidence/prices/30fb115d2dfe9dea8e50.html">flipkart 255 INR</a> <a class="muted" href="https://www.flipkart.com/secondary-school-mathematics-class-10-r-s-aggarwal-bharati-bhawan/p/itm8373af3f58ffc?pid=RBKHHH83YJZN9F5P">↗</a></td>
+    </tr>
+    
+    <tr>
+      <td>A2-2</td>
+      <td><a href="debug/spine_A2-2.jpg"><img class="spine" src="debug/spine_A2-2.jpg" alt="spine of A2-2"></a></td>
+      <td><strong>ENGLISH COURSE Class 10</strong>
+          
+          </td>
+      <td><span class="tag identified">identified</span>
+          <br><span class="muted">id 50%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>–</td>
+      <td>–</td>
+      <td><a href="frames/f000114_t028.78.jpg">frame</a>
+          </td>
+    </tr>
+    
+    <tr>
+      <td>A2-3</td>
+      <td><a href="debug/spine_A2-3.jpg"><img class="spine" src="debug/spine_A2-3.jpg" alt="spine of A2-3"></a></td>
+      <td><strong>सामान्य हिन्दी</strong>
+          
+          </td>
+      <td><span class="tag identified">identified</span>
+          <br><span class="muted">id 50%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>–</td>
+      <td>–</td>
+      <td><a href="frames/f000114_t028.78.jpg">frame</a>
+          </td>
+    </tr>
+    
+    <tr>
+      <td>A2-4</td>
+      <td><a href="debug/spine_A2-4.jpg"><img class="spine" src="debug/spine_A2-4.jpg" alt="spine of A2-4"></a></td>
+      <td><strong>Inorganic Chemistry B. Sc. Part-I</strong>
+          <br><span class="muted">Lavania / Ojha / Bansal</span>
+          </td>
+      <td><span class="tag identified">identified</span>
+          <br><span class="muted">id 50%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>–</td>
+      <td>–</td>
+      <td><a href="frames/f000114_t028.78.jpg">frame</a>
+          </td>
+    </tr>
+    
+  </table></div>
+
+  <h2>Other items</h2>
+  <div class="scroll"><table>
+    <tr><th>#</th><th>Item</th><th>Status</th><th>Size (cm)</th><th>Replacement range</th><th>Evidence</th></tr>
+    
+    <tr>
+      <td>I1</td><td>wood cabinet</td>
+      <td><span class="tag range">range</span></td>
+      <td><span class="muted">–</span></td>
+      <td>₹4,940 – ₹18,590</td>
+      <td><a href="frames/f000114_t028.78.jpg">frame</a>
+          <br><a href="evidence/prices/15b72102a5fc967200a8.html">flipkart 7975 INR</a> <a class="muted" href="https://www.flipkart.com/ayat-wooddesigns-engineered-wood-almirah/p/itm0ca7e2f48d4e4?pid=CUPHPGSYZYSAQHZH">↗</a><br><a href="evidence/prices/b881d7fc86e78b53ed9e.html">flipkart 4940 INR</a> <a class="muted" href="https://www.flipkart.com/neuspace-uno-engineered-wood-1-door-wardrobe/p/itma64cff2c96974?pid=WCLHKXRSPSDNVHN6">↗</a><br><a href="evidence/prices/bc64f0dd5d95650e9eb4.html">flipkart 18590 INR</a> <a class="muted" href="https://www.flipkart.com/nilkamal-joyce-engineered-wood-4-door-wardrobe/p/itmb0c76d10e662a?pid=WCLGDM3F66YDK9ZZ">↗</a></td>
+    </tr>
+    
+  </table></div>
+
+  <h2>Room</h2>
+  
+  <p class="muted">The room could not be measured from this sweep; see the review queue.</p>
+
+  <h2>Review queue (35)</h2>
+  <ul class="review"><li><strong>A1-1</strong>: catalogue match only 76/100: check the title</li><li><strong>A1-1</strong>: no scale for this shelf</li><li><strong>A1-1</strong>: no matching listing in this country&#39;s shops: excluded from totals</li><li><strong>A1-2</strong>: catalogue match only 89/100: check the title</li><li><strong>A1-2</strong>: no scale for this shelf</li><li><strong>A1-2</strong>: used listings cost more than new ones: used value capped at the replacement cost</li><li><strong>A1-3</strong>: no catalogue match: title taken from the spine</li><li><strong>A1-3</strong>: no scale for this shelf</li><li><strong>A1-3</strong>: no matching listing in this country&#39;s shops: excluded from totals</li><li><strong>A1-4</strong>: no scale for this shelf</li><li><strong>A1-4</strong>: used listings cost more than new ones: used value capped at the replacement cost</li><li><strong>A1-5</strong>: no catalogue match: title taken from the spine</li><li><strong>A1-5</strong>: no scale for this shelf</li><li><strong>A1-5</strong>: no matching listing in this country&#39;s shops: excluded from totals</li><li><strong>A1-6</strong>: no catalogue match: title taken from the spine</li><li><strong>A1-6</strong>: no scale for this shelf</li><li><strong>A2-1</strong>: no catalogue match: title taken from the spine</li><li><strong>A2-1</strong>: no scale for this shelf</li><li><strong>A2-2</strong>: no catalogue match: title taken from the spine</li><li><strong>A2-2</strong>: no scale for this shelf</li><li><strong>A2-2</strong>: no matching listing in this country&#39;s shops: excluded from totals</li><li><strong>A2-3</strong>: no catalogue match: title taken from the spine</li><li><strong>A2-3</strong>: no scale for this shelf</li><li><strong>A2-3</strong>: no matching listing in this country&#39;s shops: excluded from totals</li><li><strong>A2-4</strong>: no catalogue match: title taken from the spine</li><li><strong>A2-4</strong>: no scale for this shelf</li><li><strong>A2-4</strong>: no matching listing in this country&#39;s shops: excluded from totals</li><li><strong>I1</strong>: price range from 3 comparable listing(s) for &#39;wood almirah&#39;, not this exact item</li><li><strong>I1</strong>: upper price above the appraisal threshold of 5000 INR</li><li><strong>I1</strong>: no scale</li><li><strong>f000078_t019.78.jpg</strong>: possible book not counted: seen in one frame only, where the reference frame shows no spine</li><li><strong>f000078_t019.78.jpg</strong>: possible book not counted: seen in one frame only, where the reference frame shows no spine</li><li><strong>room</strong>: fewer than two walls measured: room size unknown</li><li><strong>room</strong>: 1 shelving unit(s) could not be measured: shelved wall area unknown</li><li><strong>bottom shelf</strong>: user said &#34;The Hindi book on the bottom shelf is a first edition.&#34; (first_edition), but it matches no shelf, book or item: apply it by hand</li></ul>
+
+  <h2>Pipeline notes</h2><ul class="review muted"><li>scale: no scale card in any keyframe; sizes will come from the other scale rungs in the measure stage</li><li>detect: gemini/gemini-3.5-flash failed (gave up after 3 attempts (Timeout: litellm.Timeout: Connection timed out after None seconds.)); trying next provider</li><li>inventory: 2 spine box(es) seen in a single frame were not counted; see `unconfirmed`</li><li>identify: catalogue googlebooks unavailable, skipped from here on (www.googleapis.com: HTTP 429 {   &#34;error&#34;: {     &#34;code&#34;: 429,     &#34;message&#34;: &#34;Quota exceeded for quota metric &#39;Queries&#39; and limit &#39;Queries per day&#39; of service &#39;books.googleapis.com&#39; for cons)</li><li>measure: no scale for shelf A1, A2; their books have no dimensions (needs a scale card, identified books with catalogue heights, or a known object)</li><li>room: fewer than two walls measured: room size unknown</li><li>room: 1 shelving unit(s) could not be measured: shelved wall area unknown</li></ul>
+</main>
+</body>
+</html>

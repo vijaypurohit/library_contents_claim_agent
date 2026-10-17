@@ -89,6 +89,11 @@ models:
       read: [claude-cli/sonnet]
       classify: [claude-cli/sonnet]
       converse: [claude-cli/sonnet]
+    dev-opus:           # like `dev`, with Claude Opus 5.5 through the same local `claude` command (heaviest on your allowance)
+      detect: [claude-cli/opus]
+      read: [claude-cli/opus]
+      classify: [claude-cli/opus]
+      converse: [claude-cli/opus]
     local:
       live: [ollama/qwen2.5vl:7b]
       detect: [ollama/qwen2.5vl:7b]

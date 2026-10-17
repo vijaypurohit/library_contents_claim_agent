@@ -113,6 +113,7 @@ class QualityMonitor:
     def __init__(self, cfg: LiveConfig, history: int = 20):
         self.cfg = cfg
         self.recent: deque[float] = deque(maxlen=history)
+        self.soft_run = 0                        # blurry frames in a row so far
         self.previous: np.ndarray | None = None
         self.last_warned: dict[str, float] = {}
 
@@ -120,7 +121,9 @@ class QualityMonitor:
         now = time.monotonic() if now is None else now
         found = []
         sharp = sharpness(image)
-        if len(self.recent) >= 3 and sharp < self.cfg.blurry_ratio * statistics.median(self.recent):
+        soft = len(self.recent) >= 3 and sharp < self.cfg.blurry_ratio * statistics.median(self.recent)
+        self.soft_run = self.soft_run + 1 if soft else 0
+        if self.soft_run >= self.cfg.blur_frames:    # blur lasts; a single soft frame (a codec glitch) does not
             found.append(QualityWarning("blur", "Frames are blurry: hold the phone steady for a moment on each shelf."))
         self.recent.append(sharp)
         if glare(image) > self.cfg.glare_max:

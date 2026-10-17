@@ -1,0 +1,84 @@
+{
+  "sweep": "slow",
+  "stages": [
+    {
+      "stage": "keyframes",
+      "latency_s": 2.02,
+      "model_calls": 0,
+      "billed_calls": 0,
+      "cost_usd": 0.0,
+      "cost_complete": true
+    },
+    {
+      "stage": "scale",
+      "latency_s": 0.402,
+      "model_calls": 0,
+      "billed_calls": 0,
+      "cost_usd": 0.0,
+      "cost_complete": true
+    },
+    {
+      "stage": "detect",
+      "latency_s": 2.102,
+      "model_calls": 4,
+      "billed_calls": 0,
+      "cost_usd": 0.0,
+      "cost_complete": true
+    },
+    {
+      "stage": "inventory",
+      "latency_s": 0.516,
+      "model_calls": 0,
+      "billed_calls": 0,
+      "cost_usd": 0.0,
+      "cost_complete": true
+    },
+    {
+      "stage": "identify",
+      "latency_s": 3.45,
+      "model_calls": 2,
+      "billed_calls": 0,
+      "cost_usd": 0.0,
+      "cost_complete": true
+    },
+    {
+      "stage": "measure",
+      "latency_s": 0.0,
+      "model_calls": 0,
+      "billed_calls": 0,
+      "cost_usd": 0.0,
+      "cost_complete": true
+    },
+    {
+      "stage": "price",
+      "latency_s": 0.294,
+      "model_calls": 0,
+      "billed_calls": 0,
+      "cost_usd": 0.0,
+      "cost_complete": true
+    },
+    {
+      "stage": "room",
+      "latency_s": 0.0,
+      "model_calls": 0,
+      "billed_calls": 0,
+      "cost_usd": 0.0,
+      "cost_complete": true
+    }
+  ],
+  "total_latency_s": 8.78,
+  "total_cost_usd": 0.0,
+  "totals": {
+    "book_count": 10,
+    "books_identified": 10,
+    "books_unidentified": 0,
+    "shelf_run_m": null,
+    "books_replacement_cost": 523.0,
+    "books_used_value": 523.0,
+    "items_replacement_cost_low": 2205.0,
+    "items_replacement_cost_high": 32990.0,
+    "excluded_from_totals": 8
+  },
+  "review_entries": 36,
+  "valid": true
+}

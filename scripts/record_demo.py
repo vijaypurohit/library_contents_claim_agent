@@ -13,8 +13,15 @@ nothing is cut, sped up or stitched.
 
 Run (uses model calls; the dev profiles answer through the local `claude` command):
     uv run --with playwright playwright install ffmpeg          # once: the page recorder
-    uv run --with playwright --with imageio-ffmpeg python scripts/record_demo.py [profile]
-`profile` is dev-sonnet (default), dev (Claude Haiku) or any other profile in config/settings.yaml.
+    uv run --with playwright --with imageio-ffmpeg python scripts/record_demo.py [profile] [options]
+`profile` is dev-sonnet (default), dev-opus, dev (Claude Haiku), gemini or any profile in config/settings.yaml.
+Options:
+    --script FILE      camera feed and user lines (default config/live_script.yaml, with added faults;
+                       config/live_script_clean.yaml is one steady recording with none)
+    --chat             chat only: the user's lines are typed on screen and nothing is spoken (no soundtrack)
+    --provisional N    live spine count every N seconds (default: settings; 0 = off, saves model quota)
+    --fresh-cache      start with an empty answer cache, so every model call and page fetch really happens and the
+                       timings shown are real (otherwise an identical earlier request is replayed in a second)
 The take ends on the finished claim report: the claim sheet with its totals, the report inline,
 then the full report scrolled from the top.
 Needs Google Chrome and macOS `say`. Writes runs/<sweep>/demo/demo.mp4 (plus page.webm, audio.wav
@@ -23,6 +30,7 @@ and timeline.json).
 
 from __future__ import annotations
 
+import argparse
 import json
 import subprocess
 import sys
@@ -46,14 +54,33 @@ LEAD_IN_S = 14          # the camera rests on the first view while the agent gre
 TAIL_S = 30             # the last view is held this long, so Chrome's fake camera never loops back
 AGENT_VOICE, USER_VOICE = "Samantha", "Aman"
 RATE = 22050            # audio sample rate of the soundtrack
-PROFILE = sys.argv[1] if len(sys.argv) > 1 else "dev-sonnet"
-BANNER = ("SIMULATED SWEEP · camera: recorded footage of the test space (glare, blur and fast-pan faults added) · "
-          "user: scripted lines, spoken by a computer voice · agent, warnings, count and pipeline: live "
-          f"(models: {PROFILE}) · one continuous take")
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Record a simulated demo of the live agent.")
+    parser.add_argument("profile", nargs="?", default="dev-sonnet", help="model profile (config/settings.yaml)")
+    parser.add_argument("--script", default="config/live_script.yaml")
+    parser.add_argument("--chat", action="store_true", help="typed conversation, no speech")
+    parser.add_argument("--provisional", type=float, default=None)
+    parser.add_argument("--fresh-cache", action="store_true")
+    return parser.parse_args()
+
+
+def banner(args: argparse.Namespace, script: Script) -> str:
+    """The line across the bottom of the page: what is simulated, for the whole recording."""
+    faults = any(seg.synthetic for seg in script.camera.segments)
+    return ("SIMULATED SWEEP · camera: recorded footage of the test space" + (" (glare, blur and fast-pan faults added)" if faults else "")
+            + " · user: scripted lines, " + ("typed on screen" if args.chat else "spoken by a computer voice")
+            + f" · agent, warnings, count and pipeline: live (models: {args.profile}) · one continuous take")
+
 
 # Runs in the page before its own scripts: the banner, a speech-recognition stand-in the recorder
 # can "speak" into, and a log of everything the page asks the browser to say.
-INIT_SCRIPT = """
+def init_script(banner_text: str) -> str:
+    return INIT_TEMPLATE.replace("BANNER_TEXT", json.dumps(banner_text))
+
+
+INIT_TEMPLATE = """
 window.__spoken = [];
 speechSynthesis.speak = (u) => window.__spoken.push({ t: Date.now(), text: u.text });
 speechSynthesis.cancel = () => window.__spoken.push({ t: Date.now(), cancel: true });
@@ -68,7 +95,7 @@ addEventListener("DOMContentLoaded", () => {
                     "background:#7a1f1f;color:#fff;text-align:center";
   document.body.appendChild(b);
 });
-""".replace("BANNER_TEXT", json.dumps(BANNER))
+"""
 
 
 def write_y4m(path: Path, frames: list[np.ndarray], fps: int) -> None:
@@ -136,11 +163,16 @@ def main() -> None:
     import imageio_ffmpeg
     from playwright.sync_api import sync_playwright
 
+    args = parse_args()
     settings = Settings.load()
     settings.gateway.cache_only = False      # a live sweep needs fresh answers
-    settings.models.profile = PROFILE
-    settings.live.voice = "cascaded"
-    script = Script.load(ROOT / "config" / "live_script.yaml")
+    settings.models.profile = args.profile
+    settings.live.voice = "chat" if args.chat else "cascaded"
+    if args.fresh_cache:
+        settings.cache_file = Path(tempfile.mkdtemp(prefix="claim-demo-cache-")) / "cache.sqlite"
+    if args.provisional is not None:
+        settings.live.provisional_every_s = args.provisional
+    script = Script.load(ROOT / args.script)
     fps = settings.live.frame_fps
     work = Path(tempfile.mkdtemp(prefix="claim-demo-"))
     camera, feed_s = camera_file(script, fps, work)
@@ -155,13 +187,13 @@ def main() -> None:
             f"--use-file-for-fake-video-capture={camera}"])
         context = browser.new_context(viewport=VIEWPORT, record_video_dir=str(work), record_video_size=VIEWPORT,
                                       permissions=["camera", "microphone"])
-        context.add_init_script(INIT_SCRIPT)
+        context.add_init_script(init_script(banner(args, script)))
         page = context.new_page()
         start = time.time()                  # the page recording starts about now
         page.goto(http_url + "/")
         page.wait_for_function("document.getElementById('config').textContent.length > 0")
         page.wait_for_timeout(1500)
-        page.select_option("#voice", "cascaded")     # browser speech: the stand-ins below speak and hear for it
+        page.select_option("#voice", "chat" if args.chat else "cascaded")   # voice: the stand-ins below speak and hear for it
         page.click("#start")
         started = time.time()
 
@@ -189,7 +221,12 @@ def main() -> None:
                 wait_until(lambda: camera_t() >= feed_s, 3600)
             answered = agent_turns()
             timeline.append({"t": time.time(), "who": "user", "text": line.say})
-            page.evaluate("text => window.__hear(text)", line.say)
+            if args.chat:
+                page.click("#text")
+                page.keyboard.type(line.say, delay=22)       # typed on screen, as a person would
+                page.keyboard.press("Enter")
+            else:
+                page.evaluate("text => window.__hear(text)", line.say)
             print(f"[{time.time() - start:6.1f}s] user: {line.say}")
             if line.end and not wait_until(lambda: "processing" in page.inner_text("#status")
                                            or "ready" in page.inner_text("#status"), script.end_grace_s):
@@ -226,12 +263,15 @@ def main() -> None:
     timeline += [{"t": e["t"] / 1000, "who": "agent", "text": e.get("text", ""), **({"cancel": True} if e.get("cancel") else {})}
                  for e in spoken]
     (out / "timeline.json").write_text(json.dumps(sorted(timeline, key=lambda e: e["t"]), indent=2, ensure_ascii=False))
-    audio = soundtrack(timeline, start, length, work)
     Path(video).replace(out / "page.webm")
-    audio.replace(out / "audio.wav")
-    subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(), "-y", "-loglevel", "error", "-i", str(out / "page.webm"),
-                    "-i", str(out / "audio.wav"), "-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac",
-                    "-shortest", str(out / "demo.mp4")], check=True)
+    ffmpeg = [imageio_ffmpeg.get_ffmpeg_exe(), "-y", "-loglevel", "error", "-i", str(out / "page.webm")]
+    if args.chat:                          # a typed conversation has no soundtrack
+        subprocess.run(ffmpeg + ["-c:v", "libx264", "-pix_fmt", "yuv420p", "-an", str(out / "demo.mp4")], check=True)
+    else:
+        audio = soundtrack(timeline, start, length, work)
+        audio.replace(out / "audio.wav")
+        subprocess.run(ffmpeg + ["-i", str(out / "audio.wav"), "-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac",
+                                 "-shortest", str(out / "demo.mp4")], check=True)
     print(f"demo: {out / 'demo.mp4'} ({length:.0f} s)")
 
 

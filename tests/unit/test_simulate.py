@@ -40,7 +40,8 @@ def test_faults_trip_the_live_quality_checks():
         monitor.check(sharp, now=float(t))
     assert "glare" in [w.kind for w in monitor.check(add_glare(sharp), now=10.0)]
     blurred = cv2.GaussianBlur(sharp, (0, 0), 7.0 / 2)
-    assert "blur" in [w.kind for w in monitor.check(blurred, now=20.0)]
+    monitor.check(blurred, now=20.0)
+    assert "blur" in [w.kind for w in monitor.check(blurred, now=20.25)]       # two soft frames in a row
 
 
 def test_build_feed_from_photo_video_hold_and_effects(tmp_path):

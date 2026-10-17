@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claim report · live-20261017-212621</title>
+<style>
+  :root { --ink:#1d2433; --muted:#5f6b7a; --line:#dfe3ea; --bg:#f7f8fa; --card:#fff; --ok:#1f7a4d; --warn:#a15c00; --bad:#b42318; }
+  @media (prefers-color-scheme: dark) { :root { --ink:#e6e9ef; --muted:#9aa4b2; --line:#2c3340; --bg:#12161d; --card:#1a1f28; --ok:#5fd39a; --warn:#f0b35a; --bad:#ff8a80; } }
+  * { box-sizing:border-box; }
+  body { margin:0; font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif; color:var(--ink); background:var(--bg); }
+  main { max-width:1100px; margin:0 auto; padding:24px 16px 64px; }
+  h1 { font-size:24px; margin:0 0 4px; } h2 { font-size:18px; margin:32px 0 12px; }
+  .muted { color:var(--muted); }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; }
+  .tile { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:12px 14px; }
+  .tile .v { font-size:22px; font-weight:600; } .tile .k { color:var(--muted); font-size:13px; }
+  table { width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+  th, td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; font-size:14px; }
+  th { font-weight:600; color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.03em; }
+  .scroll { overflow-x:auto; }
+  .tag { display:inline-block; padding:1px 7px; border-radius:10px; font-size:12px; border:1px solid currentColor; }
+  .identified { color:var(--ok); } .unidentified { color:var(--bad); } .needs_appraisal, .range, .unpriced { color:var(--warn); } .priced { color:var(--ok); }
+  .shelves { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:12px; }
+  .shelves img { width:100%; border-radius:6px; border:1px solid var(--line); }
+  .spine { max-height:60px; max-width:120px; border-radius:3px; }
+  a { color:inherit; }
+  ul.review li { margin-bottom:4px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Library contents claim</h1>
+  <div class="muted">Sweep live-20261017-212621 · captured 2026-10-17 15:56 UTC · priced in IN (INR)</div>
+
+  <h2>Totals</h2>
+  <div class="grid">
+    <div class="tile"><div class="v">15</div><div class="k">books counted</div></div>
+    <div class="tile"><div class="v">11</div><div class="k">identified · 4 unreadable</div></div>
+    <div class="tile"><div class="v">₹3,513</div><div class="k">books, replacement cost</div></div>
+    <div class="tile"><div class="v">₹523</div><div class="k">books, used value</div></div>
+    <div class="tile"><div class="v">₹13,462 – ₹46,473</div><div class="k">items, replacement range</div></div>
+    <div class="tile"><div class="v">11</div><div class="k">lines left out of totals (no price, or appraisal)</div></div>
+  </div>
+  <p class="muted">Totals are sums of the priced lines below, computed in code. Lines without a sourced price are left out and listed in the review queue.</p>
+
+  
+  <h2>Shelves</h2>
+  <div class="shelves">
+    <figure style="margin:0"><a href="evidence/shelf_A1.jpg"><img src="evidence/shelf_A1.jpg" alt="Shelf A1 with numbered books"></a>
+      <figcaption class="muted">Shelf A1 · 8 books</figcaption></figure><figure style="margin:0"><a href="evidence/shelf_A2.jpg"><img src="evidence/shelf_A2.jpg" alt="Shelf A2 with numbered books"></a>
+      <figcaption class="muted">Shelf A2 · 7 books</figcaption></figure>
+  </div>
+  
+
+  <h2>Books</h2>
+  <div class="scroll"><table>
+    <tr><th>#</th><th>Spine</th><th>Title / author</th><th>Status</th><th>Size (cm)</th><th>Replacement</th><th>Used</th><th>Evidence</th></tr>
+    
+    <tr>
+      <td>A1-1</td>
+      <td><a href="debug/spine_A1-1.jpg"><img class="spine" src="debug/spine_A1-1.jpg" alt="spine of A1-1"></a></td>
+      <td><strong>Refresher Course in Mathematics Part - 1 for Class X</strong>
+          <br><span class="muted">Manjeet Singh</span>
+          </td>
+      <td><span class="tag identified">identified</span>
+          <br><span class="muted">id 76%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>–</td>
+      <td>–</td>
+      <td><a href="frames/f000127_t032.03.jpg">frame</a>
+          </td>
+    </tr>
+    
+    <tr>
+      <td>A1-2</td>
+      <td><a href="debug/spine_A1-2.jpg"><img class="spine" src="debug/spine_A1-2.jpg" alt="spine of A1-2"></a></td>
+      <td><strong>Mathematics for Class 11</strong>
+          <br><span class="muted">R.D. Sharma</span>
+          </td>
+      <td><span class="tag identified">identified</span>
+          <br><span class="muted">id 89%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>₹351</td>
+      <td>₹351</td>
+      <td><a href="frames/f000080_t020.27.jpg">frame</a>
+          <br><a href="evidence/prices/780d7897aa507cb24d45.html">flipkart 351 INR</a> <a class="muted" href="https://www.flipkart.com/mathematics-class-xi/p/itmdyv65yqqhxzhk?pid=9788189928094">↗</a><br><a href="evidence/prices/17e9e77c074e54a84555.html">abebooks 32.67 USD</a> <a class="muted" href="https://www.abebooks.com/Mathematics-Class-11-R.D-Sharma-Dhanpat/32111693691/bd">↗</a></td>
+    </tr>
+    
+    <tr>
+      <td>A1-3</td>
+      <td><a href="debug/spine_A1-3.jpg"><img class="spine" src="debug/spine_A1-3.jpg" alt="spine of A1-3"></a></td>
+      <td><strong>SOCIAL SCIENCE CLASS X</strong>
+          
+          </td>
+      <td><span class="tag identified">identified</span>
+          <br><span class="muted">id 50%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>–</td>
+      <td>–</td>
+      <td><a href="frames/f000216_t054.28.jpg">frame</a>
+          </td>
+    </tr>
+    
+    <tr>
+      <td>A1-4</td>
+      <td><a href="debug/spine_A1-4.jpg"><img class="spine" src="debug/spine_A1-4.jpg" alt="spine of A1-4"></a></td>
+      <td><span class="muted">not readable</span>
+          
+          </td>
+      <td><span class="tag unidentified">unidentified</span>
+          <br><span class="muted">id 0%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>–</td>
+      <td>–</td>
+      <td><a href="frames/f000216_t054.28.jpg">frame</a>
+          </td>
+    </tr>
+    
+    <tr>
+      <td>A1-5</td>
+      <td><a href="debug/spine_A1-5.jpg"><img class="spine" src="debug/spine_A1-5.jpg" alt="spine of A1-5"></a></td>
+      <td><strong>Word Power Made Easy</strong>
+          <br><span class="muted">Norman Lewis</span>
+          </td>
+      <td><span class="tag identified">identified</span>
+          <br><span class="muted">id 100%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>₹172</td>
+      <td>₹172</td>
+      <td><a href="frames/f000080_t020.27.jpg">frame</a>
+          <br><a href="evidence/prices/f271ed09ac9f67bf7a23.html">oxfordbookstore 129 INR</a> <a class="muted" href="https://oxfordbookstore.com/products/word-power-made-easy">↗</a><br><a href="evidence/prices/0885ee1dd33204f10b8b.html">flipkart 215 INR</a> <a class="muted" href="https://www.flipkart.com/word-power-made-easy/p/itm9499d97e10500?pid=RBKGQEX9F5UKNYJW">↗</a><br><a href="evidence/prices/e155ff3716c3a18aa6a0.html">abebooks 6.49 USD</a> <a class="muted" href="https://www.abebooks.com/Word-Power-Made-Easy-Complete-Handbook/32525636258/bd">↗</a><br><a href="evidence/prices/e155ff3716c3a18aa6a0.html">abebooks 15.17 USD</a> <a class="muted" href="https://www.abebooks.com/Word-Power-Made-Easy-Complete-Three-Week/31895459935/bd">↗</a><br><a href="evidence/prices/e155ff3716c3a18aa6a0.html">abebooks 10.15 USD</a> <a class="muted" href="https://www.abebooks.com/Word-Power-Made-Easy-Norman-Lewis/31692244811/bd">↗</a><br><a href="evidence/prices/e155ff3716c3a18aa6a0.html">abebooks 6 USD</a> <a class="muted" href="https://www.abebooks.com/WORD-POWER-MADE-EASY-VOCABULARY-BUILDER/30938995915/bd">↗</a><br><a href="evidence/prices/e155ff3716c3a18aa6a0.html">abebooks 6 USD</a> <a class="muted" href="https://www.abebooks.com/WORD-POWER-MADE-EASY-lewis-norman/30938994944/bd">↗</a></td>
+    </tr>
+    
+    <tr>
+      <td>A1-6</td>
+      <td><a href="debug/spine_A1-6.jpg"><img class="spine" src="debug/spine_A1-6.jpg" alt="spine of A1-6"></a></td>
+      <td><span class="muted">not readable</span>
+          
+          </td>
+      <td><span class="tag unidentified">unidentified</span>
+          <br><span class="muted">id 0%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>–</td>
+      <td>–</td>
+      <td><a href="frames/f000169_t042.53.jpg">frame</a>
+          </td>
+    </tr>
+    
+    <tr>
+      <td>A1-7</td>
+      <td><a href="debug/spine_A1-7.jpg"><img class="spine" src="debug/spine_A1-7.jpg" alt="spine of A1-7"></a></td>
+      <td><strong>ENGLISH LANGUAGE AND LITERATURE CLASS X</strong>
+          
+          </td>
+      <td><span class="tag identified">identified</span>
+          <br><span class="muted">id 50%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>–</td>
+      <td>–</td>
+      <td><a href="frames/f000080_t020.27.jpg">frame</a>
+          </td>
+    </tr>
+    
+    <tr>
+      <td>A1-8</td>
+      <td><a href="debug/spine_A1-8.jpg"><img class="spine" src="debug/spine_A1-8.jpg" alt="spine of A1-8"></a></td>
+      <td><strong>FUNDAMENTAL PHYSICS CLASS XII</strong>
+          <br><span class="muted">K.L. GOMBER, K.L. GOGA</span>
+          </td>
+      <td><span class="tag identified">identified</span>
+          <br><span class="muted">id 50%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>₹2,618</td>
+      <td>–</td>
+      <td><a href="frames/f000080_t020.27.jpg">frame</a>
+          <br><a href="evidence/prices/cac532e1eda4d917c7cb.html">flipkart 2618 INR</a> <a class="muted" href="https://www.flipkart.com/pradeep-s-fundamental-physics-class-12-vol-1-2-examination-2026-27/p/itme129f9ebf7328?pid=RBKHZ4WYVZPEGHYP">↗</a></td>
+    </tr>
+    
+    <tr>
+      <td>A2-1</td>
+      <td><a href="debug/spine_A2-1.jpg"><img class="spine" src="debug/spine_A2-1.jpg" alt="spine of A2-1"></a></td>
+      <td><span class="muted">not readable</span>
+          
+          </td>
+      <td><span class="tag unidentified">unidentified</span>
+          <br><span class="muted">id 0%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>–</td>
+      <td>–</td>
+      <td><a href="frames/f000112_t028.27.jpg">frame</a>
+          </td>
+    </tr>
+    
+    <tr>
+      <td>A2-2</td>
+      <td><a href="debug/spine_A2-2.jpg"><img class="spine" src="debug/spine_A2-2.jpg" alt="spine of A2-2"></a></td>
+      <td><strong>Secondary School Mathematics for Class IX</strong>
+          <br><span class="muted">R S Aggarwal, V Aggarwal</span>
+          </td>
+      <td><span class="tag identified">identified</span>
+          <br><span class="muted">id 50%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>₹372</td>
+      <td>–</td>
+      <td><a href="frames/f000216_t054.28.jpg">frame</a>
+          <br><a href="evidence/prices/da12d52184bb8986f768.html">flipkart 372 INR</a> <a class="muted" href="https://www.flipkart.com/secondary-school-mathematics-class-9-1-disc/p/itmaf85f872d039a?pid=9783105275634">↗</a></td>
+    </tr>
+    
+    <tr>
+      <td>A2-3</td>
+      <td><a href="debug/spine_A2-3.jpg"><img class="spine" src="debug/spine_A2-3.jpg" alt="spine of A2-3"></a></td>
+      <td><strong>ENGLISH COURSE Class 10</strong>
+          
+          </td>
+      <td><span class="tag identified">identified</span>
+          <br><span class="muted">id 50%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>–</td>
+      <td>–</td>
+      <td><a href="frames/f000216_t054.28.jpg">frame</a>
+          </td>
+    </tr>
+    
+    <tr>
+      <td>A2-4</td>
+      <td><a href="debug/spine_A2-4.jpg"><img class="spine" src="debug/spine_A2-4.jpg" alt="spine of A2-4"></a></td>
+      <td><strong>सामान्य हिन्दी</strong>
+          
+          </td>
+      <td><span class="tag identified">identified</span>
+          <br><span class="muted">id 50%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>–</td>
+      <td>–</td>
+      <td><a href="frames/f000216_t054.28.jpg">frame</a>
+          </td>
+    </tr>
+    
+    <tr>
+      <td>A2-5</td>
+      <td><a href="debug/spine_A2-5.jpg"><img class="spine" src="debug/spine_A2-5.jpg" alt="spine of A2-5"></a></td>
+      <td><strong>B. Sc. Part-I Inorganic Chemistry</strong>
+          
+          </td>
+      <td><span class="tag identified">identified</span>
+          <br><span class="muted">id 50%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>–</td>
+      <td>–</td>
+      <td><a href="frames/f000058_t014.78.jpg">frame</a>
+          </td>
+    </tr>
+    
+    <tr>
+      <td>A2-6</td>
+      <td><a href="debug/spine_A2-6.jpg"><img class="spine" src="debug/spine_A2-6.jpg" alt="spine of A2-6"></a></td>
+      <td><span class="muted">not readable</span>
+          
+          </td>
+      <td><span class="tag unidentified">unidentified</span>
+          <br><span class="muted">id 0%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>–</td>
+      <td>–</td>
+      <td><a href="frames/f000169_t042.53.jpg">frame</a>
+          </td>
+    </tr>
+    
+    <tr>
+      <td>A2-7</td>
+      <td><a href="debug/spine_A2-7.jpg"><img class="spine" src="debug/spine_A2-7.jpg" alt="spine of A2-7"></a></td>
+      <td><strong>B. Sc. Part-I Inorganic Chemistry</strong>
+          <br><span class="muted">Lavania, Ojha, Bansal</span>
+          </td>
+      <td><span class="tag identified">identified</span>
+          <br><span class="muted">id 50%</span></td>
+      <td><span class="muted">–</span></td>
+      <td>–</td>
+      <td>–</td>
+      <td><a href="frames/f000112_t028.27.jpg">frame</a>
+          </td>
+    </tr>
+    
+  </table></div>
+
+  <h2>Other items</h2>
+  <div class="scroll"><table>
+    <tr><th>#</th><th>Item</th><th>Status</th><th>Size (cm)</th><th>Replacement range</th><th>Evidence</th></tr>
+    
+    <tr>
+      <td>I1</td><td>wood wall-mounted shelf cabinet with green frame</td>
+      <td><span class="tag range">range</span></td>
+      <td><span class="muted">–</span></td>
+      <td>₹4,940 – ₹18,590</td>
+      <td><a href="frames/f000080_t020.27.jpg">frame</a>
+          <br><a href="evidence/prices/15b72102a5fc967200a8.html">flipkart 7975 INR</a> <a class="muted" href="https://www.flipkart.com/ayat-wooddesigns-engineered-wood-almirah/p/itm0ca7e2f48d4e4?pid=CUPHPGSYZYSAQHZH">↗</a><br><a href="evidence/prices/b881d7fc86e78b53ed9e.html">flipkart 4940 INR</a> <a class="muted" href="https://www.flipkart.com/neuspace-uno-engineered-wood-1-door-wardrobe/p/itma64cff2c96974?pid=WCLHKXRSPSDNVHN6">↗</a><br><a href="evidence/prices/bc64f0dd5d95650e9eb4.html">flipkart 18590 INR</a> <a class="muted" href="https://www.flipkart.com/nilkamal-joyce-engineered-wood-4-door-wardrobe/p/itmb0c76d10e662a?pid=WCLGDM3F66YDK9ZZ">↗</a></td>
+    </tr>
+    
+    <tr>
+      <td>I2</td><td>clay pot</td>
+      <td><span class="tag range">range</span></td>
+      <td><span class="muted">–</span></td>
+      <td>₹378 – ₹1,249</td>
+      <td><a href="frames/f000058_t014.78.jpg">frame</a>
+          <br><a href="evidence/prices/a0cb0929eb7af495993b.html">flipkart 1249 INR</a> <a class="muted" href="https://www.flipkart.com/craftsman-clay-handi-pot-cooking-serving-combo-1-2-3-liter-pot-26-cm-30-cm-diameter-6-l-capacity/p/itm9a287794a5ec9?pid=PTPHR7HWJDZNF9HF">↗</a><br><a href="evidence/prices/d72c6b4ce51872cc9348.html">flipkart 378 INR</a> <a class="muted" href="https://www.flipkart.com/cpv-crafts-hand-made-earthen-biryani-pottery-kadai-meen-chatti-natural-clay-black-pot-handi-1-l/p/itm0326dd8d70c8e?pid=PTPGWJFKJXZQ3K4V">↗</a><br><a href="evidence/prices/a9966b283e8029867783.html">flipkart 498 INR</a> <a class="muted" href="https://www.flipkart.com/thangam-traditional-black-cooking-pot-mud-handi-earthenware-handi-1-l-pot-16-5-cm-diameter-2-capacity-lid/p/itma47efdee43f0c?pid=PTPHRQEFSKYDRRQ3">↗</a></td>
+    </tr>
+    
+    <tr>
+      <td>I3</td><td>clay pot</td>
+      <td><span class="tag range">range</span></td>
+      <td><span class="muted">–</span></td>
+      <td>₹378 – ₹1,249</td>
+      <td><a href="frames/f000058_t014.78.jpg">frame</a>
+          <br><a href="evidence/prices/a0cb0929eb7af495993b.html">flipkart 1249 INR</a> <a class="muted" href="https://www.flipkart.com/craftsman-clay-handi-pot-cooking-serving-combo-1-2-3-liter-pot-26-cm-30-cm-diameter-6-l-capacity/p/itm9a287794a5ec9?pid=PTPHR7HWJDZNF9HF">↗</a><br><a href="evidence/prices/d72c6b4ce51872cc9348.html">flipkart 378 INR</a> <a class="muted" href="https://www.flipkart.com/cpv-crafts-hand-made-earthen-biryani-pottery-kadai-meen-chatti-natural-clay-black-pot-handi-1-l/p/itm0326dd8d70c8e?pid=PTPGWJFKJXZQ3K4V">↗</a><br><a href="evidence/prices/a9966b283e8029867783.html">flipkart 498 INR</a> <a class="muted" href="https://www.flipkart.com/thangam-traditional-black-cooking-pot-mud-handi-earthenware-handi-1-l-pot-16-5-cm-diameter-2-capacity-lid/p/itma47efdee43f0c?pid=PTPHRQEFSKYDRRQ3">↗</a></td>
+    </tr>
+    
+    <tr>
+      <td>I4</td><td>metal utensil</td>
+      <td><span class="tag range">range</span></td>
+      <td><span class="muted">–</span></td>
+      <td>₹278 – ₹3,700</td>
+      <td><a href="frames/f000058_t014.78.jpg">frame</a>
+          <br><a href="evidence/prices/8279021caec5947017e0.html">flipkart 3700 INR</a> <a class="muted" href="https://www.flipkart.com/indian-decor-utensil-kitchen-rack-iron-wood-ss2183-metal-multifunctional-storage-12-x-24-stainless-steel/p/itmbca5767a1f637?pid=KRKHA6ARA6JBDHRQ">↗</a><br><a href="evidence/prices/813ae3a66bdb8cad85dc.html">flipkart 278 INR</a> <a class="muted" href="https://www.flipkart.com/metalcrafted-utensil-kitchen-rack-iron-2-tire-shelf-bathroom/p/itm5cb277f836c4e?pid=KRKHKYN5ES4EPYPU">↗</a><br><a href="evidence/prices/d7f1facde2c0d6e4f2ef.html">flipkart 280 INR</a> <a class="muted" href="https://www.flipkart.com/zenzone-cutlery-kitchen-rack-iron-holder-towel-bar-hooks-premium-metal-utensil/p/itmde31177dffe48?pid=KRKHZCBSAS9VXS4S">↗</a></td>
+    </tr>
+    
+    <tr>
+      <td>I5</td><td>metal utensils</td>
+      <td><span class="tag range">range</span></td>
+      <td><span class="muted">–</span></td>
+      <td>₹234 – ₹753</td>
+      <td><a href="frames/f000058_t014.78.jpg">frame</a>
+          <br><a href="evidence/prices/00a08bfea6dbd7e1169b.html">flipkart 234 INR</a> <a class="muted" href="https://www.flipkart.com/craftpoint-utensil-kitchen-rack-iron-beautiful-metal-foldable-design-easy-carry-the-material-brass-plated/p/itm5a455992bdde9?pid=KRKFY42NHYJMHUQ5">↗</a><br><a href="evidence/prices/66a7f4221408a6ed47a4.html">flipkart 753 INR</a> <a class="muted" href="https://www.flipkart.com/best-utensils-india-pack-6-02-glass-set-water-juice/p/itmezftxcuxrdbu9?pid=GLSEZFTXYYYJXGFE">↗</a></td>
+    </tr>
+    
+    <tr>
+      <td>I6</td><td>chair</td>
+      <td><span class="tag range">range</span></td>
+      <td><span class="muted">–</span></td>
+      <td>₹970 – ₹970</td>
+      <td><a href="frames/f000148_t037.28.jpg">frame</a>
+          <br><a href="evidence/prices/f3f5b6f145e1d0d0a970.html">flipkart 970 INR</a> <a class="muted" href="https://www.flipkart.com/ne-furniture-engineered-wood-side-table/p/itmc4059071f5cc5?pid=SITHEJVVRUG4KM43">↗</a></td>
+    </tr>
+    
+    <tr>
+      <td>I7</td><td>patterned floor mat</td>
+      <td><span class="tag range">range</span></td>
+      <td><span class="muted">–</span></td>
+      <td>₹374 – ₹402</td>
+      <td><a href="frames/f000148_t037.28.jpg">frame</a>
+          <br><a href="evidence/prices/5642baabe9b60c0a2bb8.html">flipkart 402 INR</a> <a class="muted" href="https://www.flipkart.com/mahdev-enterprises-3-ft-x-jute-area-rug/p/itm56ccf80b02257?pid=CPGFY5C9ZEUGQTDF">↗</a><br><a href="evidence/prices/80dca9b3b23c9824fd73.html">flipkart 374 INR</a> <a class="muted" href="https://www.flipkart.com/homewaytex-60-cm-x-90-cotton-area-rug/p/itmbd4d8fcc8e2ef?pid=CPGH6XCQW57GZUT4">↗</a><br><a href="evidence/prices/5484ffc7cd4f77266869.html">flipkart 374 INR</a> <a class="muted" href="https://www.flipkart.com/homewaytex-60-cm-x-90-cotton-area-rug/p/itm9bd462c29e2ee?pid=CPGH6XCQTXBDF9FC">↗</a></td>
+    </tr>
+    
+    <tr>
+      <td>I8</td><td>wood open green wooden cabinet door</td>
+      <td><span class="tag range">range</span></td>
+      <td><span class="muted">–</span></td>
+      <td>₹4,940 – ₹18,590</td>
+      <td><a href="frames/f000237_t059.53.jpg">frame</a>
+          <br><a href="evidence/prices/15b72102a5fc967200a8.html">flipkart 7975 INR</a> <a class="muted" href="https://www.flipkart.com/ayat-wooddesigns-engineered-wood-almirah/p/itm0ca7e2f48d4e4?pid=CUPHPGSYZYSAQHZH">↗</a><br><a href="evidence/prices/b881d7fc86e78b53ed9e.html">flipkart 4940 INR</a> <a class="muted" href="https://www.flipkart.com/neuspace-uno-engineered-wood-1-door-wardrobe/p/itma64cff2c96974?pid=WCLHKXRSPSDNVHN6">↗</a><br><a href="evidence/prices/bc64f0dd5d95650e9eb4.html">flipkart 18590 INR</a> <a class="muted" href="https://www.flipkart.com/nilkamal-joyce-engineered-wood-4-door-wardrobe/p/itmb0c76d10e662a?pid=WCLGDM3F66YDK9ZZ">↗</a></td>
+    </tr>
+    
+    <tr>
+      <td>I9</td><td>chair edge</td>
+      <td><span class="tag range">range</span></td>
+      <td><span class="muted">–</span></td>
+      <td>₹970 – ₹970</td>
+      <td><a href="frames/f000237_t059.53.jpg">frame</a>
+          <br><a href="evidence/prices/f3f5b6f145e1d0d0a970.html">flipkart 970 INR</a> <a class="muted" href="https://www.flipkart.com/ne-furniture-engineered-wood-side-table/p/itmc4059071f5cc5?pid=SITHEJVVRUG4KM43">↗</a></td>
+    </tr>
+    
+  </table></div>
+
+  <h2>Room</h2>
+  
+  <p class="muted">The room could not be measured from this sweep; see the review queue.</p>
+
+  <h2>Review queue (70)</h2>
+  <ul class="review"><li><strong>A1-1</strong>: catalogue match only 76/100: check the title</li><li><strong>A1-1</strong>: no scale for this shelf</li><li><strong>A1-1</strong>: no matching listing in this country&#39;s shops: excluded from totals</li><li><strong>A1-2</strong>: catalogue match only 89/100: check the title</li><li><strong>A1-2</strong>: no scale for this shelf</li><li><strong>A1-2</strong>: used listings cost more than new ones: used value capped at the replacement cost</li><li><strong>A1-3</strong>: no catalogue match: title taken from the spine</li><li><strong>A1-3</strong>: no scale for this shelf</li><li><strong>A1-3</strong>: no matching listing in this country&#39;s shops: excluded from totals</li><li><strong>A1-4</strong>: spine not legible</li><li><strong>A1-4</strong>: no scale for this shelf</li><li><strong>A1-4</strong>: not priced: the book could not be read</li><li><strong>A1-5</strong>: no scale for this shelf</li><li><strong>A1-5</strong>: used listings cost more than new ones: used value capped at the replacement cost</li><li><strong>A1-6</strong>: spine not legible</li><li><strong>A1-6</strong>: no scale for this shelf</li><li><strong>A1-6</strong>: not priced: the book could not be read</li><li><strong>A1-7</strong>: no catalogue match: title taken from the spine</li><li><strong>A1-7</strong>: no scale for this shelf</li><li><strong>A1-7</strong>: no matching listing in this country&#39;s shops: excluded from totals</li><li><strong>A1-8</strong>: no catalogue match: title taken from the spine</li><li><strong>A1-8</strong>: no scale for this shelf</li><li><strong>A2-1</strong>: only seen cut off at a frame edge</li><li><strong>A2-1</strong>: detector was unsure this is a book</li><li><strong>A2-1</strong>: not visible in the reference frame</li><li><strong>A2-1</strong>: spine not legible</li><li><strong>A2-1</strong>: no scale for this shelf</li><li><strong>A2-1</strong>: not priced: the book could not be read</li><li><strong>A2-2</strong>: no catalogue match: title taken from the spine</li><li><strong>A2-2</strong>: no scale for this shelf</li><li><strong>A2-3</strong>: no catalogue match: title taken from the spine</li><li><strong>A2-3</strong>: no scale for this shelf</li><li><strong>A2-3</strong>: no matching listing in this country&#39;s shops: excluded from totals</li><li><strong>A2-4</strong>: no catalogue match: title taken from the spine</li><li><strong>A2-4</strong>: no scale for this shelf</li><li><strong>A2-4</strong>: no matching listing in this country&#39;s shops: excluded from totals</li><li><strong>A2-5</strong>: no catalogue match: title taken from the spine</li><li><strong>A2-5</strong>: no scale for this shelf</li><li><strong>A2-5</strong>: no matching listing in this country&#39;s shops: excluded from totals</li><li><strong>A2-6</strong>: spine not legible</li><li><strong>A2-6</strong>: no scale for this shelf</li><li><strong>A2-6</strong>: not priced: the book could not be read</li><li><strong>A2-7</strong>: not visible in the reference frame</li><li><strong>A2-7</strong>: no catalogue match: title taken from the spine</li><li><strong>A2-7</strong>: no scale for this shelf</li><li><strong>A2-7</strong>: no matching listing in this country&#39;s shops: excluded from totals</li><li><strong>I1</strong>: price range from 3 comparable listing(s) for &#39;wood almirah&#39;, not this exact item</li><li><strong>I1</strong>: upper price above the appraisal threshold of 5000 INR</li><li><strong>I1</strong>: no scale</li><li><strong>I2</strong>: price range from 3 comparable listing(s) for &#39;clay pot&#39;, not this exact item</li><li><strong>I2</strong>: no scale</li><li><strong>I3</strong>: price range from 3 comparable listing(s) for &#39;clay pot&#39;, not this exact item</li><li><strong>I3</strong>: no scale</li><li><strong>I4</strong>: price range from 3 comparable listing(s) for &#39;metal utensil&#39;, not this exact item</li><li><strong>I4</strong>: no scale</li><li><strong>I5</strong>: price range from 2 comparable listing(s) for &#39;metal utensils&#39;, not this exact item</li><li><strong>I5</strong>: no scale</li><li><strong>I6</strong>: price range from 1 comparable listing(s) for &#39;furniture&#39;, not this exact item</li><li><strong>I6</strong>: no scale</li><li><strong>I7</strong>: price range from 3 comparable listing(s) for &#39;rug&#39;, not this exact item</li><li><strong>I7</strong>: no scale</li><li><strong>I8</strong>: price range from 3 comparable listing(s) for &#39;wood almirah&#39;, not this exact item</li><li><strong>I8</strong>: upper price above the appraisal threshold of 5000 INR</li><li><strong>I8</strong>: no scale</li><li><strong>I9</strong>: price range from 1 comparable listing(s) for &#39;furniture&#39;, not this exact item</li><li><strong>I9</strong>: no scale</li><li><strong>room</strong>: 11 wall/door/window box(es) seen in frames without a scale: not measured</li><li><strong>room</strong>: fewer than two walls measured: room size unknown</li><li><strong>room</strong>: 2 shelving unit(s) could not be measured: shelved wall area unknown</li><li><strong>A2</strong>: user said &#34;The Hindi book on the bottom shelf is a first edition.&#34; (first_edition), but it matches no shelf, book or item: apply it by hand</li></ul>
+
+  <h2>Pipeline notes</h2><ul class="review muted"><li>frames at t=21.03-21.28s are blurry and match no view (the camera moved while blurred); re-capture recommended</li><li>frames at t=40.02-42.27s are blurry and match no view (the camera moved while blurred); re-capture recommended</li><li>frames at t=42.77-43.53s are blurry and match no view (the camera moved while blurred); re-capture recommended</li><li>scale: no scale card in any keyframe; sizes will come from the other scale rungs in the measure stage</li><li>identify: catalogue googlebooks unavailable, skipped from here on (www.googleapis.com: HTTP 429 {   &#34;error&#34;: {     &#34;code&#34;: 429,     &#34;message&#34;: &#34;Quota exceeded for quota metric &#39;Queries&#39; and limit &#39;Queries per day&#39; of service &#39;books.googleapis.com&#39; for cons)</li><li>measure: no scale for shelf A1, A2; their books have no dimensions (needs a scale card, identified books with catalogue heights, or a known object)</li><li>room: 11 wall/door/window box(es) seen in frames without a scale: not measured</li><li>room: fewer than two walls measured: room size unknown</li><li>room: 2 shelving unit(s) could not be measured: shelved wall area unknown</li></ul>
+</main>
+</body>
+</html>

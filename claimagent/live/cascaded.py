@@ -54,6 +54,7 @@ class Cascaded:
         self._lock = asyncio.Lock()   # one model turn at a time
         self._tasks: set[asyncio.Task] = set()   # replies in progress (kept so they are not garbage-collected)
         self._answered = 0            # history length the latest reply has seen
+        self._last_tool: str | None = None   # the tool call made since the user last spoke, to stop repeats
 
     async def send_audio(self, pcm16: bytes) -> None:
         return None  # speech is recognised in the browser
@@ -65,6 +66,7 @@ class Cascaded:
         """A user turn, or a system note ("[start] ...", "[count] ..."); either gets a reply when `respond`."""
         self.history.append(("user" if from_user else "system", text))
         if from_user:
+            self._last_tool = None        # a new user turn: the same tool may be called again
             await self._events.put(VoiceEvent("transcript", speaker="user", text=text, final=True))
         if respond:
             self._reply_later()
@@ -96,7 +98,14 @@ class Cascaded:
                 self.history.append(("agent", reply.say))
                 await self._events.put(VoiceEvent("transcript", speaker="agent", text=reply.say, final=True))
             if reply.tool:
-                await self._events.put(VoiceEvent("tool_call", call_id=uuid.uuid4().hex, name=reply.tool, args=reply.tool_args))
+                call = reply.tool + json.dumps(reply.tool_args, sort_keys=True)
+                if call == self._last_tool:
+                    # The model asked for the very same tool again with nobody speaking in between: it is polling
+                    # (for example sweep_status while the pipeline runs), and every poll costs a model call.
+                    self.history.append(("system", f"{reply.tool} was already called; do not call it again until the user speaks"))
+                else:
+                    self._last_tool = call
+                    await self._events.put(VoiceEvent("tool_call", call_id=uuid.uuid4().hex, name=reply.tool, args=reply.tool_args))
             await self._events.put(VoiceEvent("turn_complete"))
 
     async def events(self) -> AsyncIterator[VoiceEvent]:
