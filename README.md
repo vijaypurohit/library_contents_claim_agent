@@ -2,14 +2,14 @@
 
 A live voice-and-vision agent that inventories a home library from one camera sweep. It counts, identifies, measures and prices every book from its spine, prices non-book items, measures the room, and writes a claim packet in which every number traces to a frame or a price source. Totals are computed in code, and anything uncertain goes to a review queue instead of being guessed.
 
-Docs: [Architecture](docs/ARCHITECTURE.md) · [Design](docs/DESIGN.md) · [Testing](docs/TESTING.md) · [Failure log](docs/FAILURE_LOG.md) · [Requirements](docs/requirements.md) · [Evaluation results](eval/)
+Docs: [Architecture](docs/ARCHITECTURE.md) · [Design](docs/DESIGN.md) · [Testing](docs/TESTING.md) · [Failure log](docs/FAILURE_LOG.md) · [Requirements coverage](docs/REQUIREMENTS_COVERAGE.md) · [Requirements](docs/requirements.md) · [Evaluation results](eval/)
 
 ## Start here
 
 **See what it does (2 minutes).** The demo videos are in `release/`; open them from GitHub or after cloning:
 
 - [`release/demo-gemini-chat/demo/demo.mp4`](release/demo-gemini-chat/demo/demo.mp4): a typed chat with the agent on Gemini, then the finished claim report (10 books counted of 10, 8 of 9 titles right). It runs 9 minutes: most of it is waiting for the models, so skip ahead.
-- [`release/demo-opus-capture-coaching/demo/demo.mp4`](release/demo-opus-capture-coaching/demo/demo.mp4): voiced, 3 minutes 41 seconds; the agent catches blur, glare and a fast pan and asks for a re-record.
+- [`release/demo-opus-capture-coaching/demo/demo.mp4`](release/demo-opus-capture-coaching/demo/demo.mp4): voiced, 3 minutes 43 seconds; the agent catches blur, glare and a fast pan and asks for a re-record.
 - Their reports open straight in a browser: [`report.html` (Gemini)](release/demo-gemini-chat/report.html) · [`report.html` (Opus)](release/demo-opus-capture-coaching/report.html). A short explanation of what these demos are is in [Demos](#demos).
 
 **Run it yourself in 15 minutes.**
@@ -133,14 +133,20 @@ Everything under `release/` was made with `claim export` and holds the claim pac
 | Folder | What it is | Result |
 |---|---|---|
 | [`release/demo-gemini-chat/`](release/demo-gemini-chat/demo/demo.mp4) | **Gemini, typed chat** (no voice), steady footage, no faults added | Count 10 of 10, 8 of 9 titles correct, none confidently wrong, no capture warnings; 2 of 4 prices within 25% of the hand check. 9 minutes, of which 352 s was detect waiting out API timeouts. |
-| [`release/demo-opus-capture-coaching/`](release/demo-opus-capture-coaching/demo/demo.mp4) | **Claude Opus 5.5** (through the local `claude` command), voice stand-ins, footage with added glare, blur and a fast pan | The agent catches the faults, asks for a re-record and records the first-edition correction; count 15 for 10. 3 minutes 41 seconds. |
+| [`release/demo-opus-capture-coaching/`](release/demo-opus-capture-coaching/demo/demo.mp4) | **Claude Opus 5.5** (through the local `claude` command), voice stand-ins, footage with added glare, blur and a fast pan | The agent catches the faults, asks for a re-record and records the first-edition correction; count 15 for 10, 2 of 9 titles correct, 1 confidently wrong (over the 3% limit; [evaluation](eval/results_live-20261017-212621.md)). The 15 boxes include a duplicated book and shifted positions, so real titles land on the wrong book and Fundamental Physics is priced at ₹2,618 against a hand check of ₹834. This demo shows the capture coaching, not accuracy; use the Gemini demo for that. 3 minutes 43 seconds; pipeline 117 s; the CLI estimates $2.40 (subscription, not billed). |
 | [`release/slow-recorded/`](release/slow-recorded/report.html) | The recorded `slow` video through the pipeline on Gemini Flash (no live session) | Count 10 of 10, 7 of 9 titles, none confidently wrong; see the [evaluation](eval/results_slow.md). |
 
 **What the demo videos are, honestly:** simulated sessions, not a person at a phone. The camera is recordings of the test space, the user's lines are scripted (typed on screen in the chat demo, spoken by a computer voice in the other), and a banner across the page says so. The agent, its warnings and tool calls, the pipeline, the packet and the report are all live. They were recorded with `scripts/record_demo.py` (see [Testing](docs/TESTING.md)). A take with a real camera, microphone and Gemini Live voice still needs a person.
 
 ## Results on the test captures
 
-Count 10 of 10 on all four sweeps; titles correct 78–89% on the steady sweeps (33% on the rushed one); no confidently wrong titles anywhere; every price sourced, dated and snapshotted, with 4 regional books that have no listing anywhere left unpriced. Prices agree with the hand check on only 1–2 of 6 books, and dimensions and room are empty because the captures have no scale: see [the failure log](docs/FAILURE_LOG.md) for root causes and a measured fix.
+**Recorded sweeps (Gemini Flash reading; `eval/results_*.md`).** Count 10 of 10 on all four. Titles correct: 89% (`photos`), 78% (`slow`), 89% (`far`), 33% (`rush`, filmed too fast). No confidently wrong title on any of the four. Every price is sourced, dated and snapshotted; the 4 regional books with no listing are left unpriced. Prices within 25% of the hand check: 0 to 2 of 6 books per sweep (miss: the shops list other editions at other prices; see the failure log). Dimensions and room are empty because the captures have no scale.
+
+**Live sessions (scripted, [evaluations](eval/)).** Results depend on the model that reads the shelf. Gemini Flash: count 10 of 10, 8 of 9 titles, none confidently wrong. Claude Opus through the CLI: count 15, 2 of 9 titles, 1 confidently wrong (misses the 3% limit). Claude Haiku: count 47 and 40 for 10, no titles. Cause: these models locate spines loosely, so books are boxed twice and positions shift (readings are mostly real shelf titles attached to the wrong box) ([failure log](docs/FAILURE_LOG.md), error 5). Use the Gemini profile for counting.
+
+**Speed and cost.** Time to packet misses the 5-minute target in the live runs: 8 minutes with Gemini (352 s of it detect, retrying through API timeouts), 2 minutes with Opus, about 12 minutes with Haiku. Per sweep, Gemini detect costs $0.01 to $0.03; price lookups are free. The demo videos are 9:02 and 3:43, so the Gemini one is over a 6-minute limit. Details: [failure log](docs/FAILURE_LOG.md#cost-and-latency-per-sweep).
+
+Requirement-by-requirement status: [Requirements coverage](docs/REQUIREMENTS_COVERAGE.md).
 
 ## Models, libraries and tools
 
