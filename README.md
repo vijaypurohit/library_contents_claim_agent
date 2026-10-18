@@ -9,7 +9,7 @@ Docs: [Architecture](docs/ARCHITECTURE.md) · [Design](docs/DESIGN.md) · [Testi
 **See what it does (2 minutes).** The demo videos are in `release/`; open them from GitHub or after cloning:
 
 - [`release/demo-gemini-chat/demo/demo.mp4`](release/demo-gemini-chat/demo/demo.mp4): a typed chat with the agent on Gemini, then the finished claim report (10 books counted of 10, 8 of 9 titles right). It runs 9 minutes: most of it is waiting for the models, so skip ahead.
-- [`release/demo-opus-capture-coaching/demo/demo.mp4`](release/demo-opus-capture-coaching/demo/demo.mp4): voiced, 3 minutes 43 seconds; the agent catches blur, glare and a fast pan and asks for a re-record.
+- Also a voiced demo of capture coaching (blur, glare, fast pan): [`release/demo-opus-capture-coaching/demo/demo.mp4`](release/demo-opus-capture-coaching/demo/demo.mp4), 3 minutes 43 seconds. Its counts and titles are weak (see [Demos](#demos)); judge accuracy on the Gemini demo above.
 - Their reports open straight in a browser: [`report.html` (Gemini)](release/demo-gemini-chat/report.html) · [`report.html` (Opus)](release/demo-opus-capture-coaching/report.html). A short explanation of what these demos are is in [Demos](#demos).
 
 **Run it yourself in 15 minutes.**
